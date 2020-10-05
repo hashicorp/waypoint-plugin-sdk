@@ -107,7 +107,7 @@ func (c *builderClient) Documentation() (*docs.Documentation, error) {
 
 func (c *builderClient) BuildFunc() interface{} {
 	// Get the build spec
-	spec, err := c.client.BuildSpec(context.Background(), &proto.Empty{})
+	spec, err := c.client.BuildSpec(context.Background(), &empty.Empty{})
 	if err != nil {
 		return funcErr(err)
 	}
@@ -171,7 +171,7 @@ func (s *builderServer) Documentation(
 
 func (s *builderServer) BuildSpec(
 	ctx context.Context,
-	args *proto.Empty,
+	args *empty.Empty,
 ) (*proto.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: builder")

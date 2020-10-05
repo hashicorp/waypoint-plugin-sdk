@@ -7,9 +7,15 @@
 package proto
 
 import (
+	context "context"
 	proto "github.com/golang/protobuf/proto"
 	any "github.com/golang/protobuf/ptypes/any"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	protostructure "github.com/mitchellh/protostructure"
+	status "google.golang.org/genproto/googleapis/rpc/status"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status1 "google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -68,45 +74,6 @@ func (*Args) Descriptor() ([]byte, []int) {
 	return file_plugin_proto_rawDescGZIP(), []int{0}
 }
 
-// Empty is just an empty message useful with some RPC endpoints.
-type Empty struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *Empty) Reset() {
-	*x = Empty{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Empty) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Empty) ProtoMessage() {}
-
-func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
-func (*Empty) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{1}
-}
-
 // FuncSpec describes a function and is used by the dependency-injection
 // framework to provide the function with the proper values.
 //
@@ -132,7 +99,7 @@ type FuncSpec struct {
 func (x *FuncSpec) Reset() {
 	*x = FuncSpec{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[2]
+		mi := &file_plugin_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -145,7 +112,7 @@ func (x *FuncSpec) String() string {
 func (*FuncSpec) ProtoMessage() {}
 
 func (x *FuncSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[2]
+	mi := &file_plugin_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -158,7 +125,7 @@ func (x *FuncSpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FuncSpec.ProtoReflect.Descriptor instead.
 func (*FuncSpec) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{2}
+	return file_plugin_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *FuncSpec) GetName() string {
@@ -201,7 +168,7 @@ type Config struct {
 func (x *Config) Reset() {
 	*x = Config{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[3]
+		mi := &file_plugin_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -214,7 +181,7 @@ func (x *Config) String() string {
 func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[3]
+	mi := &file_plugin_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -227,7 +194,7 @@ func (x *Config) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config.ProtoReflect.Descriptor instead.
 func (*Config) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{3}
+	return file_plugin_proto_rawDescGZIP(), []int{2}
 }
 
 // Auth is the namespace of messages related to auth.
@@ -240,7 +207,7 @@ type Auth struct {
 func (x *Auth) Reset() {
 	*x = Auth{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[4]
+		mi := &file_plugin_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -253,7 +220,7 @@ func (x *Auth) String() string {
 func (*Auth) ProtoMessage() {}
 
 func (x *Auth) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[4]
+	mi := &file_plugin_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -266,7 +233,7 @@ func (x *Auth) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Auth.ProtoReflect.Descriptor instead.
 func (*Auth) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{4}
+	return file_plugin_proto_rawDescGZIP(), []int{3}
 }
 
 // ImplementsResp returns true if the component implements an additional interface.
@@ -281,7 +248,7 @@ type ImplementsResp struct {
 func (x *ImplementsResp) Reset() {
 	*x = ImplementsResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[5]
+		mi := &file_plugin_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -294,7 +261,7 @@ func (x *ImplementsResp) String() string {
 func (*ImplementsResp) ProtoMessage() {}
 
 func (x *ImplementsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[5]
+	mi := &file_plugin_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -307,7 +274,7 @@ func (x *ImplementsResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImplementsResp.ProtoReflect.Descriptor instead.
 func (*ImplementsResp) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{5}
+	return file_plugin_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ImplementsResp) GetImplements() bool {
@@ -315,6 +282,281 @@ func (x *ImplementsResp) GetImplements() bool {
 		return x.Implements
 	}
 	return false
+}
+
+type TerminalUI struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *TerminalUI) Reset() {
+	*x = TerminalUI{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI) ProtoMessage() {}
+
+func (x *TerminalUI) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI.ProtoReflect.Descriptor instead.
+func (*TerminalUI) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5}
+}
+
+type Map struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Map) Reset() {
+	*x = Map{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Map) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Map) ProtoMessage() {}
+
+func (x *Map) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Map.ProtoReflect.Descriptor instead.
+func (*Map) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{6}
+}
+
+type Build struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Build) Reset() {
+	*x = Build{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Build) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Build) ProtoMessage() {}
+
+func (x *Build) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Build.ProtoReflect.Descriptor instead.
+func (*Build) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{7}
+}
+
+type DefaultReleaser struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DefaultReleaser) Reset() {
+	*x = DefaultReleaser{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DefaultReleaser) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DefaultReleaser) ProtoMessage() {}
+
+func (x *DefaultReleaser) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DefaultReleaser.ProtoReflect.Descriptor instead.
+func (*DefaultReleaser) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{8}
+}
+
+type Deploy struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Deploy) Reset() {
+	*x = Deploy{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Deploy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Deploy) ProtoMessage() {}
+
+func (x *Deploy) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Deploy.ProtoReflect.Descriptor instead.
+func (*Deploy) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{9}
+}
+
+type Push struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Push) Reset() {
+	*x = Push{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Push) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Push) ProtoMessage() {}
+
+func (x *Push) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Push.ProtoReflect.Descriptor instead.
+func (*Push) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{10}
+}
+
+type Release struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+}
+
+func (x *Release) Reset() {
+	*x = Release{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Release) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Release) ProtoMessage() {}
+
+func (x *Release) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Release.ProtoReflect.Descriptor instead.
+func (*Release) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *Release) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
 }
 
 // See component.Source
@@ -332,7 +574,7 @@ type Args_Source struct {
 func (x *Args_Source) Reset() {
 	*x = Args_Source{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[6]
+		mi := &file_plugin_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -345,7 +587,7 @@ func (x *Args_Source) String() string {
 func (*Args_Source) ProtoMessage() {}
 
 func (x *Args_Source) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[6]
+	mi := &file_plugin_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -389,7 +631,7 @@ type Args_JobInfo struct {
 func (x *Args_JobInfo) Reset() {
 	*x = Args_JobInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[7]
+		mi := &file_plugin_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -402,7 +644,7 @@ func (x *Args_JobInfo) String() string {
 func (*Args_JobInfo) ProtoMessage() {}
 
 func (x *Args_JobInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[7]
+	mi := &file_plugin_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -455,7 +697,7 @@ type Args_DeploymentConfig struct {
 func (x *Args_DeploymentConfig) Reset() {
 	*x = Args_DeploymentConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[8]
+		mi := &file_plugin_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -468,7 +710,7 @@ func (x *Args_DeploymentConfig) String() string {
 func (*Args_DeploymentConfig) ProtoMessage() {}
 
 func (x *Args_DeploymentConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[8]
+	mi := &file_plugin_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -531,7 +773,7 @@ type Args_DataDir struct {
 func (x *Args_DataDir) Reset() {
 	*x = Args_DataDir{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[9]
+		mi := &file_plugin_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -544,7 +786,7 @@ func (x *Args_DataDir) String() string {
 func (*Args_DataDir) ProtoMessage() {}
 
 func (x *Args_DataDir) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[9]
+	mi := &file_plugin_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -573,7 +815,7 @@ type Args_Logger struct {
 func (x *Args_Logger) Reset() {
 	*x = Args_Logger{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[10]
+		mi := &file_plugin_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -586,7 +828,7 @@ func (x *Args_Logger) String() string {
 func (*Args_Logger) ProtoMessage() {}
 
 func (x *Args_Logger) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[10]
+	mi := &file_plugin_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -621,7 +863,7 @@ type Args_TerminalUI struct {
 func (x *Args_TerminalUI) Reset() {
 	*x = Args_TerminalUI{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[11]
+		mi := &file_plugin_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -634,7 +876,7 @@ func (x *Args_TerminalUI) String() string {
 func (*Args_TerminalUI) ProtoMessage() {}
 
 func (x *Args_TerminalUI) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[11]
+	mi := &file_plugin_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -672,7 +914,7 @@ type Args_ReleaseTargets struct {
 func (x *Args_ReleaseTargets) Reset() {
 	*x = Args_ReleaseTargets{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[12]
+		mi := &file_plugin_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -685,7 +927,7 @@ func (x *Args_ReleaseTargets) String() string {
 func (*Args_ReleaseTargets) ProtoMessage() {}
 
 func (x *Args_ReleaseTargets) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[12]
+	mi := &file_plugin_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -721,7 +963,7 @@ type Args_LabelSet struct {
 func (x *Args_LabelSet) Reset() {
 	*x = Args_LabelSet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[13]
+		mi := &file_plugin_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -734,7 +976,7 @@ func (x *Args_LabelSet) String() string {
 func (*Args_LabelSet) ProtoMessage() {}
 
 func (x *Args_LabelSet) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[13]
+	mi := &file_plugin_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -769,7 +1011,7 @@ type Args_DataDir_Project struct {
 func (x *Args_DataDir_Project) Reset() {
 	*x = Args_DataDir_Project{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[14]
+		mi := &file_plugin_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -782,7 +1024,7 @@ func (x *Args_DataDir_Project) String() string {
 func (*Args_DataDir_Project) ProtoMessage() {}
 
 func (x *Args_DataDir_Project) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[14]
+	mi := &file_plugin_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -824,7 +1066,7 @@ type Args_DataDir_App struct {
 func (x *Args_DataDir_App) Reset() {
 	*x = Args_DataDir_App{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[15]
+		mi := &file_plugin_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -837,7 +1079,7 @@ func (x *Args_DataDir_App) String() string {
 func (*Args_DataDir_App) ProtoMessage() {}
 
 func (x *Args_DataDir_App) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[15]
+	mi := &file_plugin_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -879,7 +1121,7 @@ type Args_DataDir_Component struct {
 func (x *Args_DataDir_Component) Reset() {
 	*x = Args_DataDir_Component{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[16]
+		mi := &file_plugin_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -892,7 +1134,7 @@ func (x *Args_DataDir_Component) String() string {
 func (*Args_DataDir_Component) ProtoMessage() {}
 
 func (x *Args_DataDir_Component) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[16]
+	mi := &file_plugin_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -935,7 +1177,7 @@ type Args_ReleaseTargets_Target struct {
 func (x *Args_ReleaseTargets_Target) Reset() {
 	*x = Args_ReleaseTargets_Target{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[17]
+		mi := &file_plugin_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -948,7 +1190,7 @@ func (x *Args_ReleaseTargets_Target) String() string {
 func (*Args_ReleaseTargets_Target) ProtoMessage() {}
 
 func (x *Args_ReleaseTargets_Target) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[17]
+	mi := &file_plugin_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -997,7 +1239,7 @@ type FuncSpec_Value struct {
 func (x *FuncSpec_Value) Reset() {
 	*x = FuncSpec_Value{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[19]
+		mi := &file_plugin_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1010,7 +1252,7 @@ func (x *FuncSpec_Value) String() string {
 func (*FuncSpec_Value) ProtoMessage() {}
 
 func (x *FuncSpec_Value) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[19]
+	mi := &file_plugin_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1023,7 +1265,7 @@ func (x *FuncSpec_Value) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FuncSpec_Value.ProtoReflect.Descriptor instead.
 func (*FuncSpec_Value) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{2, 0}
+	return file_plugin_proto_rawDescGZIP(), []int{1, 0}
 }
 
 func (x *FuncSpec_Value) GetName() string {
@@ -1063,7 +1305,7 @@ type FuncSpec_Args struct {
 func (x *FuncSpec_Args) Reset() {
 	*x = FuncSpec_Args{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[20]
+		mi := &file_plugin_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1076,7 +1318,7 @@ func (x *FuncSpec_Args) String() string {
 func (*FuncSpec_Args) ProtoMessage() {}
 
 func (x *FuncSpec_Args) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[20]
+	mi := &file_plugin_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1089,7 +1331,7 @@ func (x *FuncSpec_Args) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FuncSpec_Args.ProtoReflect.Descriptor instead.
 func (*FuncSpec_Args) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{2, 1}
+	return file_plugin_proto_rawDescGZIP(), []int{1, 1}
 }
 
 func (x *FuncSpec_Args) GetArgs() []*FuncSpec_Value {
@@ -1114,7 +1356,7 @@ type Config_ConfigureRequest struct {
 func (x *Config_ConfigureRequest) Reset() {
 	*x = Config_ConfigureRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[21]
+		mi := &file_plugin_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1127,7 +1369,7 @@ func (x *Config_ConfigureRequest) String() string {
 func (*Config_ConfigureRequest) ProtoMessage() {}
 
 func (x *Config_ConfigureRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[21]
+	mi := &file_plugin_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1140,7 +1382,7 @@ func (x *Config_ConfigureRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config_ConfigureRequest.ProtoReflect.Descriptor instead.
 func (*Config_ConfigureRequest) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{3, 0}
+	return file_plugin_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (x *Config_ConfigureRequest) GetJson() []byte {
@@ -1165,7 +1407,7 @@ type Config_StructResp struct {
 func (x *Config_StructResp) Reset() {
 	*x = Config_StructResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[22]
+		mi := &file_plugin_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1178,7 +1420,7 @@ func (x *Config_StructResp) String() string {
 func (*Config_StructResp) ProtoMessage() {}
 
 func (x *Config_StructResp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[22]
+	mi := &file_plugin_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1191,7 +1433,7 @@ func (x *Config_StructResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config_StructResp.ProtoReflect.Descriptor instead.
 func (*Config_StructResp) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{3, 1}
+	return file_plugin_proto_rawDescGZIP(), []int{2, 1}
 }
 
 func (x *Config_StructResp) GetStruct() *protostructure.Struct {
@@ -1218,7 +1460,7 @@ type Config_FieldDocumentation struct {
 func (x *Config_FieldDocumentation) Reset() {
 	*x = Config_FieldDocumentation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[23]
+		mi := &file_plugin_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1231,7 +1473,7 @@ func (x *Config_FieldDocumentation) String() string {
 func (*Config_FieldDocumentation) ProtoMessage() {}
 
 func (x *Config_FieldDocumentation) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[23]
+	mi := &file_plugin_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1244,7 +1486,7 @@ func (x *Config_FieldDocumentation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config_FieldDocumentation.ProtoReflect.Descriptor instead.
 func (*Config_FieldDocumentation) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{3, 2}
+	return file_plugin_proto_rawDescGZIP(), []int{2, 2}
 }
 
 func (x *Config_FieldDocumentation) GetName() string {
@@ -1309,7 +1551,7 @@ type Config_MapperDocumentation struct {
 func (x *Config_MapperDocumentation) Reset() {
 	*x = Config_MapperDocumentation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[24]
+		mi := &file_plugin_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1322,7 +1564,7 @@ func (x *Config_MapperDocumentation) String() string {
 func (*Config_MapperDocumentation) ProtoMessage() {}
 
 func (x *Config_MapperDocumentation) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[24]
+	mi := &file_plugin_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1335,7 +1577,7 @@ func (x *Config_MapperDocumentation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config_MapperDocumentation.ProtoReflect.Descriptor instead.
 func (*Config_MapperDocumentation) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{3, 3}
+	return file_plugin_proto_rawDescGZIP(), []int{2, 3}
 }
 
 func (x *Config_MapperDocumentation) GetInput() string {
@@ -1375,7 +1617,7 @@ type Config_Documentation struct {
 func (x *Config_Documentation) Reset() {
 	*x = Config_Documentation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[25]
+		mi := &file_plugin_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1388,7 +1630,7 @@ func (x *Config_Documentation) String() string {
 func (*Config_Documentation) ProtoMessage() {}
 
 func (x *Config_Documentation) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[25]
+	mi := &file_plugin_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1401,7 +1643,7 @@ func (x *Config_Documentation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config_Documentation.ProtoReflect.Descriptor instead.
 func (*Config_Documentation) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{3, 4}
+	return file_plugin_proto_rawDescGZIP(), []int{2, 4}
 }
 
 func (x *Config_Documentation) GetDescription() string {
@@ -1458,7 +1700,7 @@ type Auth_AuthResponse struct {
 func (x *Auth_AuthResponse) Reset() {
 	*x = Auth_AuthResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[27]
+		mi := &file_plugin_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1471,7 +1713,7 @@ func (x *Auth_AuthResponse) String() string {
 func (*Auth_AuthResponse) ProtoMessage() {}
 
 func (x *Auth_AuthResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[27]
+	mi := &file_plugin_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1484,7 +1726,7 @@ func (x *Auth_AuthResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Auth_AuthResponse.ProtoReflect.Descriptor instead.
 func (*Auth_AuthResponse) Descriptor() ([]byte, []int) {
-	return file_plugin_proto_rawDescGZIP(), []int{4, 0}
+	return file_plugin_proto_rawDescGZIP(), []int{3, 0}
 }
 
 func (x *Auth_AuthResponse) GetAuthenticated() bool {
@@ -1494,145 +1736,2035 @@ func (x *Auth_AuthResponse) GetAuthenticated() bool {
 	return false
 }
 
+type TerminalUI_IsInteractiveResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Interactive bool `protobuf:"varint,1,opt,name=interactive,proto3" json:"interactive,omitempty"`
+}
+
+func (x *TerminalUI_IsInteractiveResponse) Reset() {
+	*x = TerminalUI_IsInteractiveResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[34]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_IsInteractiveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_IsInteractiveResponse) ProtoMessage() {}
+
+func (x *TerminalUI_IsInteractiveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[34]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_IsInteractiveResponse.ProtoReflect.Descriptor instead.
+func (*TerminalUI_IsInteractiveResponse) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *TerminalUI_IsInteractiveResponse) GetInteractive() bool {
+	if x != nil {
+		return x.Interactive
+	}
+	return false
+}
+
+type TerminalUI_OutputRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Lines []string `protobuf:"bytes,1,rep,name=lines,proto3" json:"lines,omitempty"`
+}
+
+func (x *TerminalUI_OutputRequest) Reset() {
+	*x = TerminalUI_OutputRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[35]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_OutputRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_OutputRequest) ProtoMessage() {}
+
+func (x *TerminalUI_OutputRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[35]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_OutputRequest.ProtoReflect.Descriptor instead.
+func (*TerminalUI_OutputRequest) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 1}
+}
+
+func (x *TerminalUI_OutputRequest) GetLines() []string {
+	if x != nil {
+		return x.Lines
+	}
+	return nil
+}
+
+type TerminalUI_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to Event:
+	//	*TerminalUI_Response_Input
+	Event isTerminalUI_Response_Event `protobuf_oneof:"event"`
+}
+
+func (x *TerminalUI_Response) Reset() {
+	*x = TerminalUI_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[36]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Response) ProtoMessage() {}
+
+func (x *TerminalUI_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[36]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Response.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Response) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 2}
+}
+
+func (m *TerminalUI_Response) GetEvent() isTerminalUI_Response_Event {
+	if m != nil {
+		return m.Event
+	}
+	return nil
+}
+
+func (x *TerminalUI_Response) GetInput() *TerminalUI_Event_InputResp {
+	if x, ok := x.GetEvent().(*TerminalUI_Response_Input); ok {
+		return x.Input
+	}
+	return nil
+}
+
+type isTerminalUI_Response_Event interface {
+	isTerminalUI_Response_Event()
+}
+
+type TerminalUI_Response_Input struct {
+	Input *TerminalUI_Event_InputResp `protobuf:"bytes,1,opt,name=input,proto3,oneof"`
+}
+
+func (*TerminalUI_Response_Input) isTerminalUI_Response_Event() {}
+
+type TerminalUI_Event struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to Event:
+	//	*TerminalUI_Event_Line_
+	//	*TerminalUI_Event_Status_
+	//	*TerminalUI_Event_NamedValues_
+	//	*TerminalUI_Event_Raw_
+	//	*TerminalUI_Event_Table_
+	//	*TerminalUI_Event_StepGroup_
+	//	*TerminalUI_Event_Step_
+	//	*TerminalUI_Event_Input_
+	Event isTerminalUI_Event_Event `protobuf_oneof:"event"`
+}
+
+func (x *TerminalUI_Event) Reset() {
+	*x = TerminalUI_Event{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[37]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event) ProtoMessage() {}
+
+func (x *TerminalUI_Event) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[37]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3}
+}
+
+func (m *TerminalUI_Event) GetEvent() isTerminalUI_Event_Event {
+	if m != nil {
+		return m.Event
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetLine() *TerminalUI_Event_Line {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_Line_); ok {
+		return x.Line
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetStatus() *TerminalUI_Event_Status {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_Status_); ok {
+		return x.Status
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetNamedValues() *TerminalUI_Event_NamedValues {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_NamedValues_); ok {
+		return x.NamedValues
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetRaw() *TerminalUI_Event_Raw {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_Raw_); ok {
+		return x.Raw
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetTable() *TerminalUI_Event_Table {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_Table_); ok {
+		return x.Table
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetStepGroup() *TerminalUI_Event_StepGroup {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_StepGroup_); ok {
+		return x.StepGroup
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetStep() *TerminalUI_Event_Step {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_Step_); ok {
+		return x.Step
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event) GetInput() *TerminalUI_Event_Input {
+	if x, ok := x.GetEvent().(*TerminalUI_Event_Input_); ok {
+		return x.Input
+	}
+	return nil
+}
+
+type isTerminalUI_Event_Event interface {
+	isTerminalUI_Event_Event()
+}
+
+type TerminalUI_Event_Line_ struct {
+	Line *TerminalUI_Event_Line `protobuf:"bytes,1,opt,name=line,proto3,oneof"`
+}
+
+type TerminalUI_Event_Status_ struct {
+	Status *TerminalUI_Event_Status `protobuf:"bytes,2,opt,name=status,proto3,oneof"`
+}
+
+type TerminalUI_Event_NamedValues_ struct {
+	NamedValues *TerminalUI_Event_NamedValues `protobuf:"bytes,3,opt,name=named_values,json=namedValues,proto3,oneof"`
+}
+
+type TerminalUI_Event_Raw_ struct {
+	Raw *TerminalUI_Event_Raw `protobuf:"bytes,4,opt,name=raw,proto3,oneof"`
+}
+
+type TerminalUI_Event_Table_ struct {
+	Table *TerminalUI_Event_Table `protobuf:"bytes,5,opt,name=table,proto3,oneof"`
+}
+
+type TerminalUI_Event_StepGroup_ struct {
+	StepGroup *TerminalUI_Event_StepGroup `protobuf:"bytes,6,opt,name=step_group,json=stepGroup,proto3,oneof"`
+}
+
+type TerminalUI_Event_Step_ struct {
+	Step *TerminalUI_Event_Step `protobuf:"bytes,7,opt,name=step,proto3,oneof"`
+}
+
+type TerminalUI_Event_Input_ struct {
+	Input *TerminalUI_Event_Input `protobuf:"bytes,8,opt,name=input,proto3,oneof"`
+}
+
+func (*TerminalUI_Event_Line_) isTerminalUI_Event_Event() {}
+
+func (*TerminalUI_Event_Status_) isTerminalUI_Event_Event() {}
+
+func (*TerminalUI_Event_NamedValues_) isTerminalUI_Event_Event() {}
+
+func (*TerminalUI_Event_Raw_) isTerminalUI_Event_Event() {}
+
+func (*TerminalUI_Event_Table_) isTerminalUI_Event_Event() {}
+
+func (*TerminalUI_Event_StepGroup_) isTerminalUI_Event_Event() {}
+
+func (*TerminalUI_Event_Step_) isTerminalUI_Event_Event() {}
+
+func (*TerminalUI_Event_Input_) isTerminalUI_Event_Event() {}
+
+type TerminalUI_Event_Input struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Prompt string `protobuf:"bytes,1,opt,name=prompt,proto3" json:"prompt,omitempty"`
+	Style  string `protobuf:"bytes,2,opt,name=style,proto3" json:"style,omitempty"`
+	Secret bool   `protobuf:"varint,3,opt,name=secret,proto3" json:"secret,omitempty"`
+}
+
+func (x *TerminalUI_Event_Input) Reset() {
+	*x = TerminalUI_Event_Input{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[38]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_Input) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_Input) ProtoMessage() {}
+
+func (x *TerminalUI_Event_Input) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[38]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_Input.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_Input) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 0}
+}
+
+func (x *TerminalUI_Event_Input) GetPrompt() string {
+	if x != nil {
+		return x.Prompt
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_Input) GetStyle() string {
+	if x != nil {
+		return x.Style
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_Input) GetSecret() bool {
+	if x != nil {
+		return x.Secret
+	}
+	return false
+}
+
+type TerminalUI_Event_InputResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Input string         `protobuf:"bytes,1,opt,name=input,proto3" json:"input,omitempty"`
+	Error *status.Status `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+}
+
+func (x *TerminalUI_Event_InputResp) Reset() {
+	*x = TerminalUI_Event_InputResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[39]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_InputResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_InputResp) ProtoMessage() {}
+
+func (x *TerminalUI_Event_InputResp) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[39]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_InputResp.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_InputResp) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 1}
+}
+
+func (x *TerminalUI_Event_InputResp) GetInput() string {
+	if x != nil {
+		return x.Input
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_InputResp) GetError() *status.Status {
+	if x != nil {
+		return x.Error
+	}
+	return nil
+}
+
+type TerminalUI_Event_Status struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	Msg    string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	Step   bool   `protobuf:"varint,3,opt,name=step,proto3" json:"step,omitempty"`
+}
+
+func (x *TerminalUI_Event_Status) Reset() {
+	*x = TerminalUI_Event_Status{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[40]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_Status) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_Status) ProtoMessage() {}
+
+func (x *TerminalUI_Event_Status) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[40]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_Status.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_Status) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 2}
+}
+
+func (x *TerminalUI_Event_Status) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_Status) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_Status) GetStep() bool {
+	if x != nil {
+		return x.Step
+	}
+	return false
+}
+
+type TerminalUI_Event_Line struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Msg   string `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	Style string `protobuf:"bytes,2,opt,name=style,proto3" json:"style,omitempty"`
+}
+
+func (x *TerminalUI_Event_Line) Reset() {
+	*x = TerminalUI_Event_Line{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[41]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_Line) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_Line) ProtoMessage() {}
+
+func (x *TerminalUI_Event_Line) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[41]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_Line.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_Line) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 3}
+}
+
+func (x *TerminalUI_Event_Line) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_Line) GetStyle() string {
+	if x != nil {
+		return x.Style
+	}
+	return ""
+}
+
+type TerminalUI_Event_Raw struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data   []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Stderr bool   `protobuf:"varint,2,opt,name=stderr,proto3" json:"stderr,omitempty"`
+}
+
+func (x *TerminalUI_Event_Raw) Reset() {
+	*x = TerminalUI_Event_Raw{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[42]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_Raw) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_Raw) ProtoMessage() {}
+
+func (x *TerminalUI_Event_Raw) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[42]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_Raw.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_Raw) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 4}
+}
+
+func (x *TerminalUI_Event_Raw) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event_Raw) GetStderr() bool {
+	if x != nil {
+		return x.Stderr
+	}
+	return false
+}
+
+type TerminalUI_Event_NamedValue struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name  string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *TerminalUI_Event_NamedValue) Reset() {
+	*x = TerminalUI_Event_NamedValue{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[43]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_NamedValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_NamedValue) ProtoMessage() {}
+
+func (x *TerminalUI_Event_NamedValue) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[43]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_NamedValue.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_NamedValue) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 5}
+}
+
+func (x *TerminalUI_Event_NamedValue) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_NamedValue) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+type TerminalUI_Event_NamedValues struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Values []*TerminalUI_Event_NamedValue `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
+}
+
+func (x *TerminalUI_Event_NamedValues) Reset() {
+	*x = TerminalUI_Event_NamedValues{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[44]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_NamedValues) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_NamedValues) ProtoMessage() {}
+
+func (x *TerminalUI_Event_NamedValues) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[44]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_NamedValues.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_NamedValues) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 6}
+}
+
+func (x *TerminalUI_Event_NamedValues) GetValues() []*TerminalUI_Event_NamedValue {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+type TerminalUI_Event_TableEntry struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Value string `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	Color string `protobuf:"bytes,2,opt,name=color,proto3" json:"color,omitempty"`
+}
+
+func (x *TerminalUI_Event_TableEntry) Reset() {
+	*x = TerminalUI_Event_TableEntry{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[45]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_TableEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_TableEntry) ProtoMessage() {}
+
+func (x *TerminalUI_Event_TableEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[45]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_TableEntry.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_TableEntry) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 7}
+}
+
+func (x *TerminalUI_Event_TableEntry) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_TableEntry) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+type TerminalUI_Event_TableRow struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Entries []*TerminalUI_Event_TableEntry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
+}
+
+func (x *TerminalUI_Event_TableRow) Reset() {
+	*x = TerminalUI_Event_TableRow{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[46]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_TableRow) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_TableRow) ProtoMessage() {}
+
+func (x *TerminalUI_Event_TableRow) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[46]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_TableRow.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_TableRow) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 8}
+}
+
+func (x *TerminalUI_Event_TableRow) GetEntries() []*TerminalUI_Event_TableEntry {
+	if x != nil {
+		return x.Entries
+	}
+	return nil
+}
+
+type TerminalUI_Event_Table struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Headers []string                     `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"`
+	Rows    []*TerminalUI_Event_TableRow `protobuf:"bytes,2,rep,name=rows,proto3" json:"rows,omitempty"`
+}
+
+func (x *TerminalUI_Event_Table) Reset() {
+	*x = TerminalUI_Event_Table{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[47]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_Table) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_Table) ProtoMessage() {}
+
+func (x *TerminalUI_Event_Table) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[47]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_Table.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_Table) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 9}
+}
+
+func (x *TerminalUI_Event_Table) GetHeaders() []string {
+	if x != nil {
+		return x.Headers
+	}
+	return nil
+}
+
+func (x *TerminalUI_Event_Table) GetRows() []*TerminalUI_Event_TableRow {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
+type TerminalUI_Event_StepGroup struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Close bool `protobuf:"varint,1,opt,name=close,proto3" json:"close,omitempty"`
+}
+
+func (x *TerminalUI_Event_StepGroup) Reset() {
+	*x = TerminalUI_Event_StepGroup{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[48]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_StepGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_StepGroup) ProtoMessage() {}
+
+func (x *TerminalUI_Event_StepGroup) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[48]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_StepGroup.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_StepGroup) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 10}
+}
+
+func (x *TerminalUI_Event_StepGroup) GetClose() bool {
+	if x != nil {
+		return x.Close
+	}
+	return false
+}
+
+type TerminalUI_Event_Step struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id     int32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Close  bool   `protobuf:"varint,2,opt,name=close,proto3" json:"close,omitempty"`
+	Msg    string `protobuf:"bytes,3,opt,name=msg,proto3" json:"msg,omitempty"`
+	Status string `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	Output []byte `protobuf:"bytes,5,opt,name=output,proto3" json:"output,omitempty"`
+}
+
+func (x *TerminalUI_Event_Step) Reset() {
+	*x = TerminalUI_Event_Step{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[49]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TerminalUI_Event_Step) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalUI_Event_Step) ProtoMessage() {}
+
+func (x *TerminalUI_Event_Step) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[49]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalUI_Event_Step.ProtoReflect.Descriptor instead.
+func (*TerminalUI_Event_Step) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{5, 3, 11}
+}
+
+func (x *TerminalUI_Event_Step) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *TerminalUI_Event_Step) GetClose() bool {
+	if x != nil {
+		return x.Close
+	}
+	return false
+}
+
+func (x *TerminalUI_Event_Step) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_Step) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *TerminalUI_Event_Step) GetOutput() []byte {
+	if x != nil {
+		return x.Output
+	}
+	return nil
+}
+
+type Map_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// args is the list of argument types.
+	Args *FuncSpec_Args `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// result is the desired result type.
+	Result string `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
+}
+
+func (x *Map_Request) Reset() {
+	*x = Map_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[50]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Map_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Map_Request) ProtoMessage() {}
+
+func (x *Map_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[50]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Map_Request.ProtoReflect.Descriptor instead.
+func (*Map_Request) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{6, 0}
+}
+
+func (x *Map_Request) GetArgs() *FuncSpec_Args {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *Map_Request) GetResult() string {
+	if x != nil {
+		return x.Result
+	}
+	return ""
+}
+
+type Map_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// result is the mapped data type that matches the type expected
+	// by the MapRequest.result field.
+	Result *any.Any `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+}
+
+func (x *Map_Response) Reset() {
+	*x = Map_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[51]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Map_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Map_Response) ProtoMessage() {}
+
+func (x *Map_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[51]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Map_Response.ProtoReflect.Descriptor instead.
+func (*Map_Response) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{6, 1}
+}
+
+func (x *Map_Response) GetResult() *any.Any {
+	if x != nil {
+		return x.Result
+	}
+	return nil
+}
+
+type Map_ListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// FuncSpec
+	Funcs []*FuncSpec `protobuf:"bytes,1,rep,name=funcs,proto3" json:"funcs,omitempty"`
+}
+
+func (x *Map_ListResponse) Reset() {
+	*x = Map_ListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[52]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Map_ListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Map_ListResponse) ProtoMessage() {}
+
+func (x *Map_ListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[52]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Map_ListResponse.ProtoReflect.Descriptor instead.
+func (*Map_ListResponse) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{6, 2}
+}
+
+func (x *Map_ListResponse) GetFuncs() []*FuncSpec {
+	if x != nil {
+		return x.Funcs
+	}
+	return nil
+}
+
+type Build_Resp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Result *any.Any          `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+	Labels map[string]string `protobuf:"bytes,2,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *Build_Resp) Reset() {
+	*x = Build_Resp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[53]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Build_Resp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Build_Resp) ProtoMessage() {}
+
+func (x *Build_Resp) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[53]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Build_Resp.ProtoReflect.Descriptor instead.
+func (*Build_Resp) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{7, 0}
+}
+
+func (x *Build_Resp) GetResult() *any.Any {
+	if x != nil {
+		return x.Result
+	}
+	return nil
+}
+
+func (x *Build_Resp) GetLabels() map[string]string {
+	if x != nil {
+		return x.Labels
+	}
+	return nil
+}
+
+type DefaultReleaser_Resp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// stream_id is the stream ID to connect to to get access to the
+	// ReleaseManager implementation.
+	StreamId uint32 `protobuf:"varint,1,opt,name=stream_id,json=streamId,proto3" json:"stream_id,omitempty"`
+}
+
+func (x *DefaultReleaser_Resp) Reset() {
+	*x = DefaultReleaser_Resp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[55]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DefaultReleaser_Resp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DefaultReleaser_Resp) ProtoMessage() {}
+
+func (x *DefaultReleaser_Resp) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[55]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DefaultReleaser_Resp.ProtoReflect.Descriptor instead.
+func (*DefaultReleaser_Resp) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{8, 0}
+}
+
+func (x *DefaultReleaser_Resp) GetStreamId() uint32 {
+	if x != nil {
+		return x.StreamId
+	}
+	return 0
+}
+
+type Deploy_Resp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// result is the resulting opaque data type
+	Result *any.Any `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+}
+
+func (x *Deploy_Resp) Reset() {
+	*x = Deploy_Resp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[56]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Deploy_Resp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Deploy_Resp) ProtoMessage() {}
+
+func (x *Deploy_Resp) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[56]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Deploy_Resp.ProtoReflect.Descriptor instead.
+func (*Deploy_Resp) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{9, 0}
+}
+
+func (x *Deploy_Resp) GetResult() *any.Any {
+	if x != nil {
+		return x.Result
+	}
+	return nil
+}
+
+type Push_Resp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// result is the resulting opaque data type
+	Result *any.Any `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+}
+
+func (x *Push_Resp) Reset() {
+	*x = Push_Resp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[57]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Push_Resp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Push_Resp) ProtoMessage() {}
+
+func (x *Push_Resp) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[57]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Push_Resp.ProtoReflect.Descriptor instead.
+func (*Push_Resp) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{10, 0}
+}
+
+func (x *Push_Resp) GetResult() *any.Any {
+	if x != nil {
+		return x.Result
+	}
+	return nil
+}
+
+type Release_Resp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// result is the resulting data type for building.
+	Result *any.Any `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+	// release structure
+	Release *Release `protobuf:"bytes,2,opt,name=release,proto3" json:"release,omitempty"`
+}
+
+func (x *Release_Resp) Reset() {
+	*x = Release_Resp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[58]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Release_Resp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Release_Resp) ProtoMessage() {}
+
+func (x *Release_Resp) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[58]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Release_Resp.ProtoReflect.Descriptor instead.
+func (*Release_Resp) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{11, 0}
+}
+
+func (x *Release_Resp) GetResult() *any.Any {
+	if x != nil {
+		return x.Result
+	}
+	return nil
+}
+
+func (x *Release_Resp) GetRelease() *Release {
+	if x != nil {
+		return x.Release
+	}
+	return nil
+}
+
 var File_plugin_proto protoreflect.FileDescriptor
 
 var file_plugin_proto_rawDesc = []byte{
-	0x0a, 0x0c, 0x70, 0x6c, 0x75, 0x67, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x1a, 0x14, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9e, 0x07, 0x0a, 0x04, 0x41, 0x72, 0x67, 0x73, 0x1a,
-	0x2e, 0x0a, 0x06, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x61, 0x70, 0x70,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x61, 0x70, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x70,
-	0x61, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x1a,
-	0x4d, 0x0a, 0x07, 0x4a, 0x6f, 0x62, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x6f,
-	0x63, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x6c, 0x6f, 0x63, 0x61, 0x6c,
-	0x12, 0x1c, 0x0a, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x12, 0x0e,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a, 0xcf,
-	0x01, 0x0a, 0x10, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e,
-	0x66, 0x69, 0x67, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x02, 0x69, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x61, 0x64,
-	0x64, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72,
-	0x41, 0x64, 0x64, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x74,
-	0x6c, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72,
-	0x54, 0x6c, 0x73, 0x12, 0x33, 0x0a, 0x16, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x74, 0x6c,
-	0x73, 0x5f, 0x73, 0x6b, 0x69, 0x70, 0x5f, 0x76, 0x65, 0x72, 0x69, 0x66, 0x79, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x13, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x54, 0x6c, 0x73, 0x53, 0x6b,
-	0x69, 0x70, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x12, 0x36, 0x0a, 0x17, 0x65, 0x6e, 0x74, 0x72,
-	0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x5f, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x5f, 0x74, 0x6f,
-	0x6b, 0x65, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x15, 0x65, 0x6e, 0x74, 0x72, 0x79,
-	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
-	0x1a, 0xd0, 0x01, 0x0a, 0x07, 0x44, 0x61, 0x74, 0x61, 0x44, 0x69, 0x72, 0x1a, 0x41, 0x0a, 0x07,
-	0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x63, 0x61, 0x63, 0x68, 0x65,
-	0x5f, 0x64, 0x69, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x63, 0x68,
-	0x65, 0x44, 0x69, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x61, 0x74, 0x61, 0x5f, 0x64, 0x69, 0x72,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x61, 0x74, 0x61, 0x44, 0x69, 0x72, 0x1a,
-	0x3d, 0x0a, 0x03, 0x41, 0x70, 0x70, 0x12, 0x1b, 0x0a, 0x09, 0x63, 0x61, 0x63, 0x68, 0x65, 0x5f,
-	0x64, 0x69, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x63, 0x68, 0x65,
-	0x44, 0x69, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x61, 0x74, 0x61, 0x5f, 0x64, 0x69, 0x72, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x61, 0x74, 0x61, 0x44, 0x69, 0x72, 0x1a, 0x43,
-	0x0a, 0x09, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x63,
-	0x61, 0x63, 0x68, 0x65, 0x5f, 0x64, 0x69, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
-	0x63, 0x61, 0x63, 0x68, 0x65, 0x44, 0x69, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x61, 0x74, 0x61,
-	0x5f, 0x64, 0x69, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x61, 0x74, 0x61,
-	0x44, 0x69, 0x72, 0x1a, 0x1c, 0x0a, 0x06, 0x4c, 0x6f, 0x67, 0x67, 0x65, 0x72, 0x12, 0x12, 0x0a,
+	0x0a, 0x0c, 0x70, 0x6c, 0x75, 0x67, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x16,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x1a, 0x1b, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2f, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x72, 0x70, 0x63, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x75,
+	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x74,
+	0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc1, 0x07,
+	0x0a, 0x04, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x2e, 0x0a, 0x06, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65,
+	0x12, 0x10, 0x0a, 0x03, 0x61, 0x70, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x61,
+	0x70, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x1a, 0x4d, 0x0a, 0x07, 0x4a, 0x6f, 0x62, 0x49, 0x6e, 0x66,
+	0x6f, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x05, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x12, 0x1c, 0x0a, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x73,
+	0x70, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x77, 0x6f, 0x72, 0x6b,
+	0x73, 0x70, 0x61, 0x63, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x02, 0x69, 0x64, 0x1a, 0xcf, 0x01, 0x0a, 0x10, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79,
+	0x6d, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0a, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x73,
+	0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x74, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x09, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x54, 0x6c, 0x73, 0x12, 0x33, 0x0a, 0x16, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x72, 0x5f, 0x74, 0x6c, 0x73, 0x5f, 0x73, 0x6b, 0x69, 0x70, 0x5f, 0x76, 0x65,
+	0x72, 0x69, 0x66, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x13, 0x73, 0x65, 0x72, 0x76,
+	0x65, 0x72, 0x54, 0x6c, 0x73, 0x53, 0x6b, 0x69, 0x70, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x12,
+	0x36, 0x0a, 0x17, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x5f, 0x69, 0x6e,
+	0x76, 0x69, 0x74, 0x65, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x15, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x49, 0x6e, 0x76, 0x69,
+	0x74, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x1a, 0xd0, 0x01, 0x0a, 0x07, 0x44, 0x61, 0x74, 0x61,
+	0x44, 0x69, 0x72, 0x1a, 0x41, 0x0a, 0x07, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x1b,
+	0x0a, 0x09, 0x63, 0x61, 0x63, 0x68, 0x65, 0x5f, 0x64, 0x69, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x63, 0x61, 0x63, 0x68, 0x65, 0x44, 0x69, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x64,
+	0x61, 0x74, 0x61, 0x5f, 0x64, 0x69, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64,
+	0x61, 0x74, 0x61, 0x44, 0x69, 0x72, 0x1a, 0x3d, 0x0a, 0x03, 0x41, 0x70, 0x70, 0x12, 0x1b, 0x0a,
+	0x09, 0x63, 0x61, 0x63, 0x68, 0x65, 0x5f, 0x64, 0x69, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x63, 0x61, 0x63, 0x68, 0x65, 0x44, 0x69, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x61,
+	0x74, 0x61, 0x5f, 0x64, 0x69, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x61,
+	0x74, 0x61, 0x44, 0x69, 0x72, 0x1a, 0x43, 0x0a, 0x09, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65,
+	0x6e, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x63, 0x61, 0x63, 0x68, 0x65, 0x5f, 0x64, 0x69, 0x72, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x63, 0x68, 0x65, 0x44, 0x69, 0x72, 0x12,
+	0x19, 0x0a, 0x08, 0x64, 0x61, 0x74, 0x61, 0x5f, 0x64, 0x69, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x64, 0x61, 0x74, 0x61, 0x44, 0x69, 0x72, 0x1a, 0x1c, 0x0a, 0x06, 0x4c, 0x6f,
+	0x67, 0x67, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x1a, 0x29, 0x0a, 0x0a, 0x54, 0x65, 0x72, 0x6d,
+	0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x12, 0x1b, 0x0a, 0x09, 0x73, 0x74, 0x72, 0x65, 0x61, 0x6d,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x08, 0x73, 0x74, 0x72, 0x65, 0x61,
+	0x6d, 0x49, 0x64, 0x1a, 0xb8, 0x01, 0x0a, 0x0e, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x54,
+	0x61, 0x72, 0x67, 0x65, 0x74, 0x73, 0x12, 0x4c, 0x0a, 0x07, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x41, 0x72, 0x67, 0x73, 0x2e, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x54, 0x61, 0x72,
+	0x67, 0x65, 0x74, 0x73, 0x2e, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x52, 0x07, 0x74, 0x61, 0x72,
+	0x67, 0x65, 0x74, 0x73, 0x1a, 0x58, 0x0a, 0x06, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x12, 0x34,
+	0x0a, 0x0a, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x0a, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79,
+	0x6d, 0x65, 0x6e, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x07, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x1a, 0x90,
+	0x01, 0x0a, 0x08, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x53, 0x65, 0x74, 0x12, 0x49, 0x0a, 0x06, 0x6c,
+	0x61, 0x62, 0x65, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x31, 0x2e, 0x68, 0x61,
+	0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x53,
+	0x65, 0x74, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x06,
+	0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x1a, 0x39, 0x0a, 0x0b, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38,
+	0x01, 0x22, 0xbb, 0x02, 0x0a, 0x08, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x12,
+	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x12, 0x3a, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70,
+	0x65, 0x63, 0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x3e,
+	0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x26,
+	0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f,
+	0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63,
+	0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x1a, 0x5b,
+	0x0a, 0x05, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74,
+	0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12,
+	0x2a, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x41, 0x6e, 0x79, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x1a, 0x42, 0x0a, 0x04, 0x41,
+	0x72, 0x67, 0x73, 0x12, 0x3a, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61,
+	0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53,
+	0x70, 0x65, 0x63, 0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22,
+	0xa3, 0x06, 0x0a, 0x06, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x1a, 0x26, 0x0a, 0x10, 0x43, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12,
+	0x0a, 0x04, 0x6a, 0x73, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x6a, 0x73,
+	0x6f, 0x6e, 0x1a, 0x3c, 0x0a, 0x0a, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x2e, 0x0a, 0x06, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72,
+	0x65, 0x2e, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x06, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74,
+	0x1a, 0xc1, 0x01, 0x0a, 0x12, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65,
+	0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x73,
+	0x79, 0x6e, 0x6f, 0x70, 0x73, 0x69, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73,
+	0x79, 0x6e, 0x6f, 0x70, 0x73, 0x69, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61,
+	0x72, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72,
+	0x79, 0x12, 0x1a, 0x0a, 0x08, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x08, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x12, 0x17, 0x0a,
+	0x07, 0x65, 0x6e, 0x76, 0x5f, 0x76, 0x61, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x65, 0x6e, 0x76, 0x56, 0x61, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x06,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x65,
+	0x66, 0x61, 0x75, 0x6c, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x66,
+	0x61, 0x75, 0x6c, 0x74, 0x1a, 0x65, 0x0a, 0x13, 0x4d, 0x61, 0x70, 0x70, 0x65, 0x72, 0x44, 0x6f,
+	0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69,
+	0x6e, 0x70, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6e, 0x70, 0x75,
+	0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73,
+	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x87, 0x03, 0x0a, 0x0d,
+	0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x20, 0x0a,
+	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x18, 0x0a, 0x07, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x70,
+	0x75, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x12,
+	0x16, 0x0a, 0x06, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x06, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x12, 0x50, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64,
+	0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x38, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72,
+	0x79, 0x52, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x12, 0x4c, 0x0a, 0x07, 0x6d, 0x61, 0x70,
+	0x70, 0x65, 0x72, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4d, 0x61, 0x70, 0x70, 0x65,
+	0x72, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x07,
+	0x6d, 0x61, 0x70, 0x70, 0x65, 0x72, 0x73, 0x1a, 0x6c, 0x0a, 0x0b, 0x46, 0x69, 0x65, 0x6c, 0x64,
+	0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x47, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x31, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x44, 0x6f, 0x63,
+	0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x3c, 0x0a, 0x04, 0x41, 0x75, 0x74, 0x68, 0x1a, 0x34, 0x0a,
+	0x0c, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a,
+	0x0d, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61,
+	0x74, 0x65, 0x64, 0x22, 0x30, 0x0a, 0x0e, 0x49, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1e, 0x0a, 0x0a, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65,
+	0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x69, 0x6d, 0x70, 0x6c, 0x65,
+	0x6d, 0x65, 0x6e, 0x74, 0x73, 0x22, 0xa6, 0x0d, 0x0a, 0x0a, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e,
+	0x61, 0x6c, 0x55, 0x49, 0x1a, 0x39, 0x0a, 0x15, 0x49, 0x73, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x61,
+	0x63, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x20, 0x0a,
+	0x0b, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x0b, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x1a,
+	0x25, 0x0a, 0x0d, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69, 0x6e, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52,
+	0x05, 0x6c, 0x69, 0x6e, 0x65, 0x73, 0x1a, 0x5f, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x4a, 0x0a, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x32, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61,
+	0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69,
+	0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x49, 0x6e, 0x70, 0x75,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x48, 0x00, 0x52, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x42, 0x07,
+	0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x1a, 0xd4, 0x0b, 0x0a, 0x05, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x12, 0x43, 0x0a, 0x04, 0x6c, 0x69, 0x6e, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x2d, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61,
+	0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x4c, 0x69, 0x6e, 0x65, 0x48, 0x00,
+	0x52, 0x04, 0x6c, 0x69, 0x6e, 0x65, 0x12, 0x49, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f,
+	0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
+	0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x48, 0x00, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75,
+	0x73, 0x12, 0x59, 0x0a, 0x0c, 0x6e, 0x61, 0x6d, 0x65, 0x64, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x34, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x2e, 0x4e, 0x61, 0x6d, 0x65, 0x64, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x48, 0x00, 0x52,
+	0x0b, 0x6e, 0x61, 0x6d, 0x65, 0x64, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x12, 0x40, 0x0a, 0x03,
+	0x72, 0x61, 0x77, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x2e, 0x52, 0x61, 0x77, 0x48, 0x00, 0x52, 0x03, 0x72, 0x61, 0x77, 0x12, 0x46,
+	0x0a, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2e, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55,
+	0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x48, 0x00, 0x52,
+	0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x53, 0x0a, 0x0a, 0x73, 0x74, 0x65, 0x70, 0x5f, 0x67,
+	0x72, 0x6f, 0x75, 0x70, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x2e, 0x53, 0x74, 0x65, 0x70, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x48, 0x00,
+	0x52, 0x09, 0x73, 0x74, 0x65, 0x70, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x43, 0x0a, 0x04, 0x73,
+	0x74, 0x65, 0x70, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x2e, 0x53, 0x74, 0x65, 0x70, 0x48, 0x00, 0x52, 0x04, 0x73, 0x74, 0x65, 0x70,
+	0x12, 0x46, 0x0a, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x2e, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61,
+	0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x48,
+	0x00, 0x52, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x1a, 0x4d, 0x0a, 0x05, 0x49, 0x6e, 0x70, 0x75,
+	0x74, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x72, 0x6f, 0x6d, 0x70, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x70, 0x72, 0x6f, 0x6d, 0x70, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x74, 0x79,
+	0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x74, 0x79, 0x6c, 0x65, 0x12,
+	0x16, 0x0a, 0x06, 0x73, 0x65, 0x63, 0x72, 0x65, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x06, 0x73, 0x65, 0x63, 0x72, 0x65, 0x74, 0x1a, 0x4b, 0x0a, 0x09, 0x49, 0x6e, 0x70, 0x75, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x28, 0x0a, 0x05, 0x65, 0x72,
+	0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x72, 0x70, 0x63, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x05, 0x65,
+	0x72, 0x72, 0x6f, 0x72, 0x1a, 0x46, 0x0a, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x16,
+	0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x74, 0x65, 0x70,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x04, 0x73, 0x74, 0x65, 0x70, 0x1a, 0x2e, 0x0a, 0x04,
+	0x4c, 0x69, 0x6e, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x74, 0x79, 0x6c, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x74, 0x79, 0x6c, 0x65, 0x1a, 0x31, 0x0a, 0x03,
+	0x52, 0x61, 0x77, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x64, 0x65, 0x72,
+	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x73, 0x74, 0x64, 0x65, 0x72, 0x72, 0x1a,
+	0x36, 0x0a, 0x0a, 0x4e, 0x61, 0x6d, 0x65, 0x64, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x12, 0x0a,
 	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x1a, 0x29, 0x0a, 0x0a, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x12,
-	0x1b, 0x0a, 0x09, 0x73, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0d, 0x52, 0x08, 0x73, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x49, 0x64, 0x1a, 0xa7, 0x01, 0x0a,
-	0x0e, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x73, 0x12,
-	0x3b, 0x0a, 0x07, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x21, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x2e, 0x52, 0x65,
-	0x6c, 0x65, 0x61, 0x73, 0x65, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x73, 0x2e, 0x54, 0x61, 0x72,
-	0x67, 0x65, 0x74, 0x52, 0x07, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x73, 0x1a, 0x58, 0x0a, 0x06,
-	0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x12, 0x34, 0x0a, 0x0a, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79,
-	0x6d, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f,
-	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79,
-	0x52, 0x0a, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x18, 0x0a, 0x07,
-	0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x07, 0x70,
-	0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x1a, 0x7f, 0x0a, 0x08, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x53,
-	0x65, 0x74, 0x12, 0x38, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x20, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x2e,
-	0x4c, 0x61, 0x62, 0x65, 0x6c, 0x53, 0x65, 0x74, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x45,
-	0x6e, 0x74, 0x72, 0x79, 0x52, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x1a, 0x39, 0x0a, 0x0b,
-	0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b,
-	0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a,
-	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x22, 0x88, 0x02, 0x0a, 0x08, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x12, 0x0a,
-	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x12, 0x29, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63,
-	0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x2d, 0x0a, 0x06,
-	0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x56, 0x61,
-	0x6c, 0x75, 0x65, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x1a, 0x5b, 0x0a, 0x05, 0x56,
-	0x61, 0x6c, 0x75, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x2a, 0x0a, 0x05,
-	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f,
-	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e,
-	0x79, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x1a, 0x31, 0x0a, 0x04, 0x41, 0x72, 0x67, 0x73,
-	0x12, 0x29, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e,
-	0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22, 0xf0, 0x05, 0x0a, 0x06,
-	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x1a, 0x26, 0x0a, 0x10, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
-	0x75, 0x72, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6a, 0x73,
-	0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x6a, 0x73, 0x6f, 0x6e, 0x1a, 0x3c,
-	0x0a, 0x0a, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2e, 0x0a, 0x06,
-	0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x2e, 0x53, 0x74,
-	0x72, 0x75, 0x63, 0x74, 0x52, 0x06, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x1a, 0xc1, 0x01, 0x0a,
-	0x12, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x79, 0x6e, 0x6f, 0x70,
-	0x73, 0x69, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x79, 0x6e, 0x6f, 0x70,
-	0x73, 0x69, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x12, 0x1a, 0x0a,
-	0x08, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52,
-	0x08, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x12, 0x17, 0x0a, 0x07, 0x65, 0x6e, 0x76,
-	0x5f, 0x76, 0x61, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x65, 0x6e, 0x76, 0x56,
-	0x61, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c,
-	0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74,
-	0x1a, 0x65, 0x0a, 0x13, 0x4d, 0x61, 0x70, 0x70, 0x65, 0x72, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65,
-	0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x16, 0x0a,
-	0x06, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f,
-	0x75, 0x74, 0x70, 0x75, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70,
-	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63,
-	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0xd4, 0x02, 0x0a, 0x0d, 0x44, 0x6f, 0x63, 0x75,
-	0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73,
-	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
-	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x65,
-	0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x65, 0x78,
-	0x61, 0x6d, 0x70, 0x6c, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f,
-	0x75, 0x74, 0x70, 0x75, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x75, 0x74,
-	0x70, 0x75, 0x74, 0x12, 0x3f, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x18, 0x05, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6e, 0x66,
-	0x69, 0x67, 0x2e, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x2e, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x06, 0x66, 0x69,
-	0x65, 0x6c, 0x64, 0x73, 0x12, 0x3b, 0x0a, 0x07, 0x6d, 0x61, 0x70, 0x70, 0x65, 0x72, 0x73, 0x18,
-	0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f,
-	0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4d, 0x61, 0x70, 0x70, 0x65, 0x72, 0x44, 0x6f, 0x63, 0x75, 0x6d,
-	0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x07, 0x6d, 0x61, 0x70, 0x70, 0x65, 0x72,
-	0x73, 0x1a, 0x5b, 0x0a, 0x0b, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
-	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
-	0x65, 0x79, 0x12, 0x36, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x20, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
-	0x2e, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x3c,
-	0x0a, 0x04, 0x41, 0x75, 0x74, 0x68, 0x1a, 0x34, 0x0a, 0x0c, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x0d, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e,
-	0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x61,
-	0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x64, 0x22, 0x30, 0x0a, 0x0e,
-	0x49, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1e,
-	0x0a, 0x0a, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x0a, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x42, 0x09,
-	0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x1a, 0x5a, 0x0a, 0x0b, 0x4e, 0x61, 0x6d, 0x65, 0x64,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x12, 0x4b, 0x0a, 0x06, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f,
+	0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
+	0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x2e, 0x4e, 0x61, 0x6d, 0x65, 0x64, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x06, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x73, 0x1a, 0x38, 0x0a, 0x0a, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x45, 0x6e, 0x74, 0x72,
+	0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x6c, 0x6f, 0x72,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x63, 0x6f, 0x6c, 0x6f, 0x72, 0x1a, 0x59, 0x0a,
+	0x08, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x52, 0x6f, 0x77, 0x12, 0x4d, 0x0a, 0x07, 0x65, 0x6e, 0x74,
+	0x72, 0x69, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x2e, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52,
+	0x07, 0x65, 0x6e, 0x74, 0x72, 0x69, 0x65, 0x73, 0x1a, 0x68, 0x0a, 0x05, 0x54, 0x61, 0x62, 0x6c,
+	0x65, 0x12, 0x18, 0x0a, 0x07, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x09, 0x52, 0x07, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x73, 0x12, 0x45, 0x0a, 0x04, 0x72,
+	0x6f, 0x77, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x31, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x2e, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x52, 0x6f, 0x77, 0x52, 0x04, 0x72, 0x6f,
+	0x77, 0x73, 0x1a, 0x21, 0x0a, 0x09, 0x53, 0x74, 0x65, 0x70, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12,
+	0x14, 0x0a, 0x05, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05,
+	0x63, 0x6c, 0x6f, 0x73, 0x65, 0x1a, 0x6e, 0x0a, 0x04, 0x53, 0x74, 0x65, 0x70, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a,
+	0x05, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x63, 0x6c,
+	0x6f, 0x73, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x16, 0x0a,
+	0x06, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06, 0x6f,
+	0x75, 0x74, 0x70, 0x75, 0x74, 0x42, 0x07, 0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x22, 0xe5,
+	0x01, 0x0a, 0x03, 0x4d, 0x61, 0x70, 0x1a, 0x5c, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x39, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65,
+	0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x16, 0x0a, 0x06,
+	0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x72, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x1a, 0x38, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x1a, 0x46,
+	0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36,
+	0x0a, 0x05, 0x66, 0x75, 0x6e, 0x63, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x52,
+	0x05, 0x66, 0x75, 0x6e, 0x63, 0x73, 0x22, 0xc1, 0x01, 0x0a, 0x05, 0x42, 0x75, 0x69, 0x6c, 0x64,
+	0x1a, 0xb7, 0x01, 0x0a, 0x04, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73,
+	0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52,
+	0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x46, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c,
+	0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2e, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x42, 0x75, 0x69, 0x6c, 0x64, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c, 0x61, 0x62, 0x65,
+	0x6c, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x1a,
+	0x39, 0x0a, 0x0b, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10,
+	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79,
+	0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x36, 0x0a, 0x0f, 0x44, 0x65,
+	0x66, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x72, 0x1a, 0x23, 0x0a,
+	0x04, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1b, 0x0a, 0x09, 0x73, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x08, 0x73, 0x74, 0x72, 0x65, 0x61, 0x6d,
+	0x49, 0x64, 0x22, 0x3e, 0x0a, 0x06, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x1a, 0x34, 0x0a, 0x04,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75,
+	0x6c, 0x74, 0x22, 0x3c, 0x0a, 0x04, 0x50, 0x75, 0x73, 0x68, 0x1a, 0x34, 0x0a, 0x04, 0x52, 0x65,
+	0x73, 0x70, 0x12, 0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74,
+	0x22, 0x8c, 0x01, 0x0a, 0x07, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x12, 0x10, 0x0a, 0x03,
+	0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x1a, 0x6f,
+	0x0a, 0x04, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x12, 0x39, 0x0a, 0x07, 0x72, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x52,
+	0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x52, 0x07, 0x72, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x32,
+	0xaf, 0x02, 0x0a, 0x11, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x52, 0x0a, 0x06, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x12,
+	0x30, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61,
+	0x6c, 0x55, 0x49, 0x2e, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x63, 0x0a, 0x06, 0x45, 0x76, 0x65,
+	0x6e, 0x74, 0x73, 0x12, 0x28, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e,
+	0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72,
+	0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x1a, 0x2b, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55,
+	0x49, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x28, 0x01, 0x30, 0x01, 0x12, 0x61,
+	0x0a, 0x0d, 0x49, 0x73, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12,
+	0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x38, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x6c, 0x55, 0x49, 0x2e, 0x49, 0x73, 0x49, 0x6e,
+	0x74, 0x65, 0x72, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x32, 0xab, 0x01, 0x0a, 0x06, 0x4d, 0x61, 0x70, 0x70, 0x65, 0x72, 0x12, 0x4f, 0x0a, 0x0b,
+	0x4c, 0x69, 0x73, 0x74, 0x4d, 0x61, 0x70, 0x70, 0x65, 0x72, 0x73, 0x12, 0x16, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x1a, 0x28, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e,
+	0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x4d, 0x61, 0x70,
+	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x50, 0x0a,
+	0x03, 0x4d, 0x61, 0x70, 0x12, 0x23, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70,
+	0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x4d, 0x61,
+	0x70, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x4d, 0x61, 0x70, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32,
+	0xb4, 0x06, 0x0a, 0x07, 0x42, 0x75, 0x69, 0x6c, 0x64, 0x65, 0x72, 0x12, 0x51, 0x0a, 0x0f, 0x49,
+	0x73, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x16,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f,
+	0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
+	0x49, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x58,
+	0x0a, 0x04, 0x41, 0x75, 0x74, 0x68, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f,
+	0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
+	0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x29, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x2e, 0x41, 0x75, 0x74, 0x68,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x08, 0x41, 0x75, 0x74, 0x68,
+	0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x4d,
+	0x0a, 0x0c, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x12, 0x25,
+	0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f,
+	0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63,
+	0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x4c, 0x0a,
+	0x10, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x53, 0x70, 0x65,
+	0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x51, 0x0a, 0x0c, 0x43,
+	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x12, 0x16, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x1a, 0x29, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e,
+	0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x2e, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x54,
+	0x0a, 0x09, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65, 0x12, 0x2f, 0x2e, 0x68, 0x61,
+	0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x43, 0x6f, 0x6e, 0x66,
+	0x69, 0x67, 0x75, 0x72, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x12, 0x55, 0x0a, 0x0d, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2c, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x6f,
+	0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x45, 0x0a, 0x09, 0x42,
+	0x75, 0x69, 0x6c, 0x64, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70,
+	0x65, 0x63, 0x12, 0x52, 0x0a, 0x05, 0x42, 0x75, 0x69, 0x6c, 0x64, 0x12, 0x25, 0x2e, 0x68, 0x61,
+	0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72,
+	0x67, 0x73, 0x1a, 0x22, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
+	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x42, 0x75, 0x69, 0x6c,
+	0x64, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x32, 0xa1, 0x0c, 0x0a, 0x08, 0x50, 0x6c, 0x61, 0x74, 0x66,
+	0x6f, 0x72, 0x6d, 0x12, 0x51, 0x0a, 0x0f, 0x49, 0x73, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74,
+	0x69, 0x63, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x26,
+	0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f,
+	0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x49, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e,
+	0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x58, 0x0a, 0x04, 0x41, 0x75, 0x74, 0x68, 0x12, 0x25,
+	0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f,
+	0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63,
+	0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x29, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x41,
+	0x75, 0x74, 0x68, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x44, 0x0a, 0x08, 0x41, 0x75, 0x74, 0x68, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70,
+	0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75,
+	0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x4d, 0x0a, 0x0c, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61,
+	0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f,
+	0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
+	0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x4c, 0x0a, 0x10, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74,
+	0x65, 0x41, 0x75, 0x74, 0x68, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74,
+	0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61,
+	0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53,
+	0x70, 0x65, 0x63, 0x12, 0x51, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x72,
+	0x75, 0x63, 0x74, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x29, 0x2e, 0x68, 0x61,
+	0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x53, 0x74, 0x72, 0x75,
+	0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x54, 0x0a, 0x09, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
+	0x75, 0x72, 0x65, 0x12, 0x2f, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e,
+	0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x55, 0x0a, 0x0d,
+	0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2c, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43,
+	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x46, 0x0a, 0x0a, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x53, 0x70, 0x65,
+	0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x54, 0x0a, 0x06, 0x44,
+	0x65, 0x70, 0x6c, 0x6f, 0x79, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x23, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x2e, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x4f, 0x0a, 0x13, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x6c, 0x65,
+	0x61, 0x73, 0x65, 0x72, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70,
+	0x65, 0x63, 0x12, 0x66, 0x0a, 0x0f, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x6c,
+	0x65, 0x61, 0x73, 0x65, 0x72, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x2c, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x6c,
+	0x65, 0x61, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x4d, 0x0a, 0x0b, 0x49, 0x73,
+	0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x65, 0x72, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74,
+	0x79, 0x1a, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61,
+	0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x49, 0x6d, 0x70, 0x6c, 0x65,
+	0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x47, 0x0a, 0x0b, 0x44, 0x65, 0x73,
+	0x74, 0x72, 0x6f, 0x79, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70,
+	0x65, 0x63, 0x12, 0x48, 0x0a, 0x07, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x12, 0x25, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e,
+	0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x56, 0x0a, 0x14,
+	0x49, 0x73, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x44, 0x65, 0x73, 0x74, 0x72,
+	0x6f, 0x79, 0x65, 0x72, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x26, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x49, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x50, 0x0a, 0x14, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x57,
+	0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70,
+	0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75,
+	0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x51, 0x0a, 0x10, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f,
+	0x79, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67,
+	0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x4f, 0x0a, 0x0d, 0x49, 0x73, 0x4c,
+	0x6f, 0x67, 0x50, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70,
+	0x74, 0x79, 0x1a, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
+	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x49, 0x6d, 0x70, 0x6c,
+	0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x32, 0xb2, 0x06, 0x0a, 0x08, 0x52,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x79, 0x12, 0x51, 0x0a, 0x0f, 0x49, 0x73, 0x41, 0x75, 0x74,
+	0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70,
+	0x74, 0x79, 0x1a, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
+	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x49, 0x6d, 0x70, 0x6c,
+	0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x58, 0x0a, 0x04, 0x41, 0x75,
+	0x74, 0x68, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
+	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63,
+	0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x29, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x08, 0x41, 0x75, 0x74, 0x68, 0x53, 0x70, 0x65, 0x63,
+	0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69,
+	0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64,
+	0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x4d, 0x0a, 0x0c, 0x56, 0x61,
+	0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67,
+	0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x4c, 0x0a, 0x10, 0x56, 0x61, 0x6c,
+	0x69, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x51, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a,
+	0x29, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e,
+	0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x54, 0x0a, 0x09, 0x43, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65, 0x12, 0x2f, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x12, 0x55, 0x0a, 0x0d, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2c, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65,
+	0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x44, 0x0a, 0x08, 0x50, 0x75, 0x73, 0x68, 0x53,
+	0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61,
+	0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x50, 0x0a,
+	0x04, 0x50, 0x75, 0x73, 0x68, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x21, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x50, 0x75, 0x73, 0x68, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x32,
+	0xa0, 0x0a, 0x0a, 0x0e, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x4d, 0x61, 0x6e, 0x61, 0x67,
+	0x65, 0x72, 0x12, 0x51, 0x0a, 0x0f, 0x49, 0x73, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69,
+	0x63, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x26, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x49, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x58, 0x0a, 0x04, 0x41, 0x75, 0x74, 0x68, 0x12, 0x25, 0x2e,
+	0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e,
+	0x41, 0x72, 0x67, 0x73, 0x1a, 0x29, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70,
+	0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x41, 0x75,
+	0x74, 0x68, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x44, 0x0a, 0x08, 0x41, 0x75, 0x74, 0x68, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e,
+	0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e,
+	0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x4d, 0x0a, 0x0c, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74,
+	0x65, 0x41, 0x75, 0x74, 0x68, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x12, 0x4c, 0x0a, 0x10, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65,
+	0x41, 0x75, 0x74, 0x68, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70,
+	0x65, 0x63, 0x12, 0x51, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x72, 0x75,
+	0x63, 0x74, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x29, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x53, 0x74, 0x72, 0x75, 0x63,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x54, 0x0a, 0x09, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75,
+	0x72, 0x65, 0x12, 0x2f, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
+	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66,
+	0x69, 0x67, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x55, 0x0a, 0x0d, 0x44,
+	0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2c, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70,
+	0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x4d, 0x0a, 0x0b, 0x49, 0x73, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x65,
+	0x72, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68,
+	0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73,
+	0x64, 0x6b, 0x2e, 0x49, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x47, 0x0a, 0x0b, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x53, 0x70, 0x65, 0x63,
+	0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69,
+	0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64,
+	0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x48, 0x0a, 0x07, 0x44, 0x65,
+	0x73, 0x74, 0x72, 0x6f, 0x79, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x12, 0x56, 0x0a, 0x14, 0x49, 0x73, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70,
+	0x61, 0x63, 0x65, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x65, 0x72, 0x12, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x1a, 0x26, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70,
+	0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x49, 0x6d,
+	0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x50, 0x0a, 0x14,
+	0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65,
+	0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x51,
+	0x0a, 0x10, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61,
+	0x63, 0x65, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
+	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63,
+	0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74,
+	0x79, 0x12, 0x47, 0x0a, 0x0b, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x53, 0x70, 0x65, 0x63,
+	0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69,
+	0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64,
+	0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x56, 0x0a, 0x07, 0x52, 0x65,
+	0x6c, 0x65, 0x61, 0x73, 0x65, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
+	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x24, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x2e, 0x52, 0x65,
+	0x73, 0x70, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1647,56 +3779,231 @@ func file_plugin_proto_rawDescGZIP() []byte {
 	return file_plugin_proto_rawDescData
 }
 
-var file_plugin_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
+var file_plugin_proto_msgTypes = make([]protoimpl.MessageInfo, 59)
 var file_plugin_proto_goTypes = []interface{}{
-	(*Args)(nil),                       // 0: proto.Args
-	(*Empty)(nil),                      // 1: proto.Empty
-	(*FuncSpec)(nil),                   // 2: proto.FuncSpec
-	(*Config)(nil),                     // 3: proto.Config
-	(*Auth)(nil),                       // 4: proto.Auth
-	(*ImplementsResp)(nil),             // 5: proto.ImplementsResp
-	(*Args_Source)(nil),                // 6: proto.Args.Source
-	(*Args_JobInfo)(nil),               // 7: proto.Args.JobInfo
-	(*Args_DeploymentConfig)(nil),      // 8: proto.Args.DeploymentConfig
-	(*Args_DataDir)(nil),               // 9: proto.Args.DataDir
-	(*Args_Logger)(nil),                // 10: proto.Args.Logger
-	(*Args_TerminalUI)(nil),            // 11: proto.Args.TerminalUI
-	(*Args_ReleaseTargets)(nil),        // 12: proto.Args.ReleaseTargets
-	(*Args_LabelSet)(nil),              // 13: proto.Args.LabelSet
-	(*Args_DataDir_Project)(nil),       // 14: proto.Args.DataDir.Project
-	(*Args_DataDir_App)(nil),           // 15: proto.Args.DataDir.App
-	(*Args_DataDir_Component)(nil),     // 16: proto.Args.DataDir.Component
-	(*Args_ReleaseTargets_Target)(nil), // 17: proto.Args.ReleaseTargets.Target
-	nil,                                // 18: proto.Args.LabelSet.LabelsEntry
-	(*FuncSpec_Value)(nil),             // 19: proto.FuncSpec.Value
-	(*FuncSpec_Args)(nil),              // 20: proto.FuncSpec.Args
-	(*Config_ConfigureRequest)(nil),    // 21: proto.Config.ConfigureRequest
-	(*Config_StructResp)(nil),          // 22: proto.Config.StructResp
-	(*Config_FieldDocumentation)(nil),  // 23: proto.Config.FieldDocumentation
-	(*Config_MapperDocumentation)(nil), // 24: proto.Config.MapperDocumentation
-	(*Config_Documentation)(nil),       // 25: proto.Config.Documentation
-	nil,                                // 26: proto.Config.Documentation.FieldsEntry
-	(*Auth_AuthResponse)(nil),          // 27: proto.Auth.AuthResponse
-	(*any.Any)(nil),                    // 28: google.protobuf.Any
-	(*protostructure.Struct)(nil),      // 29: protostructure.Struct
+	(*Args)(nil),                             // 0: hashicorp.waypoint.sdk.Args
+	(*FuncSpec)(nil),                         // 1: hashicorp.waypoint.sdk.FuncSpec
+	(*Config)(nil),                           // 2: hashicorp.waypoint.sdk.Config
+	(*Auth)(nil),                             // 3: hashicorp.waypoint.sdk.Auth
+	(*ImplementsResp)(nil),                   // 4: hashicorp.waypoint.sdk.ImplementsResp
+	(*TerminalUI)(nil),                       // 5: hashicorp.waypoint.sdk.TerminalUI
+	(*Map)(nil),                              // 6: hashicorp.waypoint.sdk.Map
+	(*Build)(nil),                            // 7: hashicorp.waypoint.sdk.Build
+	(*DefaultReleaser)(nil),                  // 8: hashicorp.waypoint.sdk.DefaultReleaser
+	(*Deploy)(nil),                           // 9: hashicorp.waypoint.sdk.Deploy
+	(*Push)(nil),                             // 10: hashicorp.waypoint.sdk.Push
+	(*Release)(nil),                          // 11: hashicorp.waypoint.sdk.Release
+	(*Args_Source)(nil),                      // 12: hashicorp.waypoint.sdk.Args.Source
+	(*Args_JobInfo)(nil),                     // 13: hashicorp.waypoint.sdk.Args.JobInfo
+	(*Args_DeploymentConfig)(nil),            // 14: hashicorp.waypoint.sdk.Args.DeploymentConfig
+	(*Args_DataDir)(nil),                     // 15: hashicorp.waypoint.sdk.Args.DataDir
+	(*Args_Logger)(nil),                      // 16: hashicorp.waypoint.sdk.Args.Logger
+	(*Args_TerminalUI)(nil),                  // 17: hashicorp.waypoint.sdk.Args.TerminalUI
+	(*Args_ReleaseTargets)(nil),              // 18: hashicorp.waypoint.sdk.Args.ReleaseTargets
+	(*Args_LabelSet)(nil),                    // 19: hashicorp.waypoint.sdk.Args.LabelSet
+	(*Args_DataDir_Project)(nil),             // 20: hashicorp.waypoint.sdk.Args.DataDir.Project
+	(*Args_DataDir_App)(nil),                 // 21: hashicorp.waypoint.sdk.Args.DataDir.App
+	(*Args_DataDir_Component)(nil),           // 22: hashicorp.waypoint.sdk.Args.DataDir.Component
+	(*Args_ReleaseTargets_Target)(nil),       // 23: hashicorp.waypoint.sdk.Args.ReleaseTargets.Target
+	nil,                                      // 24: hashicorp.waypoint.sdk.Args.LabelSet.LabelsEntry
+	(*FuncSpec_Value)(nil),                   // 25: hashicorp.waypoint.sdk.FuncSpec.Value
+	(*FuncSpec_Args)(nil),                    // 26: hashicorp.waypoint.sdk.FuncSpec.Args
+	(*Config_ConfigureRequest)(nil),          // 27: hashicorp.waypoint.sdk.Config.ConfigureRequest
+	(*Config_StructResp)(nil),                // 28: hashicorp.waypoint.sdk.Config.StructResp
+	(*Config_FieldDocumentation)(nil),        // 29: hashicorp.waypoint.sdk.Config.FieldDocumentation
+	(*Config_MapperDocumentation)(nil),       // 30: hashicorp.waypoint.sdk.Config.MapperDocumentation
+	(*Config_Documentation)(nil),             // 31: hashicorp.waypoint.sdk.Config.Documentation
+	nil,                                      // 32: hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry
+	(*Auth_AuthResponse)(nil),                // 33: hashicorp.waypoint.sdk.Auth.AuthResponse
+	(*TerminalUI_IsInteractiveResponse)(nil), // 34: hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
+	(*TerminalUI_OutputRequest)(nil),         // 35: hashicorp.waypoint.sdk.TerminalUI.OutputRequest
+	(*TerminalUI_Response)(nil),              // 36: hashicorp.waypoint.sdk.TerminalUI.Response
+	(*TerminalUI_Event)(nil),                 // 37: hashicorp.waypoint.sdk.TerminalUI.Event
+	(*TerminalUI_Event_Input)(nil),           // 38: hashicorp.waypoint.sdk.TerminalUI.Event.Input
+	(*TerminalUI_Event_InputResp)(nil),       // 39: hashicorp.waypoint.sdk.TerminalUI.Event.InputResp
+	(*TerminalUI_Event_Status)(nil),          // 40: hashicorp.waypoint.sdk.TerminalUI.Event.Status
+	(*TerminalUI_Event_Line)(nil),            // 41: hashicorp.waypoint.sdk.TerminalUI.Event.Line
+	(*TerminalUI_Event_Raw)(nil),             // 42: hashicorp.waypoint.sdk.TerminalUI.Event.Raw
+	(*TerminalUI_Event_NamedValue)(nil),      // 43: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValue
+	(*TerminalUI_Event_NamedValues)(nil),     // 44: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues
+	(*TerminalUI_Event_TableEntry)(nil),      // 45: hashicorp.waypoint.sdk.TerminalUI.Event.TableEntry
+	(*TerminalUI_Event_TableRow)(nil),        // 46: hashicorp.waypoint.sdk.TerminalUI.Event.TableRow
+	(*TerminalUI_Event_Table)(nil),           // 47: hashicorp.waypoint.sdk.TerminalUI.Event.Table
+	(*TerminalUI_Event_StepGroup)(nil),       // 48: hashicorp.waypoint.sdk.TerminalUI.Event.StepGroup
+	(*TerminalUI_Event_Step)(nil),            // 49: hashicorp.waypoint.sdk.TerminalUI.Event.Step
+	(*Map_Request)(nil),                      // 50: hashicorp.waypoint.sdk.Map.Request
+	(*Map_Response)(nil),                     // 51: hashicorp.waypoint.sdk.Map.Response
+	(*Map_ListResponse)(nil),                 // 52: hashicorp.waypoint.sdk.Map.ListResponse
+	(*Build_Resp)(nil),                       // 53: hashicorp.waypoint.sdk.Build.Resp
+	nil,                                      // 54: hashicorp.waypoint.sdk.Build.Resp.LabelsEntry
+	(*DefaultReleaser_Resp)(nil),             // 55: hashicorp.waypoint.sdk.DefaultReleaser.Resp
+	(*Deploy_Resp)(nil),                      // 56: hashicorp.waypoint.sdk.Deploy.Resp
+	(*Push_Resp)(nil),                        // 57: hashicorp.waypoint.sdk.Push.Resp
+	(*Release_Resp)(nil),                     // 58: hashicorp.waypoint.sdk.Release.Resp
+	(*any.Any)(nil),                          // 59: google.protobuf.Any
+	(*protostructure.Struct)(nil),            // 60: protostructure.Struct
+	(*status.Status)(nil),                    // 61: google.rpc.Status
+	(*empty.Empty)(nil),                      // 62: google.protobuf.Empty
 }
 var file_plugin_proto_depIdxs = []int32{
-	19, // 0: proto.FuncSpec.args:type_name -> proto.FuncSpec.Value
-	19, // 1: proto.FuncSpec.result:type_name -> proto.FuncSpec.Value
-	17, // 2: proto.Args.ReleaseTargets.targets:type_name -> proto.Args.ReleaseTargets.Target
-	18, // 3: proto.Args.LabelSet.labels:type_name -> proto.Args.LabelSet.LabelsEntry
-	28, // 4: proto.Args.ReleaseTargets.Target.deployment:type_name -> google.protobuf.Any
-	28, // 5: proto.FuncSpec.Value.value:type_name -> google.protobuf.Any
-	19, // 6: proto.FuncSpec.Args.args:type_name -> proto.FuncSpec.Value
-	29, // 7: proto.Config.StructResp.struct:type_name -> protostructure.Struct
-	26, // 8: proto.Config.Documentation.fields:type_name -> proto.Config.Documentation.FieldsEntry
-	24, // 9: proto.Config.Documentation.mappers:type_name -> proto.Config.MapperDocumentation
-	23, // 10: proto.Config.Documentation.FieldsEntry.value:type_name -> proto.Config.FieldDocumentation
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	25, // 0: hashicorp.waypoint.sdk.FuncSpec.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
+	25, // 1: hashicorp.waypoint.sdk.FuncSpec.result:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
+	23, // 2: hashicorp.waypoint.sdk.Args.ReleaseTargets.targets:type_name -> hashicorp.waypoint.sdk.Args.ReleaseTargets.Target
+	24, // 3: hashicorp.waypoint.sdk.Args.LabelSet.labels:type_name -> hashicorp.waypoint.sdk.Args.LabelSet.LabelsEntry
+	59, // 4: hashicorp.waypoint.sdk.Args.ReleaseTargets.Target.deployment:type_name -> google.protobuf.Any
+	59, // 5: hashicorp.waypoint.sdk.FuncSpec.Value.value:type_name -> google.protobuf.Any
+	25, // 6: hashicorp.waypoint.sdk.FuncSpec.Args.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
+	60, // 7: hashicorp.waypoint.sdk.Config.StructResp.struct:type_name -> protostructure.Struct
+	32, // 8: hashicorp.waypoint.sdk.Config.Documentation.fields:type_name -> hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry
+	30, // 9: hashicorp.waypoint.sdk.Config.Documentation.mappers:type_name -> hashicorp.waypoint.sdk.Config.MapperDocumentation
+	29, // 10: hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry.value:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
+	39, // 11: hashicorp.waypoint.sdk.TerminalUI.Response.input:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.InputResp
+	41, // 12: hashicorp.waypoint.sdk.TerminalUI.Event.line:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Line
+	40, // 13: hashicorp.waypoint.sdk.TerminalUI.Event.status:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Status
+	44, // 14: hashicorp.waypoint.sdk.TerminalUI.Event.named_values:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues
+	42, // 15: hashicorp.waypoint.sdk.TerminalUI.Event.raw:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Raw
+	47, // 16: hashicorp.waypoint.sdk.TerminalUI.Event.table:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Table
+	48, // 17: hashicorp.waypoint.sdk.TerminalUI.Event.step_group:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.StepGroup
+	49, // 18: hashicorp.waypoint.sdk.TerminalUI.Event.step:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Step
+	38, // 19: hashicorp.waypoint.sdk.TerminalUI.Event.input:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Input
+	61, // 20: hashicorp.waypoint.sdk.TerminalUI.Event.InputResp.error:type_name -> google.rpc.Status
+	43, // 21: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues.values:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.NamedValue
+	45, // 22: hashicorp.waypoint.sdk.TerminalUI.Event.TableRow.entries:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.TableEntry
+	46, // 23: hashicorp.waypoint.sdk.TerminalUI.Event.Table.rows:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.TableRow
+	26, // 24: hashicorp.waypoint.sdk.Map.Request.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Args
+	59, // 25: hashicorp.waypoint.sdk.Map.Response.result:type_name -> google.protobuf.Any
+	1,  // 26: hashicorp.waypoint.sdk.Map.ListResponse.funcs:type_name -> hashicorp.waypoint.sdk.FuncSpec
+	59, // 27: hashicorp.waypoint.sdk.Build.Resp.result:type_name -> google.protobuf.Any
+	54, // 28: hashicorp.waypoint.sdk.Build.Resp.labels:type_name -> hashicorp.waypoint.sdk.Build.Resp.LabelsEntry
+	59, // 29: hashicorp.waypoint.sdk.Deploy.Resp.result:type_name -> google.protobuf.Any
+	59, // 30: hashicorp.waypoint.sdk.Push.Resp.result:type_name -> google.protobuf.Any
+	59, // 31: hashicorp.waypoint.sdk.Release.Resp.result:type_name -> google.protobuf.Any
+	11, // 32: hashicorp.waypoint.sdk.Release.Resp.release:type_name -> hashicorp.waypoint.sdk.Release
+	35, // 33: hashicorp.waypoint.sdk.TerminalUIService.Output:input_type -> hashicorp.waypoint.sdk.TerminalUI.OutputRequest
+	37, // 34: hashicorp.waypoint.sdk.TerminalUIService.Events:input_type -> hashicorp.waypoint.sdk.TerminalUI.Event
+	62, // 35: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:input_type -> google.protobuf.Empty
+	62, // 36: hashicorp.waypoint.sdk.Mapper.ListMappers:input_type -> google.protobuf.Empty
+	50, // 37: hashicorp.waypoint.sdk.Mapper.Map:input_type -> hashicorp.waypoint.sdk.Map.Request
+	62, // 38: hashicorp.waypoint.sdk.Builder.IsAuthenticator:input_type -> google.protobuf.Empty
+	26, // 39: hashicorp.waypoint.sdk.Builder.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 40: hashicorp.waypoint.sdk.Builder.AuthSpec:input_type -> google.protobuf.Empty
+	26, // 41: hashicorp.waypoint.sdk.Builder.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 42: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	62, // 43: hashicorp.waypoint.sdk.Builder.ConfigStruct:input_type -> google.protobuf.Empty
+	27, // 44: hashicorp.waypoint.sdk.Builder.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	62, // 45: hashicorp.waypoint.sdk.Builder.Documentation:input_type -> google.protobuf.Empty
+	62, // 46: hashicorp.waypoint.sdk.Builder.BuildSpec:input_type -> google.protobuf.Empty
+	26, // 47: hashicorp.waypoint.sdk.Builder.Build:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 48: hashicorp.waypoint.sdk.Platform.IsAuthenticator:input_type -> google.protobuf.Empty
+	26, // 49: hashicorp.waypoint.sdk.Platform.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 50: hashicorp.waypoint.sdk.Platform.AuthSpec:input_type -> google.protobuf.Empty
+	26, // 51: hashicorp.waypoint.sdk.Platform.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 52: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	62, // 53: hashicorp.waypoint.sdk.Platform.ConfigStruct:input_type -> google.protobuf.Empty
+	27, // 54: hashicorp.waypoint.sdk.Platform.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	62, // 55: hashicorp.waypoint.sdk.Platform.Documentation:input_type -> google.protobuf.Empty
+	62, // 56: hashicorp.waypoint.sdk.Platform.DeploySpec:input_type -> google.protobuf.Empty
+	26, // 57: hashicorp.waypoint.sdk.Platform.Deploy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 58: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:input_type -> google.protobuf.Empty
+	26, // 59: hashicorp.waypoint.sdk.Platform.DefaultReleaser:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 60: hashicorp.waypoint.sdk.Platform.IsDestroyer:input_type -> google.protobuf.Empty
+	62, // 61: hashicorp.waypoint.sdk.Platform.DestroySpec:input_type -> google.protobuf.Empty
+	26, // 62: hashicorp.waypoint.sdk.Platform.Destroy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 63: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:input_type -> google.protobuf.Empty
+	62, // 64: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:input_type -> google.protobuf.Empty
+	26, // 65: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 66: hashicorp.waypoint.sdk.Platform.IsLogPlatform:input_type -> google.protobuf.Empty
+	62, // 67: hashicorp.waypoint.sdk.Registry.IsAuthenticator:input_type -> google.protobuf.Empty
+	26, // 68: hashicorp.waypoint.sdk.Registry.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 69: hashicorp.waypoint.sdk.Registry.AuthSpec:input_type -> google.protobuf.Empty
+	26, // 70: hashicorp.waypoint.sdk.Registry.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 71: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	62, // 72: hashicorp.waypoint.sdk.Registry.ConfigStruct:input_type -> google.protobuf.Empty
+	27, // 73: hashicorp.waypoint.sdk.Registry.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	62, // 74: hashicorp.waypoint.sdk.Registry.Documentation:input_type -> google.protobuf.Empty
+	62, // 75: hashicorp.waypoint.sdk.Registry.PushSpec:input_type -> google.protobuf.Empty
+	26, // 76: hashicorp.waypoint.sdk.Registry.Push:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 77: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:input_type -> google.protobuf.Empty
+	26, // 78: hashicorp.waypoint.sdk.ReleaseManager.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 79: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:input_type -> google.protobuf.Empty
+	26, // 80: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 81: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	62, // 82: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:input_type -> google.protobuf.Empty
+	27, // 83: hashicorp.waypoint.sdk.ReleaseManager.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	62, // 84: hashicorp.waypoint.sdk.ReleaseManager.Documentation:input_type -> google.protobuf.Empty
+	62, // 85: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:input_type -> google.protobuf.Empty
+	62, // 86: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:input_type -> google.protobuf.Empty
+	26, // 87: hashicorp.waypoint.sdk.ReleaseManager.Destroy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 88: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:input_type -> google.protobuf.Empty
+	62, // 89: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:input_type -> google.protobuf.Empty
+	26, // 90: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 91: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:input_type -> google.protobuf.Empty
+	26, // 92: hashicorp.waypoint.sdk.ReleaseManager.Release:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	62, // 93: hashicorp.waypoint.sdk.TerminalUIService.Output:output_type -> google.protobuf.Empty
+	36, // 94: hashicorp.waypoint.sdk.TerminalUIService.Events:output_type -> hashicorp.waypoint.sdk.TerminalUI.Response
+	34, // 95: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:output_type -> hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
+	52, // 96: hashicorp.waypoint.sdk.Mapper.ListMappers:output_type -> hashicorp.waypoint.sdk.Map.ListResponse
+	51, // 97: hashicorp.waypoint.sdk.Mapper.Map:output_type -> hashicorp.waypoint.sdk.Map.Response
+	4,  // 98: hashicorp.waypoint.sdk.Builder.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	33, // 99: hashicorp.waypoint.sdk.Builder.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,  // 100: hashicorp.waypoint.sdk.Builder.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 101: hashicorp.waypoint.sdk.Builder.ValidateAuth:output_type -> google.protobuf.Empty
+	1,  // 102: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	28, // 103: hashicorp.waypoint.sdk.Builder.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	62, // 104: hashicorp.waypoint.sdk.Builder.Configure:output_type -> google.protobuf.Empty
+	31, // 105: hashicorp.waypoint.sdk.Builder.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	1,  // 106: hashicorp.waypoint.sdk.Builder.BuildSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	53, // 107: hashicorp.waypoint.sdk.Builder.Build:output_type -> hashicorp.waypoint.sdk.Build.Resp
+	4,  // 108: hashicorp.waypoint.sdk.Platform.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	33, // 109: hashicorp.waypoint.sdk.Platform.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,  // 110: hashicorp.waypoint.sdk.Platform.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 111: hashicorp.waypoint.sdk.Platform.ValidateAuth:output_type -> google.protobuf.Empty
+	1,  // 112: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	28, // 113: hashicorp.waypoint.sdk.Platform.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	62, // 114: hashicorp.waypoint.sdk.Platform.Configure:output_type -> google.protobuf.Empty
+	31, // 115: hashicorp.waypoint.sdk.Platform.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	1,  // 116: hashicorp.waypoint.sdk.Platform.DeploySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	56, // 117: hashicorp.waypoint.sdk.Platform.Deploy:output_type -> hashicorp.waypoint.sdk.Deploy.Resp
+	1,  // 118: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	55, // 119: hashicorp.waypoint.sdk.Platform.DefaultReleaser:output_type -> hashicorp.waypoint.sdk.DefaultReleaser.Resp
+	4,  // 120: hashicorp.waypoint.sdk.Platform.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,  // 121: hashicorp.waypoint.sdk.Platform.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 122: hashicorp.waypoint.sdk.Platform.Destroy:output_type -> google.protobuf.Empty
+	4,  // 123: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,  // 124: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 125: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:output_type -> google.protobuf.Empty
+	4,  // 126: hashicorp.waypoint.sdk.Platform.IsLogPlatform:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,  // 127: hashicorp.waypoint.sdk.Registry.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	33, // 128: hashicorp.waypoint.sdk.Registry.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,  // 129: hashicorp.waypoint.sdk.Registry.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 130: hashicorp.waypoint.sdk.Registry.ValidateAuth:output_type -> google.protobuf.Empty
+	1,  // 131: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	28, // 132: hashicorp.waypoint.sdk.Registry.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	62, // 133: hashicorp.waypoint.sdk.Registry.Configure:output_type -> google.protobuf.Empty
+	31, // 134: hashicorp.waypoint.sdk.Registry.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	1,  // 135: hashicorp.waypoint.sdk.Registry.PushSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	57, // 136: hashicorp.waypoint.sdk.Registry.Push:output_type -> hashicorp.waypoint.sdk.Push.Resp
+	4,  // 137: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	33, // 138: hashicorp.waypoint.sdk.ReleaseManager.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,  // 139: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 140: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:output_type -> google.protobuf.Empty
+	1,  // 141: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	28, // 142: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	62, // 143: hashicorp.waypoint.sdk.ReleaseManager.Configure:output_type -> google.protobuf.Empty
+	31, // 144: hashicorp.waypoint.sdk.ReleaseManager.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	4,  // 145: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,  // 146: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 147: hashicorp.waypoint.sdk.ReleaseManager.Destroy:output_type -> google.protobuf.Empty
+	4,  // 148: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,  // 149: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	62, // 150: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:output_type -> google.protobuf.Empty
+	1,  // 151: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	58, // 152: hashicorp.waypoint.sdk.ReleaseManager.Release:output_type -> hashicorp.waypoint.sdk.Release.Resp
+	93, // [93:153] is the sub-list for method output_type
+	33, // [33:93] is the sub-list for method input_type
+	33, // [33:33] is the sub-list for extension type_name
+	33, // [33:33] is the sub-list for extension extendee
+	0,  // [0:33] is the sub-list for field type_name
 }
 
 func init() { file_plugin_proto_init() }
@@ -1718,18 +4025,6 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Empty); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_plugin_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*FuncSpec); i {
 			case 0:
 				return &v.state
@@ -1741,7 +4036,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Config); i {
 			case 0:
 				return &v.state
@@ -1753,7 +4048,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Auth); i {
 			case 0:
 				return &v.state
@@ -1765,7 +4060,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ImplementsResp); i {
 			case 0:
 				return &v.state
@@ -1777,8 +4072,20 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
+		file_plugin_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 		file_plugin_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_Source); i {
+			switch v := v.(*Map); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1790,7 +4097,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_JobInfo); i {
+			switch v := v.(*Build); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1802,7 +4109,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DeploymentConfig); i {
+			switch v := v.(*DefaultReleaser); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1814,7 +4121,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir); i {
+			switch v := v.(*Deploy); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1826,7 +4133,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_Logger); i {
+			switch v := v.(*Push); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1838,7 +4145,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_TerminalUI); i {
+			switch v := v.(*Release); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1850,7 +4157,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_ReleaseTargets); i {
+			switch v := v.(*Args_Source); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1862,7 +4169,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_LabelSet); i {
+			switch v := v.(*Args_JobInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1874,7 +4181,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir_Project); i {
+			switch v := v.(*Args_DeploymentConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1886,7 +4193,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir_App); i {
+			switch v := v.(*Args_DataDir); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1898,7 +4205,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir_Component); i {
+			switch v := v.(*Args_Logger); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1910,7 +4217,19 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_ReleaseTargets_Target); i {
+			switch v := v.(*Args_TerminalUI); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Args_ReleaseTargets); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1922,7 +4241,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FuncSpec_Value); i {
+			switch v := v.(*Args_LabelSet); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1934,7 +4253,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FuncSpec_Args); i {
+			switch v := v.(*Args_DataDir_Project); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1946,7 +4265,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config_ConfigureRequest); i {
+			switch v := v.(*Args_DataDir_App); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1958,7 +4277,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config_StructResp); i {
+			switch v := v.(*Args_DataDir_Component); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1970,19 +4289,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config_FieldDocumentation); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_plugin_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config_MapperDocumentation); i {
+			switch v := v.(*Args_ReleaseTargets_Target); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1994,7 +4301,19 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config_Documentation); i {
+			switch v := v.(*FuncSpec_Value); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FuncSpec_Args); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2006,6 +4325,66 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Config_ConfigureRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Config_StructResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Config_FieldDocumentation); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Config_MapperDocumentation); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Config_Documentation); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Auth_AuthResponse); i {
 			case 0:
 				return &v.state
@@ -2017,6 +4396,307 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
+		file_plugin_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_IsInteractiveResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_OutputRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_Input); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_InputResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_Status); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_Line); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_Raw); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_NamedValue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_NamedValues); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_TableEntry); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_TableRow); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_Table); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_StepGroup); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TerminalUI_Event_Step); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Map_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Map_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Map_ListResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Build_Resp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DefaultReleaser_Resp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Deploy_Resp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Push_Resp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Release_Resp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+	}
+	file_plugin_proto_msgTypes[36].OneofWrappers = []interface{}{
+		(*TerminalUI_Response_Input)(nil),
+	}
+	file_plugin_proto_msgTypes[37].OneofWrappers = []interface{}{
+		(*TerminalUI_Event_Line_)(nil),
+		(*TerminalUI_Event_Status_)(nil),
+		(*TerminalUI_Event_NamedValues_)(nil),
+		(*TerminalUI_Event_Raw_)(nil),
+		(*TerminalUI_Event_Table_)(nil),
+		(*TerminalUI_Event_StepGroup_)(nil),
+		(*TerminalUI_Event_Step_)(nil),
+		(*TerminalUI_Event_Input_)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -2024,9 +4704,9 @@ func file_plugin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_plugin_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   28,
+			NumMessages:   59,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   6,
 		},
 		GoTypes:           file_plugin_proto_goTypes,
 		DependencyIndexes: file_plugin_proto_depIdxs,
@@ -2036,4 +4716,2437 @@ func file_plugin_proto_init() {
 	file_plugin_proto_rawDesc = nil
 	file_plugin_proto_goTypes = nil
 	file_plugin_proto_depIdxs = nil
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// TerminalUIServiceClient is the client API for TerminalUIService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type TerminalUIServiceClient interface {
+	Output(ctx context.Context, in *TerminalUI_OutputRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Events(ctx context.Context, opts ...grpc.CallOption) (TerminalUIService_EventsClient, error)
+	IsInteractive(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*TerminalUI_IsInteractiveResponse, error)
+}
+
+type terminalUIServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewTerminalUIServiceClient(cc grpc.ClientConnInterface) TerminalUIServiceClient {
+	return &terminalUIServiceClient{cc}
+}
+
+func (c *terminalUIServiceClient) Output(ctx context.Context, in *TerminalUI_OutputRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.TerminalUIService/Output", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *terminalUIServiceClient) Events(ctx context.Context, opts ...grpc.CallOption) (TerminalUIService_EventsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_TerminalUIService_serviceDesc.Streams[0], "/hashicorp.waypoint.sdk.TerminalUIService/Events", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &terminalUIServiceEventsClient{stream}
+	return x, nil
+}
+
+type TerminalUIService_EventsClient interface {
+	Send(*TerminalUI_Event) error
+	Recv() (*TerminalUI_Response, error)
+	grpc.ClientStream
+}
+
+type terminalUIServiceEventsClient struct {
+	grpc.ClientStream
+}
+
+func (x *terminalUIServiceEventsClient) Send(m *TerminalUI_Event) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *terminalUIServiceEventsClient) Recv() (*TerminalUI_Response, error) {
+	m := new(TerminalUI_Response)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *terminalUIServiceClient) IsInteractive(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*TerminalUI_IsInteractiveResponse, error) {
+	out := new(TerminalUI_IsInteractiveResponse)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.TerminalUIService/IsInteractive", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// TerminalUIServiceServer is the server API for TerminalUIService service.
+type TerminalUIServiceServer interface {
+	Output(context.Context, *TerminalUI_OutputRequest) (*empty.Empty, error)
+	Events(TerminalUIService_EventsServer) error
+	IsInteractive(context.Context, *empty.Empty) (*TerminalUI_IsInteractiveResponse, error)
+}
+
+// UnimplementedTerminalUIServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedTerminalUIServiceServer struct {
+}
+
+func (*UnimplementedTerminalUIServiceServer) Output(context.Context, *TerminalUI_OutputRequest) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Output not implemented")
+}
+func (*UnimplementedTerminalUIServiceServer) Events(TerminalUIService_EventsServer) error {
+	return status1.Errorf(codes.Unimplemented, "method Events not implemented")
+}
+func (*UnimplementedTerminalUIServiceServer) IsInteractive(context.Context, *empty.Empty) (*TerminalUI_IsInteractiveResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsInteractive not implemented")
+}
+
+func RegisterTerminalUIServiceServer(s *grpc.Server, srv TerminalUIServiceServer) {
+	s.RegisterService(&_TerminalUIService_serviceDesc, srv)
+}
+
+func _TerminalUIService_Output_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TerminalUI_OutputRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TerminalUIServiceServer).Output(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.TerminalUIService/Output",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TerminalUIServiceServer).Output(ctx, req.(*TerminalUI_OutputRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TerminalUIService_Events_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TerminalUIServiceServer).Events(&terminalUIServiceEventsServer{stream})
+}
+
+type TerminalUIService_EventsServer interface {
+	Send(*TerminalUI_Response) error
+	Recv() (*TerminalUI_Event, error)
+	grpc.ServerStream
+}
+
+type terminalUIServiceEventsServer struct {
+	grpc.ServerStream
+}
+
+func (x *terminalUIServiceEventsServer) Send(m *TerminalUI_Response) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *terminalUIServiceEventsServer) Recv() (*TerminalUI_Event, error) {
+	m := new(TerminalUI_Event)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _TerminalUIService_IsInteractive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TerminalUIServiceServer).IsInteractive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.TerminalUIService/IsInteractive",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TerminalUIServiceServer).IsInteractive(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _TerminalUIService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "hashicorp.waypoint.sdk.TerminalUIService",
+	HandlerType: (*TerminalUIServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Output",
+			Handler:    _TerminalUIService_Output_Handler,
+		},
+		{
+			MethodName: "IsInteractive",
+			Handler:    _TerminalUIService_IsInteractive_Handler,
+		},
+	},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Events",
+			Handler:       _TerminalUIService_Events_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
+	Metadata: "plugin.proto",
+}
+
+// MapperClient is the client API for Mapper service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type MapperClient interface {
+	// ListMappers returns the list of mappers that this plugin supports.
+	ListMappers(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Map_ListResponse, error)
+	// Map executes a mapper.
+	Map(ctx context.Context, in *Map_Request, opts ...grpc.CallOption) (*Map_Response, error)
+}
+
+type mapperClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMapperClient(cc grpc.ClientConnInterface) MapperClient {
+	return &mapperClient{cc}
+}
+
+func (c *mapperClient) ListMappers(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Map_ListResponse, error) {
+	out := new(Map_ListResponse)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Mapper/ListMappers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mapperClient) Map(ctx context.Context, in *Map_Request, opts ...grpc.CallOption) (*Map_Response, error) {
+	out := new(Map_Response)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Mapper/Map", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MapperServer is the server API for Mapper service.
+type MapperServer interface {
+	// ListMappers returns the list of mappers that this plugin supports.
+	ListMappers(context.Context, *empty.Empty) (*Map_ListResponse, error)
+	// Map executes a mapper.
+	Map(context.Context, *Map_Request) (*Map_Response, error)
+}
+
+// UnimplementedMapperServer can be embedded to have forward compatible implementations.
+type UnimplementedMapperServer struct {
+}
+
+func (*UnimplementedMapperServer) ListMappers(context.Context, *empty.Empty) (*Map_ListResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ListMappers not implemented")
+}
+func (*UnimplementedMapperServer) Map(context.Context, *Map_Request) (*Map_Response, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Map not implemented")
+}
+
+func RegisterMapperServer(s *grpc.Server, srv MapperServer) {
+	s.RegisterService(&_Mapper_serviceDesc, srv)
+}
+
+func _Mapper_ListMappers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MapperServer).ListMappers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Mapper/ListMappers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MapperServer).ListMappers(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Mapper_Map_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Map_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MapperServer).Map(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Mapper/Map",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MapperServer).Map(ctx, req.(*Map_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Mapper_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "hashicorp.waypoint.sdk.Mapper",
+	HandlerType: (*MapperServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListMappers",
+			Handler:    _Mapper_ListMappers_Handler,
+		},
+		{
+			MethodName: "Map",
+			Handler:    _Mapper_Map_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "plugin.proto",
+}
+
+// BuilderClient is the client API for Builder service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type BuilderClient interface {
+	IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error)
+	AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error)
+	Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error)
+	BuildSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	Build(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Build_Resp, error)
+}
+
+type builderClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewBuilderClient(cc grpc.ClientConnInterface) BuilderClient {
+	return &builderClient{cc}
+}
+
+func (c *builderClient) IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/IsAuthenticator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error) {
+	out := new(Auth_AuthResponse)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/Auth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/AuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/ValidateAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/ValidateAuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error) {
+	out := new(Config_StructResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/ConfigStruct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/Configure", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error) {
+	out := new(Config_Documentation)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/Documentation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) BuildSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/BuildSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *builderClient) Build(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Build_Resp, error) {
+	out := new(Build_Resp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Builder/Build", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// BuilderServer is the server API for Builder service.
+type BuilderServer interface {
+	IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error)
+	Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error)
+	AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error)
+	Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error)
+	Documentation(context.Context, *empty.Empty) (*Config_Documentation, error)
+	BuildSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	Build(context.Context, *FuncSpec_Args) (*Build_Resp, error)
+}
+
+// UnimplementedBuilderServer can be embedded to have forward compatible implementations.
+type UnimplementedBuilderServer struct {
+}
+
+func (*UnimplementedBuilderServer) IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+func (*UnimplementedBuilderServer) Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (*UnimplementedBuilderServer) AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+func (*UnimplementedBuilderServer) ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+func (*UnimplementedBuilderServer) ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
+}
+func (*UnimplementedBuilderServer) ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ConfigStruct not implemented")
+}
+func (*UnimplementedBuilderServer) Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Configure not implemented")
+}
+func (*UnimplementedBuilderServer) Documentation(context.Context, *empty.Empty) (*Config_Documentation, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Documentation not implemented")
+}
+func (*UnimplementedBuilderServer) BuildSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method BuildSpec not implemented")
+}
+func (*UnimplementedBuilderServer) Build(context.Context, *FuncSpec_Args) (*Build_Resp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Build not implemented")
+}
+
+func RegisterBuilderServer(s *grpc.Server, srv BuilderServer) {
+	s.RegisterService(&_Builder_serviceDesc, srv)
+}
+
+func _Builder_IsAuthenticator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).IsAuthenticator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/IsAuthenticator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).IsAuthenticator(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).Auth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/Auth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).Auth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_AuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).AuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/AuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).AuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_ValidateAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).ValidateAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/ValidateAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).ValidateAuth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_ValidateAuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).ValidateAuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/ValidateAuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).ValidateAuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_ConfigStruct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).ConfigStruct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/ConfigStruct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).ConfigStruct(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_Configure_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Config_ConfigureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).Configure(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/Configure",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).Configure(ctx, req.(*Config_ConfigureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_Documentation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).Documentation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/Documentation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).Documentation(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_BuildSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).BuildSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/BuildSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).BuildSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Builder_Build_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BuilderServer).Build(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Builder/Build",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BuilderServer).Build(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Builder_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "hashicorp.waypoint.sdk.Builder",
+	HandlerType: (*BuilderServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "IsAuthenticator",
+			Handler:    _Builder_IsAuthenticator_Handler,
+		},
+		{
+			MethodName: "Auth",
+			Handler:    _Builder_Auth_Handler,
+		},
+		{
+			MethodName: "AuthSpec",
+			Handler:    _Builder_AuthSpec_Handler,
+		},
+		{
+			MethodName: "ValidateAuth",
+			Handler:    _Builder_ValidateAuth_Handler,
+		},
+		{
+			MethodName: "ValidateAuthSpec",
+			Handler:    _Builder_ValidateAuthSpec_Handler,
+		},
+		{
+			MethodName: "ConfigStruct",
+			Handler:    _Builder_ConfigStruct_Handler,
+		},
+		{
+			MethodName: "Configure",
+			Handler:    _Builder_Configure_Handler,
+		},
+		{
+			MethodName: "Documentation",
+			Handler:    _Builder_Documentation_Handler,
+		},
+		{
+			MethodName: "BuildSpec",
+			Handler:    _Builder_BuildSpec_Handler,
+		},
+		{
+			MethodName: "Build",
+			Handler:    _Builder_Build_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "plugin.proto",
+}
+
+// PlatformClient is the client API for Platform service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type PlatformClient interface {
+	IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error)
+	AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error)
+	Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error)
+	DeploySpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	Deploy(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Deploy_Resp, error)
+	// component.PlatformReleaser optional implementation.
+	DefaultReleaserSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	DefaultReleaser(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*DefaultReleaser_Resp, error)
+	// component.Destroyer optional implementation
+	IsDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	DestroySpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	Destroy(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	// component.WorkspaceDestroyer optional implementation
+	IsWorkspaceDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	DestroyWorkspaceSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	DestroyWorkspace(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	// IsLogPlatform returns true if this platform also implements LogPlatform.
+	IsLogPlatform(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+}
+
+type platformClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewPlatformClient(cc grpc.ClientConnInterface) PlatformClient {
+	return &platformClient{cc}
+}
+
+func (c *platformClient) IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/IsAuthenticator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error) {
+	out := new(Auth_AuthResponse)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/Auth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/AuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/ValidateAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/ValidateAuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error) {
+	out := new(Config_StructResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/ConfigStruct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/Configure", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error) {
+	out := new(Config_Documentation)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/Documentation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) DeploySpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/DeploySpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) Deploy(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Deploy_Resp, error) {
+	out := new(Deploy_Resp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/Deploy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) DefaultReleaserSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/DefaultReleaserSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) DefaultReleaser(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*DefaultReleaser_Resp, error) {
+	out := new(DefaultReleaser_Resp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/DefaultReleaser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) IsDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/IsDestroyer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) DestroySpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/DestroySpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) Destroy(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/Destroy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) IsWorkspaceDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/IsWorkspaceDestroyer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) DestroyWorkspaceSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/DestroyWorkspaceSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) DestroyWorkspace(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/DestroyWorkspace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformClient) IsLogPlatform(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Platform/IsLogPlatform", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PlatformServer is the server API for Platform service.
+type PlatformServer interface {
+	IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error)
+	Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error)
+	AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error)
+	Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error)
+	Documentation(context.Context, *empty.Empty) (*Config_Documentation, error)
+	DeploySpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	Deploy(context.Context, *FuncSpec_Args) (*Deploy_Resp, error)
+	// component.PlatformReleaser optional implementation.
+	DefaultReleaserSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	DefaultReleaser(context.Context, *FuncSpec_Args) (*DefaultReleaser_Resp, error)
+	// component.Destroyer optional implementation
+	IsDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error)
+	DestroySpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	Destroy(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	// component.WorkspaceDestroyer optional implementation
+	IsWorkspaceDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error)
+	DestroyWorkspaceSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	DestroyWorkspace(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	// IsLogPlatform returns true if this platform also implements LogPlatform.
+	IsLogPlatform(context.Context, *empty.Empty) (*ImplementsResp, error)
+}
+
+// UnimplementedPlatformServer can be embedded to have forward compatible implementations.
+type UnimplementedPlatformServer struct {
+}
+
+func (*UnimplementedPlatformServer) IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+func (*UnimplementedPlatformServer) Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (*UnimplementedPlatformServer) AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+func (*UnimplementedPlatformServer) ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+func (*UnimplementedPlatformServer) ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
+}
+func (*UnimplementedPlatformServer) ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ConfigStruct not implemented")
+}
+func (*UnimplementedPlatformServer) Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Configure not implemented")
+}
+func (*UnimplementedPlatformServer) Documentation(context.Context, *empty.Empty) (*Config_Documentation, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Documentation not implemented")
+}
+func (*UnimplementedPlatformServer) DeploySpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DeploySpec not implemented")
+}
+func (*UnimplementedPlatformServer) Deploy(context.Context, *FuncSpec_Args) (*Deploy_Resp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Deploy not implemented")
+}
+func (*UnimplementedPlatformServer) DefaultReleaserSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DefaultReleaserSpec not implemented")
+}
+func (*UnimplementedPlatformServer) DefaultReleaser(context.Context, *FuncSpec_Args) (*DefaultReleaser_Resp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DefaultReleaser not implemented")
+}
+func (*UnimplementedPlatformServer) IsDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsDestroyer not implemented")
+}
+func (*UnimplementedPlatformServer) DestroySpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DestroySpec not implemented")
+}
+func (*UnimplementedPlatformServer) Destroy(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Destroy not implemented")
+}
+func (*UnimplementedPlatformServer) IsWorkspaceDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsWorkspaceDestroyer not implemented")
+}
+func (*UnimplementedPlatformServer) DestroyWorkspaceSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DestroyWorkspaceSpec not implemented")
+}
+func (*UnimplementedPlatformServer) DestroyWorkspace(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DestroyWorkspace not implemented")
+}
+func (*UnimplementedPlatformServer) IsLogPlatform(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsLogPlatform not implemented")
+}
+
+func RegisterPlatformServer(s *grpc.Server, srv PlatformServer) {
+	s.RegisterService(&_Platform_serviceDesc, srv)
+}
+
+func _Platform_IsAuthenticator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).IsAuthenticator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/IsAuthenticator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).IsAuthenticator(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).Auth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/Auth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).Auth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_AuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).AuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/AuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).AuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_ValidateAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).ValidateAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/ValidateAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).ValidateAuth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_ValidateAuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).ValidateAuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/ValidateAuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).ValidateAuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_ConfigStruct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).ConfigStruct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/ConfigStruct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).ConfigStruct(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_Configure_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Config_ConfigureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).Configure(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/Configure",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).Configure(ctx, req.(*Config_ConfigureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_Documentation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).Documentation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/Documentation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).Documentation(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_DeploySpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).DeploySpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/DeploySpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).DeploySpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_Deploy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).Deploy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/Deploy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).Deploy(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_DefaultReleaserSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).DefaultReleaserSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/DefaultReleaserSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).DefaultReleaserSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_DefaultReleaser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).DefaultReleaser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/DefaultReleaser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).DefaultReleaser(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_IsDestroyer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).IsDestroyer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/IsDestroyer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).IsDestroyer(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_DestroySpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).DestroySpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/DestroySpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).DestroySpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_Destroy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).Destroy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/Destroy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).Destroy(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_IsWorkspaceDestroyer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).IsWorkspaceDestroyer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/IsWorkspaceDestroyer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).IsWorkspaceDestroyer(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_DestroyWorkspaceSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).DestroyWorkspaceSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/DestroyWorkspaceSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).DestroyWorkspaceSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_DestroyWorkspace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).DestroyWorkspace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/DestroyWorkspace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).DestroyWorkspace(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Platform_IsLogPlatform_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServer).IsLogPlatform(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Platform/IsLogPlatform",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServer).IsLogPlatform(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Platform_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "hashicorp.waypoint.sdk.Platform",
+	HandlerType: (*PlatformServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "IsAuthenticator",
+			Handler:    _Platform_IsAuthenticator_Handler,
+		},
+		{
+			MethodName: "Auth",
+			Handler:    _Platform_Auth_Handler,
+		},
+		{
+			MethodName: "AuthSpec",
+			Handler:    _Platform_AuthSpec_Handler,
+		},
+		{
+			MethodName: "ValidateAuth",
+			Handler:    _Platform_ValidateAuth_Handler,
+		},
+		{
+			MethodName: "ValidateAuthSpec",
+			Handler:    _Platform_ValidateAuthSpec_Handler,
+		},
+		{
+			MethodName: "ConfigStruct",
+			Handler:    _Platform_ConfigStruct_Handler,
+		},
+		{
+			MethodName: "Configure",
+			Handler:    _Platform_Configure_Handler,
+		},
+		{
+			MethodName: "Documentation",
+			Handler:    _Platform_Documentation_Handler,
+		},
+		{
+			MethodName: "DeploySpec",
+			Handler:    _Platform_DeploySpec_Handler,
+		},
+		{
+			MethodName: "Deploy",
+			Handler:    _Platform_Deploy_Handler,
+		},
+		{
+			MethodName: "DefaultReleaserSpec",
+			Handler:    _Platform_DefaultReleaserSpec_Handler,
+		},
+		{
+			MethodName: "DefaultReleaser",
+			Handler:    _Platform_DefaultReleaser_Handler,
+		},
+		{
+			MethodName: "IsDestroyer",
+			Handler:    _Platform_IsDestroyer_Handler,
+		},
+		{
+			MethodName: "DestroySpec",
+			Handler:    _Platform_DestroySpec_Handler,
+		},
+		{
+			MethodName: "Destroy",
+			Handler:    _Platform_Destroy_Handler,
+		},
+		{
+			MethodName: "IsWorkspaceDestroyer",
+			Handler:    _Platform_IsWorkspaceDestroyer_Handler,
+		},
+		{
+			MethodName: "DestroyWorkspaceSpec",
+			Handler:    _Platform_DestroyWorkspaceSpec_Handler,
+		},
+		{
+			MethodName: "DestroyWorkspace",
+			Handler:    _Platform_DestroyWorkspace_Handler,
+		},
+		{
+			MethodName: "IsLogPlatform",
+			Handler:    _Platform_IsLogPlatform_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "plugin.proto",
+}
+
+// RegistryClient is the client API for Registry service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type RegistryClient interface {
+	IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error)
+	AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error)
+	Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error)
+	PushSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	Push(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Push_Resp, error)
+}
+
+type registryClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewRegistryClient(cc grpc.ClientConnInterface) RegistryClient {
+	return &registryClient{cc}
+}
+
+func (c *registryClient) IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/IsAuthenticator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error) {
+	out := new(Auth_AuthResponse)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/Auth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/AuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/ValidateAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/ValidateAuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error) {
+	out := new(Config_StructResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/ConfigStruct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/Configure", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error) {
+	out := new(Config_Documentation)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/Documentation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) PushSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/PushSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registryClient) Push(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Push_Resp, error) {
+	out := new(Push_Resp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.Registry/Push", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// RegistryServer is the server API for Registry service.
+type RegistryServer interface {
+	IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error)
+	Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error)
+	AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error)
+	Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error)
+	Documentation(context.Context, *empty.Empty) (*Config_Documentation, error)
+	PushSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	Push(context.Context, *FuncSpec_Args) (*Push_Resp, error)
+}
+
+// UnimplementedRegistryServer can be embedded to have forward compatible implementations.
+type UnimplementedRegistryServer struct {
+}
+
+func (*UnimplementedRegistryServer) IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+func (*UnimplementedRegistryServer) Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (*UnimplementedRegistryServer) AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+func (*UnimplementedRegistryServer) ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+func (*UnimplementedRegistryServer) ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
+}
+func (*UnimplementedRegistryServer) ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ConfigStruct not implemented")
+}
+func (*UnimplementedRegistryServer) Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Configure not implemented")
+}
+func (*UnimplementedRegistryServer) Documentation(context.Context, *empty.Empty) (*Config_Documentation, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Documentation not implemented")
+}
+func (*UnimplementedRegistryServer) PushSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method PushSpec not implemented")
+}
+func (*UnimplementedRegistryServer) Push(context.Context, *FuncSpec_Args) (*Push_Resp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Push not implemented")
+}
+
+func RegisterRegistryServer(s *grpc.Server, srv RegistryServer) {
+	s.RegisterService(&_Registry_serviceDesc, srv)
+}
+
+func _Registry_IsAuthenticator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).IsAuthenticator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/IsAuthenticator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).IsAuthenticator(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).Auth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/Auth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).Auth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_AuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).AuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/AuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).AuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_ValidateAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).ValidateAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/ValidateAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).ValidateAuth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_ValidateAuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).ValidateAuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/ValidateAuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).ValidateAuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_ConfigStruct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).ConfigStruct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/ConfigStruct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).ConfigStruct(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_Configure_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Config_ConfigureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).Configure(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/Configure",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).Configure(ctx, req.(*Config_ConfigureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_Documentation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).Documentation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/Documentation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).Documentation(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_PushSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).PushSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/PushSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).PushSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Registry_Push_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServer).Push(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.Registry/Push",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServer).Push(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Registry_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "hashicorp.waypoint.sdk.Registry",
+	HandlerType: (*RegistryServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "IsAuthenticator",
+			Handler:    _Registry_IsAuthenticator_Handler,
+		},
+		{
+			MethodName: "Auth",
+			Handler:    _Registry_Auth_Handler,
+		},
+		{
+			MethodName: "AuthSpec",
+			Handler:    _Registry_AuthSpec_Handler,
+		},
+		{
+			MethodName: "ValidateAuth",
+			Handler:    _Registry_ValidateAuth_Handler,
+		},
+		{
+			MethodName: "ValidateAuthSpec",
+			Handler:    _Registry_ValidateAuthSpec_Handler,
+		},
+		{
+			MethodName: "ConfigStruct",
+			Handler:    _Registry_ConfigStruct_Handler,
+		},
+		{
+			MethodName: "Configure",
+			Handler:    _Registry_Configure_Handler,
+		},
+		{
+			MethodName: "Documentation",
+			Handler:    _Registry_Documentation_Handler,
+		},
+		{
+			MethodName: "PushSpec",
+			Handler:    _Registry_PushSpec_Handler,
+		},
+		{
+			MethodName: "Push",
+			Handler:    _Registry_Push_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "plugin.proto",
+}
+
+// ReleaseManagerClient is the client API for ReleaseManager service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type ReleaseManagerClient interface {
+	IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error)
+	AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error)
+	Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error)
+	// component.Destroyer optional implementation
+	IsDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	DestroySpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	Destroy(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	// component.WorkspaceDestroyer optional implementation
+	IsWorkspaceDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error)
+	DestroyWorkspaceSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	DestroyWorkspace(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error)
+	ReleaseSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
+	Release(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Release_Resp, error)
+}
+
+type releaseManagerClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewReleaseManagerClient(cc grpc.ClientConnInterface) ReleaseManagerClient {
+	return &releaseManagerClient{cc}
+}
+
+func (c *releaseManagerClient) IsAuthenticator(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/IsAuthenticator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) Auth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Auth_AuthResponse, error) {
+	out := new(Auth_AuthResponse)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/Auth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) AuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/AuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) ValidateAuth(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/ValidateAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) ValidateAuthSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/ValidateAuthSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error) {
+	out := new(Config_StructResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/ConfigStruct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/Configure", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error) {
+	out := new(Config_Documentation)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/Documentation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) IsDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/IsDestroyer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) DestroySpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/DestroySpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) Destroy(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/Destroy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) IsWorkspaceDestroyer(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ImplementsResp, error) {
+	out := new(ImplementsResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/IsWorkspaceDestroyer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) DestroyWorkspaceSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/DestroyWorkspaceSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) DestroyWorkspace(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/DestroyWorkspace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) ReleaseSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
+	out := new(FuncSpec)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/ReleaseSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *releaseManagerClient) Release(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*Release_Resp, error) {
+	out := new(Release_Resp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ReleaseManager/Release", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ReleaseManagerServer is the server API for ReleaseManager service.
+type ReleaseManagerServer interface {
+	IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error)
+	Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error)
+	AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error)
+	Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error)
+	Documentation(context.Context, *empty.Empty) (*Config_Documentation, error)
+	// component.Destroyer optional implementation
+	IsDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error)
+	DestroySpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	Destroy(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	// component.WorkspaceDestroyer optional implementation
+	IsWorkspaceDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error)
+	DestroyWorkspaceSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	DestroyWorkspace(context.Context, *FuncSpec_Args) (*empty.Empty, error)
+	ReleaseSpec(context.Context, *empty.Empty) (*FuncSpec, error)
+	Release(context.Context, *FuncSpec_Args) (*Release_Resp, error)
+}
+
+// UnimplementedReleaseManagerServer can be embedded to have forward compatible implementations.
+type UnimplementedReleaseManagerServer struct {
+}
+
+func (*UnimplementedReleaseManagerServer) IsAuthenticator(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+func (*UnimplementedReleaseManagerServer) Auth(context.Context, *FuncSpec_Args) (*Auth_AuthResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (*UnimplementedReleaseManagerServer) AuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+func (*UnimplementedReleaseManagerServer) ValidateAuth(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+func (*UnimplementedReleaseManagerServer) ValidateAuthSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
+}
+func (*UnimplementedReleaseManagerServer) ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ConfigStruct not implemented")
+}
+func (*UnimplementedReleaseManagerServer) Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Configure not implemented")
+}
+func (*UnimplementedReleaseManagerServer) Documentation(context.Context, *empty.Empty) (*Config_Documentation, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Documentation not implemented")
+}
+func (*UnimplementedReleaseManagerServer) IsDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsDestroyer not implemented")
+}
+func (*UnimplementedReleaseManagerServer) DestroySpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DestroySpec not implemented")
+}
+func (*UnimplementedReleaseManagerServer) Destroy(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Destroy not implemented")
+}
+func (*UnimplementedReleaseManagerServer) IsWorkspaceDestroyer(context.Context, *empty.Empty) (*ImplementsResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method IsWorkspaceDestroyer not implemented")
+}
+func (*UnimplementedReleaseManagerServer) DestroyWorkspaceSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DestroyWorkspaceSpec not implemented")
+}
+func (*UnimplementedReleaseManagerServer) DestroyWorkspace(context.Context, *FuncSpec_Args) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DestroyWorkspace not implemented")
+}
+func (*UnimplementedReleaseManagerServer) ReleaseSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ReleaseSpec not implemented")
+}
+func (*UnimplementedReleaseManagerServer) Release(context.Context, *FuncSpec_Args) (*Release_Resp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Release not implemented")
+}
+
+func RegisterReleaseManagerServer(s *grpc.Server, srv ReleaseManagerServer) {
+	s.RegisterService(&_ReleaseManager_serviceDesc, srv)
+}
+
+func _ReleaseManager_IsAuthenticator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).IsAuthenticator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/IsAuthenticator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).IsAuthenticator(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).Auth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/Auth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).Auth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_AuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).AuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/AuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).AuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_ValidateAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).ValidateAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/ValidateAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).ValidateAuth(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_ValidateAuthSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).ValidateAuthSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/ValidateAuthSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).ValidateAuthSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_ConfigStruct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).ConfigStruct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/ConfigStruct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).ConfigStruct(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_Configure_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Config_ConfigureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).Configure(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/Configure",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).Configure(ctx, req.(*Config_ConfigureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_Documentation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).Documentation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/Documentation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).Documentation(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_IsDestroyer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).IsDestroyer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/IsDestroyer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).IsDestroyer(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_DestroySpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).DestroySpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/DestroySpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).DestroySpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_Destroy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).Destroy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/Destroy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).Destroy(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_IsWorkspaceDestroyer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).IsWorkspaceDestroyer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/IsWorkspaceDestroyer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).IsWorkspaceDestroyer(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_DestroyWorkspaceSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).DestroyWorkspaceSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/DestroyWorkspaceSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).DestroyWorkspaceSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_DestroyWorkspace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).DestroyWorkspace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/DestroyWorkspace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).DestroyWorkspace(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_ReleaseSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).ReleaseSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/ReleaseSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).ReleaseSpec(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReleaseManager_Release_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FuncSpec_Args)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReleaseManagerServer).Release(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ReleaseManager/Release",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReleaseManagerServer).Release(ctx, req.(*FuncSpec_Args))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _ReleaseManager_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "hashicorp.waypoint.sdk.ReleaseManager",
+	HandlerType: (*ReleaseManagerServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "IsAuthenticator",
+			Handler:    _ReleaseManager_IsAuthenticator_Handler,
+		},
+		{
+			MethodName: "Auth",
+			Handler:    _ReleaseManager_Auth_Handler,
+		},
+		{
+			MethodName: "AuthSpec",
+			Handler:    _ReleaseManager_AuthSpec_Handler,
+		},
+		{
+			MethodName: "ValidateAuth",
+			Handler:    _ReleaseManager_ValidateAuth_Handler,
+		},
+		{
+			MethodName: "ValidateAuthSpec",
+			Handler:    _ReleaseManager_ValidateAuthSpec_Handler,
+		},
+		{
+			MethodName: "ConfigStruct",
+			Handler:    _ReleaseManager_ConfigStruct_Handler,
+		},
+		{
+			MethodName: "Configure",
+			Handler:    _ReleaseManager_Configure_Handler,
+		},
+		{
+			MethodName: "Documentation",
+			Handler:    _ReleaseManager_Documentation_Handler,
+		},
+		{
+			MethodName: "IsDestroyer",
+			Handler:    _ReleaseManager_IsDestroyer_Handler,
+		},
+		{
+			MethodName: "DestroySpec",
+			Handler:    _ReleaseManager_DestroySpec_Handler,
+		},
+		{
+			MethodName: "Destroy",
+			Handler:    _ReleaseManager_Destroy_Handler,
+		},
+		{
+			MethodName: "IsWorkspaceDestroyer",
+			Handler:    _ReleaseManager_IsWorkspaceDestroyer_Handler,
+		},
+		{
+			MethodName: "DestroyWorkspaceSpec",
+			Handler:    _ReleaseManager_DestroyWorkspaceSpec_Handler,
+		},
+		{
+			MethodName: "DestroyWorkspace",
+			Handler:    _ReleaseManager_DestroyWorkspace_Handler,
+		},
+		{
+			MethodName: "ReleaseSpec",
+			Handler:    _ReleaseManager_ReleaseSpec_Handler,
+		},
+		{
+			MethodName: "Release",
+			Handler:    _ReleaseManager_Release_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "plugin.proto",
 }

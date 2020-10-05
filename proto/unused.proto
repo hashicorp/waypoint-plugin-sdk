@@ -1,12 +1,19 @@
 syntax = "proto3";
 
-package proto;
+package hashicorp.waypoint.sdk;
 
 option go_package = ".;proto";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "plugin.proto";
+
+/********************************************************************
+* Unused Stuff
+*
+* These proto definitions are currently unused but we keep them around
+* because they may be WIP or legacy. Do not use these.
+********************************************************************/
 
 // LogPlatform is responsible for reading logs for a deployment.
 service LogPlatform {

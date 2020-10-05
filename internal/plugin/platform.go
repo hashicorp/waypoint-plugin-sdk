@@ -207,7 +207,7 @@ func (c *platformClient) Documentation() (*docs.Documentation, error) {
 
 func (c *platformClient) DeployFunc() interface{} {
 	// Get the spec
-	spec, err := c.client.DeploySpec(context.Background(), &proto.Empty{})
+	spec, err := c.client.DeploySpec(context.Background(), &empty.Empty{})
 	if err != nil {
 		return funcErr(err)
 	}
@@ -342,7 +342,7 @@ func (s *platformServer) Documentation(
 
 func (s *platformServer) DeploySpec(
 	ctx context.Context,
-	args *proto.Empty,
+	args *empty.Empty,
 ) (*proto.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: platform")

@@ -153,7 +153,7 @@ func (c *releaseManagerClient) ReleaseFunc() interface{} {
 	}
 
 	// Get the build spec
-	spec, err := c.client.ReleaseSpec(context.Background(), &proto.Empty{})
+	spec, err := c.client.ReleaseSpec(context.Background(), &empty.Empty{})
 	if err != nil {
 		return funcErr(err)
 	}
@@ -222,7 +222,7 @@ func (s *releaseManagerServer) Configure(
 
 func (s *releaseManagerServer) ReleaseSpec(
 	ctx context.Context,
-	args *proto.Empty,
+	args *empty.Empty,
 ) (*proto.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: release manager")

@@ -7,6 +7,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
+	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/stretchr/testify/require"
 
@@ -22,7 +23,7 @@ func TestFunc(t *testing.T) {
 	t.Run("single any result", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) *pb.Empty { return &pb.Empty{} })
+		spec, err := Spec(func(*empty.Empty) *empty.Empty { return &empty.Empty{} })
 		require.NoError(err)
 		require.NotNil(spec)
 
@@ -31,13 +32,13 @@ func TestFunc(t *testing.T) {
 			require.NotNil(args[0])
 
 			// At this point we'd normally RPC out.
-			return ptypes.MarshalAny(&pb.Empty{})
+			return ptypes.MarshalAny(&empty.Empty{})
 		})
 
-		msg, err := ptypes.MarshalAny(&pb.Empty{})
+		msg, err := ptypes.MarshalAny(&empty.Empty{})
 		require.NoError(err)
 
-		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&pb.Empty{})))
+		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&empty.Empty{})))
 		require.NoError(result.Err())
 		require.Equal(reflect.Struct, reflect.ValueOf(result.Out(0)).Kind())
 	})
@@ -45,7 +46,7 @@ func TestFunc(t *testing.T) {
 	t.Run("single missing requirement", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) *pb.Empty { return &pb.Empty{} })
+		spec, err := Spec(func(*empty.Empty) *empty.Empty { return &empty.Empty{} })
 		require.NoError(err)
 		require.NotNil(spec)
 
@@ -54,7 +55,7 @@ func TestFunc(t *testing.T) {
 			require.NotNil(args[0])
 
 			// At this point we'd normally RPC out.
-			return ptypes.MarshalAny(&pb.Empty{})
+			return ptypes.MarshalAny(&empty.Empty{})
 		})
 
 		// Create an argument with the wrong type
@@ -70,7 +71,7 @@ func TestFunc(t *testing.T) {
 	t.Run("match callback output if no results", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) *pb.Empty { return &pb.Empty{} })
+		spec, err := Spec(func(*empty.Empty) *empty.Empty { return &empty.Empty{} })
 		require.NoError(err)
 		require.NotNil(spec)
 
@@ -85,9 +86,9 @@ func TestFunc(t *testing.T) {
 		})
 
 		// Call the function with the proto type we expect
-		msg, err := ptypes.MarshalAny(&pb.Empty{})
+		msg, err := ptypes.MarshalAny(&empty.Empty{})
 		require.NoError(err)
-		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&pb.Empty{})))
+		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&empty.Empty{})))
 
 		// Should succeed and give us our primitive
 		require.NoError(result.Err())
@@ -97,7 +98,7 @@ func TestFunc(t *testing.T) {
 	t.Run("provide input arguments", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) *pb.Empty { return &pb.Empty{} })
+		spec, err := Spec(func(*empty.Empty) *empty.Empty { return &empty.Empty{} })
 		require.NoError(err)
 		require.NotNil(spec)
 
@@ -107,13 +108,13 @@ func TestFunc(t *testing.T) {
 			require.Equal(42, v)
 
 			// At this point we'd normally RPC out.
-			return ptypes.MarshalAny(&pb.Empty{})
+			return ptypes.MarshalAny(&empty.Empty{})
 		}, argmapper.Typed(int(42)))
 
-		msg, err := ptypes.MarshalAny(&pb.Empty{})
+		msg, err := ptypes.MarshalAny(&empty.Empty{})
 		require.NoError(err)
 
-		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&pb.Empty{})))
+		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&empty.Empty{})))
 		require.NoError(result.Err())
 		require.Equal(reflect.Struct, reflect.ValueOf(result.Out(0)).Kind())
 	})

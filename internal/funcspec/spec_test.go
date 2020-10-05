@@ -4,11 +4,11 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/stretchr/testify/require"
 
 	"github.com/hashicorp/go-hclog"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func init() {
@@ -19,15 +19,15 @@ func TestSpec(t *testing.T) {
 	t.Run("proto to proto", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) *pb.Empty { return nil })
+		spec, err := Spec(func(*empty.Empty) *empty.Empty { return nil })
 		require.NoError(err)
 		require.NotNil(spec)
 		require.Len(spec.Args, 1)
 		require.Empty(spec.Args[0].Name)
-		require.Equal("proto.Empty", spec.Args[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Args[0].Type)
 		require.Len(spec.Result, 1)
 		require.Empty(spec.Result[0].Name)
-		require.Equal("proto.Empty", spec.Result[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Result[0].Type)
 	})
 
 	t.Run("converted args to proto", func(t *testing.T) {
@@ -35,17 +35,17 @@ func TestSpec(t *testing.T) {
 
 		type Foo struct{}
 
-		spec, err := Spec(func(*Foo) *pb.Empty { return nil },
-			argmapper.Converter(func(*pb.Empty) *Foo { return nil }),
+		spec, err := Spec(func(*Foo) *empty.Empty { return nil },
+			argmapper.Converter(func(*empty.Empty) *Foo { return nil }),
 		)
 		require.NoError(err)
 		require.NotNil(spec)
 		require.Len(spec.Args, 1)
 		require.Empty(spec.Args[0].Name)
-		require.Equal("proto.Empty", spec.Args[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Args[0].Type)
 		require.Len(spec.Result, 1)
 		require.Empty(spec.Result[0].Name)
-		require.Equal("proto.Empty", spec.Result[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Result[0].Type)
 	})
 
 	t.Run("unsatisfied conversion", func(t *testing.T) {
@@ -54,8 +54,8 @@ func TestSpec(t *testing.T) {
 		type Foo struct{}
 		type Bar struct{}
 
-		spec, err := Spec(func(*Foo) *pb.Empty { return nil },
-			argmapper.Converter(func(*pb.Empty) *Bar { return nil }),
+		spec, err := Spec(func(*Foo) *empty.Empty { return nil },
+			argmapper.Converter(func(*empty.Empty) *Bar { return nil }),
 		)
 		require.Error(err)
 		require.Nil(spec)
@@ -64,7 +64,7 @@ func TestSpec(t *testing.T) {
 	t.Run("proto to int", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) int { return 0 })
+		spec, err := Spec(func(*empty.Empty) int { return 0 })
 		require.Error(err)
 		require.Nil(spec)
 	})
@@ -72,21 +72,21 @@ func TestSpec(t *testing.T) {
 	t.Run("WithOutput proto to int", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) int { return 0 },
+		spec, err := Spec(func(*empty.Empty) int { return 0 },
 			argmapper.FilterOutput(argmapper.FilterType(reflect.TypeOf(int(0)))),
 		)
 		require.NoError(err)
 		require.NotNil(spec)
 		require.Len(spec.Args, 1)
 		require.Empty(spec.Args[0].Name)
-		require.Equal("proto.Empty", spec.Args[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Args[0].Type)
 		require.Empty(spec.Result)
 	})
 
 	t.Run("WithOutput proto to interface, doesn't implement", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) struct{} { return struct{}{} },
+		spec, err := Spec(func(*empty.Empty) struct{} { return struct{}{} },
 			argmapper.FilterOutput(argmapper.FilterType(reflect.TypeOf((*testSpecInterface)(nil)).Elem())),
 		)
 		require.Error(err)
@@ -96,14 +96,14 @@ func TestSpec(t *testing.T) {
 	t.Run("WithOutput proto to interface", func(t *testing.T) {
 		require := require.New(t)
 
-		spec, err := Spec(func(*pb.Empty) *testSpecInterfaceImpl { return nil },
+		spec, err := Spec(func(*empty.Empty) *testSpecInterfaceImpl { return nil },
 			argmapper.FilterOutput(argmapper.FilterType(reflect.TypeOf((*testSpecInterface)(nil)).Elem())),
 		)
 		require.NoError(err)
 		require.NotNil(spec)
 		require.Len(spec.Args, 1)
 		require.Empty(spec.Args[0].Name)
-		require.Equal("proto.Empty", spec.Args[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Args[0].Type)
 		require.Empty(spec.Result)
 	})
 
@@ -113,18 +113,18 @@ func TestSpec(t *testing.T) {
 		type Foo struct{}
 		type Bar struct{}
 
-		spec, err := Spec(func(*Foo, *Bar) *pb.Empty { return nil },
-			argmapper.Converter(func(*pb.Empty) *Foo { return nil }),
+		spec, err := Spec(func(*Foo, *Bar) *empty.Empty { return nil },
+			argmapper.Converter(func(*empty.Empty) *Foo { return nil }),
 			argmapper.Typed(&Bar{}),
 		)
 		require.NoError(err)
 		require.NotNil(spec)
 		require.Len(spec.Args, 1)
 		require.Empty(spec.Args[0].Name)
-		require.Equal("proto.Empty", spec.Args[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Args[0].Type)
 		require.Len(spec.Result, 1)
 		require.Empty(spec.Result[0].Name)
-		require.Equal("proto.Empty", spec.Result[0].Type)
+		require.Equal("google.protobuf.Empty", spec.Result[0].Type)
 	})
 }
 

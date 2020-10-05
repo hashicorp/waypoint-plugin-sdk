@@ -1,11 +1,17 @@
 syntax = "proto3";
 
-package proto;
+package hashicorp.waypoint.sdk;
 
 option go_package = ".;proto";
 
 import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "google/rpc/status.proto";
 import "protostructure.proto";
+
+/********************************************************************
+* Generic Args
+********************************************************************/
 
 // Args are the common argument types that are available to many of the
 // dynamic functions. The exact list of available argument types is available
@@ -91,9 +97,6 @@ message Args {
     map<string, string> labels = 1;
   }
 }
-
-// Empty is just an empty message useful with some RPC endpoints.
-message Empty {}
 
 // FuncSpec describes a function and is used by the dependency-injection
 // framework to provide the function with the proper values.
@@ -202,4 +205,295 @@ message Auth {
 // ImplementsResp returns true if the component implements an additional interface.
 message ImplementsResp {
   bool implements = 1;
+}
+
+/********************************************************************
+* Terminal UI Service
+********************************************************************/
+
+// TerminalUIService is a service that provides "sdk/terminal.UI" interface
+// to plugins. Plugins don't interact with this directly, they usually
+// interact with it indirectly via a terminal.UI implementation.
+service TerminalUIService {
+  rpc Output(TerminalUI.OutputRequest) returns (google.protobuf.Empty);
+  rpc Events(stream TerminalUI.Event) returns (stream TerminalUI.Response);
+  rpc IsInteractive(google.protobuf.Empty) returns (TerminalUI.IsInteractiveResponse);
+}
+
+message TerminalUI {
+  message IsInteractiveResponse {
+    bool interactive = 1;
+  }
+
+  message OutputRequest {
+    repeated string lines = 1;
+  }
+
+  message Response {
+    oneof event {
+      Event.InputResp input = 1;
+    }
+  }
+
+  message Event {
+    oneof event {
+      Line line = 1;
+      Status status = 2;
+      NamedValues named_values = 3;
+      Raw raw = 4;
+      Table table = 5;
+      StepGroup step_group = 6;
+      Step step = 7;
+      Input input = 8;
+    }
+
+    message Input {
+      string prompt = 1;
+      string style = 2;
+      bool secret = 3;
+    }
+
+    message InputResp {
+      string input = 1;
+      google.rpc.Status error = 2;
+    }
+
+    message Status {
+      string status = 1;
+      string msg = 2;
+      bool step = 3;
+    }
+
+    message Line {
+      string msg = 1;
+      string style = 2;
+    }
+
+    message Raw {
+      bytes data = 1;
+      bool stderr = 2;
+    }
+
+    message NamedValue {
+      string name = 1;
+      string value = 2;
+    }
+
+    message NamedValues {
+      repeated NamedValue values = 1;
+    }
+
+    message TableEntry {
+      string value = 1;
+      string color = 2;
+    }
+
+    message TableRow {
+      repeated TableEntry entries = 1;
+    }
+
+    message Table {
+      repeated string headers = 1;
+      repeated TableRow rows = 2;
+    }
+
+    message StepGroup {
+      bool close = 1;
+    }
+
+    message Step {
+      int32 id = 1;
+      bool close = 2;
+      string msg = 3;
+      string status = 4;
+      bytes output = 5;
+    }
+  }
+}
+/********************************************************************
+* Mapper Plugin
+********************************************************************/
+
+// Mapper is a specialized type of plugin that provides type mappers
+// to convert to/from various types.
+service Mapper {
+  // ListMappers returns the list of mappers that this plugin supports.
+  rpc ListMappers(google.protobuf.Empty) returns (Map.ListResponse);
+
+  // Map executes a mapper.
+  rpc Map(Map.Request) returns (Map.Response);
+}
+
+message Map {
+  message Request {
+    // args is the list of argument types.
+    FuncSpec.Args args = 1;
+
+    // result is the desired result type.
+    string result = 2;
+  }
+
+  message Response {
+    // result is the mapped data type that matches the type expected
+    // by the MapRequest.result field.
+    google.protobuf.Any result = 1;
+  }
+
+  message ListResponse {
+    // FuncSpec
+    repeated FuncSpec funcs = 1;
+  }
+}
+
+/********************************************************************
+* Builder Plugin Service
+********************************************************************/
+
+// Builder service is a builder that takes some set of arguments and produces
+// an artifact.
+service Builder {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc BuildSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Build(FuncSpec.Args) returns (Build.Resp);
+}
+
+message Build {
+  message Resp {
+    google.protobuf.Any result = 1;
+    map<string, string> labels = 2;
+  }
+}
+
+/********************************************************************
+* Platform Plugin Service
+********************************************************************/
+
+// Platform is responsible for deploying an artifact that is in a registry.
+service Platform {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc DeploySpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Deploy(FuncSpec.Args) returns (Deploy.Resp);
+
+  // component.PlatformReleaser optional implementation.
+  rpc DefaultReleaserSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc DefaultReleaser(FuncSpec.Args) returns (DefaultReleaser.Resp);
+
+  // component.Destroyer optional implementation
+  rpc IsDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroySpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Destroy(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // component.WorkspaceDestroyer optional implementation
+  rpc IsWorkspaceDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroyWorkspaceSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc DestroyWorkspace(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // IsLogPlatform returns true if this platform also implements LogPlatform.
+  rpc IsLogPlatform(google.protobuf.Empty) returns (ImplementsResp);
+}
+
+message DefaultReleaser {
+  message Resp {
+    // stream_id is the stream ID to connect to to get access to the
+    // ReleaseManager implementation.
+    uint32 stream_id = 1;
+  }
+}
+
+message Deploy {
+  message Resp {
+    // result is the resulting opaque data type
+    google.protobuf.Any result = 1;
+  }
+}
+
+/********************************************************************
+* Registry Plugin Service
+********************************************************************/
+
+// Registry is responsible for pushing a built artifact to some registry.
+// The difference between a registry and a builder is that while a builder
+// produces an artifact from source, a registry provides operations to work
+// with artifacts such as listing previous, deleting, etc.
+service Registry {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc PushSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Push(FuncSpec.Args) returns (Push.Resp);
+}
+
+message Push {
+  message Resp {
+    // result is the resulting opaque data type
+    google.protobuf.Any result = 1;
+  }
+}
+
+/********************************************************************
+* Release Plugin Service
+********************************************************************/
+
+// ReleaseManager is a serivce that handles the process of exposing
+// a deployment to traffic.
+service ReleaseManager {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  // component.Destroyer optional implementation
+  rpc IsDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroySpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Destroy(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // component.WorkspaceDestroyer optional implementation
+  rpc IsWorkspaceDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroyWorkspaceSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc DestroyWorkspace(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  rpc ReleaseSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Release(FuncSpec.Args) returns (Release.Resp);
+}
+
+message Release {
+  string url = 1;
+
+  message Resp {
+    // result is the resulting data type for building.
+    google.protobuf.Any result = 1;
+
+    // release structure
+    Release release = 2;
+  }
 }

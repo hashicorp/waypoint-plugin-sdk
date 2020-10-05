@@ -106,7 +106,7 @@ func (c *registryClient) Documentation() (*docs.Documentation, error) {
 
 func (c *registryClient) PushFunc() interface{} {
 	// Get the spec
-	spec, err := c.client.PushSpec(context.Background(), &proto.Empty{})
+	spec, err := c.client.PushSpec(context.Background(), &empty.Empty{})
 	if err != nil {
 		panic(err)
 	}
@@ -170,7 +170,7 @@ func (s *registryServer) Documentation(
 
 func (s *registryServer) PushSpec(
 	ctx context.Context,
-	args *proto.Empty,
+	args *empty.Empty,
 ) (*proto.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: registry")
