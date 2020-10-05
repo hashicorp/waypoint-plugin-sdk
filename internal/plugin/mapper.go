@@ -16,7 +16,7 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal-shared/protomappers"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // MapperPlugin implements plugin.Plugin (specifically GRPCPlugin) for

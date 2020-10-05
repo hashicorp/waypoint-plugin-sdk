@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/hashicorp/go-hclog"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func init() {

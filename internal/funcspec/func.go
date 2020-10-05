@@ -7,7 +7,7 @@ import (
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
 
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // Func takes a FuncSpec and returns a *mapper.Func that can be called

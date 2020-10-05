@@ -4,7 +4,7 @@ import (
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
 
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // Args is a type that will be populated with all the expected args of

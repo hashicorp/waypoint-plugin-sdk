@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/datadir"
 	pluginterminal "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/terminal"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 	"github.com/hashicorp/waypoint-plugin-sdk/terminal"
 )
 

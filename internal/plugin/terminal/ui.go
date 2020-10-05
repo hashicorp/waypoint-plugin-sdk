@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 	statuspkg "google.golang.org/grpc/status"
 
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 	"github.com/hashicorp/waypoint-plugin-sdk/terminal"
 )
 

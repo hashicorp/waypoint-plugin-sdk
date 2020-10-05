@@ -12,7 +12,7 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/component/mocks"
-	"github.com/hashicorp/waypoint-plugin-sdk/proto"
+	"github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func TestLogPlatformLogs(t *testing.T) {

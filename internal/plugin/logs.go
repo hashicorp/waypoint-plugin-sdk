@@ -14,7 +14,7 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
-	"github.com/hashicorp/waypoint-plugin-sdk/proto"
+	"github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // LogPlatformPlugin implements plugin.Plugin (specifically GRPCPlugin) for

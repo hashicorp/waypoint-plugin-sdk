@@ -14,7 +14,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/component/mocks"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func TestBuilderBuild(t *testing.T) {

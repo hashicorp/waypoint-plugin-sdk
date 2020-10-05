@@ -14,7 +14,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // authenticatorProtoClient is the interface implemented by all gRPC services that

@@ -11,7 +11,7 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func TestMapperClient(t *testing.T) {

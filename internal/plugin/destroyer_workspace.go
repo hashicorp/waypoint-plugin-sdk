@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // workspaceDestroyerClient implements component.WorkspaceDestroyer for a service that

@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	"github.com/hashicorp/waypoint-plugin-sdk/proto"
+	"github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // BuilderPlugin implements plugin.Plugin (specifically GRPCPlugin) for
