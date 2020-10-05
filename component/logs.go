@@ -2,7 +2,6 @@ package component
 
 import (
 	"context"
-	"encoding/base32"
 	"time"
 )
 
@@ -29,5 +28,3 @@ type LogEvent struct {
 	Timestamp time.Time
 	Message   string
 }
-
-var encoding = base32.NewEncoding("abcdefghijklmnopqrstuvwxyz234567")
