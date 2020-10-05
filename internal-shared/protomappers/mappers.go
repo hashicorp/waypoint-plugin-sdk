@@ -11,8 +11,6 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/datadir"
-	"github.com/hashicorp/waypoint-plugin-sdk/history"
-	pluginhistory "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/history"
 	pluginterminal "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/terminal"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
@@ -37,8 +35,6 @@ var All = []interface{}{
 	LoggerProto,
 	TerminalUI,
 	TerminalUIProto,
-	HistoryClient,
-	HistoryClientProto,
 	LabelSet,
 	LabelSetProto,
 }
@@ -198,60 +194,4 @@ func LabelSet(input *pb.Args_LabelSet) *component.LabelSet {
 
 func LabelSetProto(labels *component.LabelSet) *pb.Args_LabelSet {
 	return &pb.Args_LabelSet{Labels: labels.Labels}
-}
-
-// HistoryClient connects to a history.Client served via the plugin interface.
-//
-// Note these are tested in sdk/internal/plugin via testDynamicFunc.
-func HistoryClient(
-	ctx context.Context,
-	log hclog.Logger,
-	input *pb.Args_HistoryClient,
-	internal *pluginargs.Internal,
-) (history.Client, error) {
-	// Create our plugin
-	p := &pluginhistory.HistoryPlugin{
-		Mappers: internal.Mappers,
-		Logger:  log,
-	}
-
-	conn, err := internal.Broker.Dial(input.StreamId)
-	if err != nil {
-		return nil, err
-	}
-	internal.Cleanup.Do(func() { conn.Close() })
-
-	client, err := p.GRPCClient(ctx, internal.Broker, conn)
-	if err != nil {
-		return nil, err
-	}
-
-	return client.(history.Client), nil
-}
-
-// HistoryClientProto takes a history.Client and serves it over the plugin interface.
-func HistoryClientProto(
-	client history.Client,
-	log hclog.Logger,
-	internal *pluginargs.Internal,
-) *pb.Args_HistoryClient {
-	// Create our plugin
-	p := &pluginhistory.HistoryPlugin{
-		Impl:    client,
-		Mappers: internal.Mappers,
-		Logger:  log,
-	}
-
-	id := internal.Broker.NextId()
-
-	// Serve it
-	go internal.Broker.AcceptAndServe(id, func(opts []grpc.ServerOption) *grpc.Server {
-		server := plugin.DefaultGRPCServer(opts)
-		if err := p.GRPCServer(internal.Broker, server); err != nil {
-			panic(err)
-		}
-		return server
-	})
-
-	return &pb.Args_HistoryClient{StreamId: id}
 }

@@ -71,11 +71,6 @@ message Args {
     uint32 stream_id = 1;
   }
 
-  // HistoryClient is used to serve the history client for the plugin.
-  message HistoryClient {
-    uint32 stream_id = 1;
-  }
-
   // ReleaseTargets is the set of targets for a release operation.
   message ReleaseTargets {
     // The set of targets for a release. This is always guaranteed by

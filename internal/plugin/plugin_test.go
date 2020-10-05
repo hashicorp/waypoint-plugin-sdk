@@ -4,17 +4,14 @@ import (
 	"context"
 	"testing"
 
+	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-argmapper"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/component/mocks"
-	"github.com/hashicorp/waypoint-plugin-sdk/history"
-	historymocks "github.com/hashicorp/waypoint-plugin-sdk/history/mocks"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal-shared/protomappers"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto"
@@ -65,16 +62,10 @@ func testDynamicFunc(
 	setFunc(value, func(
 		ctx context.Context,
 		args *component.Source,
-		historyClient history.Client,
 	) *testproto.Data {
 		called = true
 		assert.NotNil(ctx)
 		assert.Equal("foo", args.App)
-
-		// Test history client
-		assert.NotNil(historyClient)
-		_, err := historyClient.Deployments(ctx, nil)
-		assert.NoError(err)
 
 		return &testproto.Data{Value: "hello"}
 	})
@@ -93,9 +84,6 @@ func testDynamicFunc(
 	require.NoError(err)
 	implFunc := getFunc(raw).(*argmapper.Func)
 
-	historyMock := &historymocks.Client{}
-	historyMock.On("Deployments", mock.Anything, &history.Lookup{}).Return([]component.Deployment{}, nil)
-
 	// Call our function by building a chain. We use the chain so we
 	// have access to the same level of mappers that a default plugin
 	// would normally have.
@@ -106,7 +94,6 @@ func testDynamicFunc(
 		argmapper.Typed(hclog.L()),
 
 		argmapper.Typed(&pb.Args_Source{App: "foo"}),
-		argmapper.Typed(historyMock),
 	)
 	require.NoError(result.Err())
 
