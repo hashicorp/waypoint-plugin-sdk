@@ -25,6 +25,10 @@ type destroyerClient struct {
 }
 
 func (c *destroyerClient) Implements(ctx context.Context) (bool, error) {
+	if c == nil {
+		return false, nil
+	}
+
 	resp, err := c.Client.IsDestroyer(ctx, &empty.Empty{})
 	if err != nil {
 		return false, err
