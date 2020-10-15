@@ -4,7 +4,6 @@ package stdio
 
 import (
 	"os"
-	"runtime"
 	"sync"
 )
 
