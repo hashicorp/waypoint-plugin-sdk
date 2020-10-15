@@ -1,12 +1,14 @@
+// +build !windows
+
 package stdio
 
 import (
 	"os"
+	"runtime"
 	"sync"
 )
 
-// NOTE(mitchellh): this won't work on Windows. We need to do something like
-// this: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea?redirectedfrom=MSDN
+// NOTE(mitchellh): windows is in the _windows.go file suffix
 
 // We cache the stdout/stderr files because we need to use the same *os.File
 // or we'll get a hang.
