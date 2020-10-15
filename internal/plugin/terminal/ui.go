@@ -7,7 +7,6 @@ import (
 	"os"
 	"sync"
 
-	"github.com/creack/pty"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
@@ -16,6 +15,7 @@ import (
 	"google.golang.org/grpc"
 	statuspkg "google.golang.org/grpc/status"
 
+	"github.com/hashicorp/waypoint-plugin-sdk/internal/pkg/pty"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 	"github.com/hashicorp/waypoint-plugin-sdk/terminal"
 )
@@ -376,16 +376,15 @@ func (u *uiBridge) NamedValues(tvalues []terminal.NamedValue, _ ...terminal.Opti
 // you must take care that there is only ever one writer.
 func (u *uiBridge) OutputWriters() (stdout io.Writer, stderr io.Writer, err error) {
 	u.stdSetup.Do(func() {
-		dr, dw, err := pty.Open()
+		console, err := pty.New()
 		if err != nil {
 			panic(err)
 		}
 
-		err = pty.Setsize(dw, &pty.Winsize{
-			Rows: uint16(terminal.TermRows),
-			Cols: uint16(terminal.TermColumns),
-		})
+		dr := console.OutPipe()
+		dw := console.InPipe()
 
+		err = console.Resize(terminal.TermRows, terminal.TermColumns)
 		if err != nil {
 			panic(err)
 		}
@@ -401,8 +400,7 @@ func (u *uiBridge) OutputWriters() (stdout io.Writer, stderr io.Writer, err erro
 
 		go func() {
 			<-u.ctx.Done()
-			dr.Close()
-			dw.Close()
+			console.Close()
 			er.Close()
 			ew.Close()
 		}()
@@ -495,17 +493,18 @@ type uiBridgeSGStep struct {
 
 func (u *uiBridgeSGStep) TermOutput() io.Writer {
 	u.stdSetup.Do(func() {
-		dr, dw, err := pty.Open()
+		console, err := pty.New()
 		if err != nil {
 			panic(err)
 		}
+		dr := console.OutPipe()
+		dw := console.InPipe()
 
 		go u.sendData(dr, false)
 
 		go func() {
 			<-u.sg.ctx.Done()
-			dr.Close()
-			dw.Close()
+			console.Close()
 		}()
 
 		u.stdout = dw
