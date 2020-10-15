@@ -11,7 +11,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/bgentry/speakeasy"
-	"github.com/creack/pty"
+	"github.com/containerd/console"
 	"github.com/fatih/color"
 	"github.com/mattn/go-isatty"
 	sshterm "golang.org/x/crypto/ssh/terminal"
@@ -31,8 +31,12 @@ func ConsoleUI(ctx context.Context) UI {
 	// truly interactive environments.
 	glint := isatty.IsTerminal(os.Stdout.Fd()) && sshterm.IsTerminal(int(os.Stdout.Fd()))
 	if glint {
-		ws, err := pty.GetsizeFull(os.Stdout)
-		glint = err == nil && ws.Rows > 0 && ws.Cols > 0
+		glint = false
+		if c, err := console.ConsoleFromFile(os.Stdout); err == nil {
+			if sz, err := c.Size(); err == nil {
+				glint = sz.Height > 0 && sz.Width > 0
+			}
+		}
 	}
 
 	if glint {

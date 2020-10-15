@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/creack/pty"
+	"github.com/containerd/console"
 	"github.com/lab47/vterm/parser"
 	"github.com/lab47/vterm/screen"
 	"github.com/lab47/vterm/state"
@@ -58,9 +58,12 @@ func NewDisplay(ctx context.Context, w io.Writer) *Display {
 	}
 
 	if f, ok := w.(*os.File); ok {
-		_, cols, err := pty.Getsize(f)
-		if err == nil && cols >= 10 {
-			d.width = cols - 1
+		if c, err := console.ConsoleFromFile(f); err == nil {
+			if sz, err := c.Size(); err == nil {
+				if sz.Width >= 10 {
+					d.width = int(sz.Width) - 1
+				}
+			}
 		}
 	}
 
