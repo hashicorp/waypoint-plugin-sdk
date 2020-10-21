@@ -17,7 +17,7 @@ require (
 	github.com/lab47/vterm v0.0.0-20201001232628-a9dd795f94c2
 	github.com/mattn/go-colorable v0.1.8
 	github.com/mattn/go-isatty v0.0.12
-	github.com/mitchellh/go-glint v0.0.0-20200930000256-df5e721f3258
+  github.com/mitchellh/go-glint v0.0.0-20201015034436-f80573c636de
 	github.com/mitchellh/go-testing-interface v1.14.1
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/mitchellh/protostructure v0.0.0-20200814180458-3cfccdb015ce

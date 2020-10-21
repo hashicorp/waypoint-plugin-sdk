@@ -91,23 +91,23 @@ For full walkthough for creating a Waypoint Plugin and reference documentation, 
 Please see the following Plugins for examples of real world implementations of the Waypoint SDK.
 
 ### Build
-[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/builder.go)
+[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/builder.go)  
 [Build Packs](https://github.com/hashicorp/waypoint/tree/main/builtin/pack/builder.go)
 
 ### Registry
-[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/registry.go)
+[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/registry.go)  
 [Files](https://github.com/hashicorp/waypoint/tree/main/builtin/files/registry.go)
 
 ### Deploy
-[Nomad](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/platform.go)
-[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/platform.go)
-[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/platform.go)
-[Azure Container Interface](https://github.com/hashicorp/waypoint/tree/main/builtin/azure/aci/platform.go)
-[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/platform.go)
-[Netlify](https://github.com/hashicorp/waypoint/tree/main/builtin/netlify/platform.go)
+[Nomad](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/platform.go)  
+[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/platform.go)  
+[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/platform.go)  
+[Azure Container Interface](https://github.com/hashicorp/waypoint/tree/main/builtin/azure/aci/platform.go)  
+[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/platform.go)  
+[Netlify](https://github.com/hashicorp/waypoint/tree/main/builtin/netlify/platform.go)  
 [Amazon EC2](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ec2/platform.go)
 
 ### Release
-[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/releaser.go)
-[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/releaser.go)
+[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/releaser.go)  
+[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/releaser.go)  
 [Amazon ALB](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/alb/releaser.go)
