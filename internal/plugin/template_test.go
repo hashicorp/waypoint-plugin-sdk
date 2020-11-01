@@ -29,6 +29,21 @@ func TestTemplateDataFromConfig(t *testing.T) {
 				"image_name": "foo",
 			},
 		},
+
+		{
+			"pointer",
+			&struct {
+				Name string
+				Port int
+			}{
+				Name: "Hello",
+				Port: 80,
+			},
+			map[string]interface{}{
+				"name": "Hello",
+				"port": 80,
+			},
+		},
 	}
 
 	for _, tt := range cases {

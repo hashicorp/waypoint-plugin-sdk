@@ -44,11 +44,18 @@ func templateDataFromConfig(v interface{}) map[string]interface{} {
 	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		Result: &result,
 		DecodeHook: func(srcT, dstT reflect.Type, raw interface{}) (interface{}, error) {
+			for srcT.Kind() == reflect.Ptr {
+				srcT = srcT.Elem()
+			}
 			if srcT.Kind() != reflect.Struct {
 				return raw, nil
 			}
 
 			val := reflect.ValueOf(raw)
+			for val.Kind() == reflect.Ptr {
+				val = val.Elem()
+			}
+
 			m := map[string]interface{}{}
 			for i := 0; i < srcT.NumField(); i++ {
 				sf := srcT.Field(i)
