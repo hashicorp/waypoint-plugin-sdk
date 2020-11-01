@@ -218,16 +218,9 @@ func (s *builderServer) Build(
 		result.Labels = artifact.Labels()
 	}
 
-	if tpl, ok := raw.(component.Template); ok {
-		if data := tpl.TemplateData(); data != nil {
-			v, err := json.Marshal(data)
-			if err != nil {
-				return nil, status.Errorf(codes.Aborted,
-					"failed to JSON encode result template data: %s", err)
-			}
-
-			result.TemplateData = v
-		}
+	result.TemplateData, err = templateData(raw)
+	if err != nil {
+		return nil, err
 	}
 
 	return result, nil
