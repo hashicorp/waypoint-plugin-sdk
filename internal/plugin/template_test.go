@@ -44,6 +44,20 @@ func TestTemplateDataFromConfig(t *testing.T) {
 				"port": 80,
 			},
 		},
+
+		{
+			"protobuf fields",
+			&struct {
+				Name      string
+				XXX_Hello string
+			}{
+				Name:      "Hello",
+				XXX_Hello: "hi",
+			},
+			map[string]interface{}{
+				"name": "Hello",
+			},
+		},
 	}
 
 	for _, tt := range cases {

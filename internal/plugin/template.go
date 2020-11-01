@@ -3,6 +3,7 @@ package plugin
 import (
 	"encoding/json"
 	"reflect"
+	"strings"
 
 	"github.com/iancoleman/strcase"
 	"github.com/mitchellh/mapstructure"
@@ -61,6 +62,11 @@ func templateDataFromConfig(v interface{}) map[string]interface{} {
 				sf := srcT.Field(i)
 				if sf.PkgPath != "" {
 					// ignore unexported fields
+					continue
+				}
+
+				if strings.HasPrefix(sf.Name, "XXX_") {
+					// ignore proto internals
 					continue
 				}
 
