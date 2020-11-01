@@ -370,6 +370,7 @@ message Build {
   message Resp {
     google.protobuf.Any result = 1;
     map<string, string> labels = 2;
+    bytes template_data = 3;
   }
 }
 

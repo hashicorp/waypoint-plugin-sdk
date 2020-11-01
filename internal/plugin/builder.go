@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
@@ -135,8 +136,19 @@ func (c *builderClient) build(
 		return nil, err
 	}
 
+	var tplData map[string]interface{}
+	if len(resp.TemplateData) > 0 {
+		if err := json.Unmarshal(resp.TemplateData, &tplData); err != nil {
+			return nil, err
+		}
+	}
+
 	// We return the
-	return &plugincomponent.Artifact{Any: resp.Result, LabelsVal: resp.Labels}, nil
+	return &plugincomponent.Artifact{
+		Any:         resp.Result,
+		LabelsVal:   resp.Labels,
+		TemplateVal: tplData,
+	}, nil
 }
 
 // builderServer is a gRPC server that the client talks to and calls a
@@ -204,6 +216,18 @@ func (s *builderServer) Build(
 	result := &proto.Build_Resp{Result: encoded}
 	if artifact, ok := raw.(component.Artifact); ok {
 		result.Labels = artifact.Labels()
+	}
+
+	if tpl, ok := raw.(component.Template); ok {
+		if data := tpl.TemplateData(); data != nil {
+			v, err := json.Marshal(data)
+			if err != nil {
+				return nil, status.Errorf(codes.Aborted,
+					"failed to JSON encode result template data: %s", err)
+			}
+
+			result.TemplateData = v
+		}
 	}
 
 	return result, nil
