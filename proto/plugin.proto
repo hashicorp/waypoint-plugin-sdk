@@ -423,6 +423,9 @@ message Deploy {
   message Resp {
     // result is the resulting opaque data type
     google.protobuf.Any result = 1;
+
+    // template data for the deployment
+    bytes template_data = 2;
   }
 }
 
@@ -453,6 +456,9 @@ message Push {
   message Resp {
     // result is the resulting opaque data type
     google.protobuf.Any result = 1;
+
+    // template data for the artifact
+    bytes template_data = 2;
   }
 }
 
@@ -496,5 +502,8 @@ message Release {
 
     // release structure
     Release release = 2;
+
+    // template data for the release
+    bytes template_data = 3;
   }
 }

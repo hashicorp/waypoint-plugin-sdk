@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
@@ -181,10 +182,18 @@ func (c *releaseManagerClient) build(
 		return nil, err
 	}
 
+	var tplData map[string]interface{}
+	if len(resp.TemplateData) > 0 {
+		if err := json.Unmarshal(resp.TemplateData, &tplData); err != nil {
+			return nil, err
+		}
+	}
+
 	// We return the
 	return &plugincomponent.Release{
-		Any:     resp.Result,
-		Release: resp.Release,
+		Any:         resp.Result,
+		Release:     resp.Release,
+		TemplateVal: tplData,
 	}, nil
 }
 
@@ -257,12 +266,19 @@ func (s *releaseManagerServer) Release(
 	}
 
 	release := raw.(component.Release)
-	return &proto.Release_Resp{
+	result := &proto.Release_Resp{
 		Result: encoded,
 		Release: &proto.Release{
 			Url: release.URL(),
 		},
-	}, nil
+	}
+
+	result.TemplateData, err = templateData(raw)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 var (
