@@ -189,7 +189,6 @@ func (c *releaseManagerClient) build(
 		}
 	}
 
-	// We return the
 	return &plugincomponent.Release{
 		Any:         resp.Result,
 		Release:     resp.Release,
