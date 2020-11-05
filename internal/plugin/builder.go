@@ -143,7 +143,6 @@ func (c *builderClient) build(
 		}
 	}
 
-	// We return the
 	return &plugincomponent.Artifact{
 		Any:         resp.Result,
 		LabelsVal:   resp.Labels,
