@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"context"
+	"encoding/json"
 	"reflect"
 
 	"github.com/davecgh/go-spew/spew"
@@ -239,7 +240,17 @@ func (c *platformClient) deploy(
 		return nil, err
 	}
 
-	return &plugincomponent.Deployment{Any: resp.Result}, nil
+	var tplData map[string]interface{}
+	if len(resp.TemplateData) > 0 {
+		if err := json.Unmarshal(resp.TemplateData, &tplData); err != nil {
+			return nil, err
+		}
+	}
+
+	return &plugincomponent.Deployment{
+		Any:         resp.Result,
+		TemplateVal: tplData,
+	}, nil
 }
 
 func (c *platformClient) DefaultReleaserFunc() interface{} {
@@ -362,7 +373,7 @@ func (s *platformServer) Deploy(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, _, err := callDynamicFuncAny2(s.Impl.DeployFunc(), args.Args,
+	encoded, raw, err := callDynamicFuncAny2(s.Impl.DeployFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Typed(internal),
 		argmapper.Typed(ctx),
@@ -371,7 +382,13 @@ func (s *platformServer) Deploy(
 		return nil, err
 	}
 
-	return &proto.Deploy_Resp{Result: encoded}, nil
+	result := &proto.Deploy_Resp{Result: encoded}
+	result.TemplateData, err = templateData(raw)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 func (s *platformServer) DefaultReleaserSpec(

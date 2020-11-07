@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
@@ -134,8 +135,17 @@ func (c *registryClient) push(
 		return nil, err
 	}
 
-	// We return the *any.Any directly.
-	return &plugincomponent.Artifact{Any: resp.Result}, nil
+	var tplData map[string]interface{}
+	if len(resp.TemplateData) > 0 {
+		if err := json.Unmarshal(resp.TemplateData, &tplData); err != nil {
+			return nil, err
+		}
+	}
+
+	return &plugincomponent.Artifact{
+		Any:         resp.Result,
+		TemplateVal: tplData,
+	}, nil
 }
 
 // registryServer is a gRPC server that the client talks to and calls a
@@ -190,7 +200,7 @@ func (s *registryServer) Push(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, _, err := callDynamicFuncAny2(s.Impl.PushFunc(), args.Args,
+	encoded, raw, err := callDynamicFuncAny2(s.Impl.PushFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -200,7 +210,13 @@ func (s *registryServer) Push(
 		return nil, err
 	}
 
-	return &proto.Push_Resp{Result: encoded}, nil
+	result := &proto.Push_Resp{Result: encoded}
+	result.TemplateData, err = templateData(raw)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 var (

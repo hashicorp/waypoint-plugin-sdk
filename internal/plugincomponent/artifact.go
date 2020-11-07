@@ -9,14 +9,18 @@ import (
 
 // Artifact implements component.Artifact.
 type Artifact struct {
-	Any       *any.Any
-	LabelsVal map[string]string
+	Any         *any.Any
+	LabelsVal   map[string]string
+	TemplateVal map[string]interface{}
 }
 
 func (c *Artifact) Proto() proto.Message { return c.Any }
 
 func (c *Artifact) Labels() map[string]string { return c.LabelsVal }
 
+func (c *Artifact) TemplateData() map[string]interface{} { return c.TemplateVal }
+
 var (
 	_ component.Artifact = (*Artifact)(nil)
+	_ component.Template = (*Artifact)(nil)
 )

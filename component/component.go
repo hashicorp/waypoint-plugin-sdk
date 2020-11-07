@@ -171,3 +171,14 @@ type Release interface {
 	// URL is the URL to access this release.
 	URL() string
 }
+
+// Template can be implemented by Artifact, Deployment, and Release. This
+// will expose this information as available variables in the HCL configuration
+// as well as functions in the `template`-prefixed family, such as `templatefile`.
+//
+// If Template is NOT implemented, we will automatically infer template data
+// based on exported variables of the result value. This may not be desirable
+// in which case you should implement Template and return nil.
+type Template interface {
+	TemplateData() map[string]interface{}
+}

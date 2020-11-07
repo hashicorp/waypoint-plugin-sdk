@@ -10,11 +10,16 @@ import (
 
 // Release implements component.Release.
 type Release struct {
-	Any     *any.Any
-	Release *pb.Release
+	Any         *any.Any
+	Release     *pb.Release
+	TemplateVal map[string]interface{}
 }
 
-func (c *Release) Proto() proto.Message { return c.Any }
-func (c *Release) URL() string          { return c.Release.Url }
+func (c *Release) Proto() proto.Message                 { return c.Any }
+func (c *Release) URL() string                          { return c.Release.Url }
+func (c *Release) TemplateData() map[string]interface{} { return c.TemplateVal }
 
-var _ component.Release = (*Release)(nil)
+var (
+	_ component.Release  = (*Release)(nil)
+	_ component.Template = (*Release)(nil)
+)
