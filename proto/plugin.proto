@@ -507,3 +507,40 @@ message Release {
     bytes template_data = 3;
   }
 }
+
+/********************************************************************
+* Config Sourcer Plugin Service
+********************************************************************/
+
+// ConfigSourcer is a serivce that reads configuration for the application.
+service ConfigSourcer {
+  rpc ReadSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Read(FuncSpec.Args) returns (ConfigSource.ReadResponse);
+
+  rpc StopSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Stop(FuncSpec.Args) returns (google.protobuf.Empty);
+}
+
+message ConfigSource {
+  message ReadResponse {
+    // values should be exactly equivalent in length to the list of
+    // variable requests given to the Read function.
+    repeated Value values = 1;
+  }
+
+  message Value {
+    // name must match the input name or the entrypoint will ignore it.
+    string name = 1;
+
+    oneof result {
+      // error is an error retrieving this value. Sourcers may also return
+      // an error from the entire Read function. The benefit of granular
+      // errors is that the runtime may be able to fallback to a default.
+      google.rpc.Status error = 2;
+
+      // value must be a string value for the config since we currently
+      // only support environment variables.
+      string value = 3;
+    }
+  }
+}
