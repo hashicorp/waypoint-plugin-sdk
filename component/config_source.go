@@ -31,3 +31,11 @@ type ConfigSourcer interface {
 	// The stop function should stop any background processes started with Read.
 	StopFunc() interface{}
 }
+
+// ConfigRequest is sent to ReadFunc for ConfigSourcer to represent a
+// single configuration variable that was requested. The ReadFunc parameters
+// should have a `[]*ConfigRequest` parameter for these.
+type ConfigRequest struct {
+	Name   string
+	Config map[string]string
+}

@@ -156,6 +156,19 @@ type JobInfo struct {
 	Workspace string
 }
 
+// DeploymentInfo is available to some plugins to get information about the
+// deployment.
+//
+// This is currently only available to ConfigSourcer and provides information
+// about the running deployment.
+type DeploymentInfo struct {
+	// ComponentName is the name of the plugin that launched this deployment.
+	ComponentName string
+
+	// Labels of the deployment
+	Labels map[string]string
+}
+
 type Artifact interface {
 	// Labels are the labels to set. These will overwrite any conflicting
 	// labels on the value. Please namespace the labels you set. The recommended
