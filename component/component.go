@@ -28,6 +28,7 @@ const (
 	LogViewerType                  // LogViewer
 	AuthenticatorType              // Authenticator
 	MapperType                     // Mapper
+	ConfigSourcerType              // ConfigSourcer
 	maxType
 )
 
@@ -41,6 +42,7 @@ var TypeMap = map[Type]interface{}{
 	LogPlatformType:    (*LogPlatform)(nil),
 	LogViewerType:      (*LogViewer)(nil),
 	AuthenticatorType:  (*Authenticator)(nil),
+	ConfigSourcerType:  (*ConfigSourcer)(nil),
 }
 
 // Builder is responsible for building an artifact from source.
