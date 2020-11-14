@@ -33,6 +33,9 @@ func ForType(t component.Type) interface{} {
 	case component.AuthenticatorType:
 		return &Authenticator{}
 
+	case component.ConfigSourcerType:
+		return &ConfigSourcer{}
+
 	default:
 		return nil
 	}
