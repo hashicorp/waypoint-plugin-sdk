@@ -140,6 +140,18 @@ func documentation(impl interface{}) (*pb.Config_Documentation, error) {
 		}
 	}
 
+	for _, f := range d.TemplateFields() {
+		v.TemplateFields[f.Field] = &pb.Config_FieldDocumentation{
+			Name:     f.Field,
+			Type:     f.Type,
+			Default:  f.Default,
+			Synopsis: f.Synopsis,
+			Summary:  f.Summary,
+			EnvVar:   f.EnvVar,
+			Optional: f.Optional,
+		}
+	}
+
 	for _, m := range dets.Mappers {
 		v.Mappers = append(v.Mappers, &pb.Config_MapperDocumentation{
 			Input:       m.Input,
@@ -171,6 +183,18 @@ func documentationCall(ctx context.Context, c configurableClient) (*docs.Documen
 
 	for _, f := range resp.Fields {
 		d.OverrideField(&docs.FieldDocs{
+			Field:    f.Name,
+			Type:     f.Type,
+			Default:  f.Default,
+			Synopsis: f.Synopsis,
+			Summary:  f.Summary,
+			Optional: f.Optional,
+			EnvVar:   f.EnvVar,
+		})
+	}
+
+	for _, f := range resp.TemplateFields {
+		d.OverrideTemplateField(&docs.FieldDocs{
 			Field:    f.Name,
 			Type:     f.Type,
 			Default:  f.Default,
