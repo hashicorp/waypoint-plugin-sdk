@@ -28,6 +28,7 @@ const (
 	LogViewerType                  // LogViewer
 	AuthenticatorType              // Authenticator
 	MapperType                     // Mapper
+	ConfigSourcerType              // ConfigSourcer
 	maxType
 )
 
@@ -41,6 +42,7 @@ var TypeMap = map[Type]interface{}{
 	LogPlatformType:    (*LogPlatform)(nil),
 	LogViewerType:      (*LogViewer)(nil),
 	AuthenticatorType:  (*Authenticator)(nil),
+	ConfigSourcerType:  (*ConfigSourcer)(nil),
 }
 
 // Builder is responsible for building an artifact from source.
@@ -154,6 +156,19 @@ type JobInfo struct {
 	// Workspace is the workspace that this job is executing in. This should
 	// be used by plugins to properly isolate resources from each other.
 	Workspace string
+}
+
+// DeploymentInfo is available to some plugins to get information about the
+// deployment.
+//
+// This is currently only available to ConfigSourcer and provides information
+// about the running deployment.
+type DeploymentInfo struct {
+	// ComponentName is the name of the plugin that launched this deployment.
+	ComponentName string
+
+	// Labels of the deployment
+	Labels map[string]string
 }
 
 type Artifact interface {
