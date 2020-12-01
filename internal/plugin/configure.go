@@ -121,11 +121,12 @@ func documentation(impl interface{}) (*pb.Config_Documentation, error) {
 	dets := d.Details()
 
 	v := &pb.Config_Documentation{
-		Description: dets.Description,
-		Example:     dets.Example,
-		Input:       dets.Input,
-		Output:      dets.Output,
-		Fields:      make(map[string]*pb.Config_FieldDocumentation),
+		Description:    dets.Description,
+		Example:        dets.Example,
+		Input:          dets.Input,
+		Output:         dets.Output,
+		Fields:         make(map[string]*pb.Config_FieldDocumentation),
+		TemplateFields: make(map[string]*pb.Config_FieldDocumentation),
 	}
 
 	for _, f := range d.Fields() {
