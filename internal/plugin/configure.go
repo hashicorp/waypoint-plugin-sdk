@@ -121,15 +121,28 @@ func documentation(impl interface{}) (*pb.Config_Documentation, error) {
 	dets := d.Details()
 
 	v := &pb.Config_Documentation{
-		Description: dets.Description,
-		Example:     dets.Example,
-		Input:       dets.Input,
-		Output:      dets.Output,
-		Fields:      make(map[string]*pb.Config_FieldDocumentation),
+		Description:    dets.Description,
+		Example:        dets.Example,
+		Input:          dets.Input,
+		Output:         dets.Output,
+		Fields:         make(map[string]*pb.Config_FieldDocumentation),
+		TemplateFields: make(map[string]*pb.Config_FieldDocumentation),
 	}
 
 	for _, f := range d.Fields() {
 		v.Fields[f.Field] = &pb.Config_FieldDocumentation{
+			Name:     f.Field,
+			Type:     f.Type,
+			Default:  f.Default,
+			Synopsis: f.Synopsis,
+			Summary:  f.Summary,
+			EnvVar:   f.EnvVar,
+			Optional: f.Optional,
+		}
+	}
+
+	for _, f := range d.TemplateFields() {
+		v.TemplateFields[f.Field] = &pb.Config_FieldDocumentation{
 			Name:     f.Field,
 			Type:     f.Type,
 			Default:  f.Default,
@@ -171,6 +184,18 @@ func documentationCall(ctx context.Context, c configurableClient) (*docs.Documen
 
 	for _, f := range resp.Fields {
 		d.OverrideField(&docs.FieldDocs{
+			Field:    f.Name,
+			Type:     f.Type,
+			Default:  f.Default,
+			Synopsis: f.Synopsis,
+			Summary:  f.Summary,
+			Optional: f.Optional,
+			EnvVar:   f.EnvVar,
+		})
+	}
+
+	for _, f := range resp.TemplateFields {
+		d.OverrideTemplateField(&docs.FieldDocs{
 			Field:    f.Name,
 			Type:     f.Type,
 			Default:  f.Default,

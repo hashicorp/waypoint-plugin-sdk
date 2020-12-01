@@ -35,20 +35,21 @@ type FieldDocs struct {
 }
 
 type Documentation struct {
-	description string
-	example     string
-	input       string
-	output      string
-	fields      map[string]*FieldDocs
-	mappers     []Mapper
+	description    string
+	example        string
+	input          string
+	output         string
+	fields         map[string]*FieldDocs
+	templateFields map[string]*FieldDocs
+	mappers        []Mapper
 }
 
 type Option func(*Documentation) error
 
 func New(opts ...Option) (*Documentation, error) {
 	var d Documentation
-
 	d.fields = make(map[string]*FieldDocs)
+	d.templateFields = make(map[string]*FieldDocs)
 
 	for _, opt := range opts {
 		err := opt(&d)
@@ -197,8 +198,39 @@ func (d *Documentation) SetField(name, synposis string, opts ...DocOption) error
 	return nil
 }
 
+func (d *Documentation) SetTemplateField(name, synposis string, opts ...DocOption) error {
+	field, ok := d.fields[name]
+	if !ok {
+		field = &FieldDocs{
+			Field:    name,
+			Synopsis: synposis,
+		}
+		d.fields[name] = field
+	} else {
+		field.Synopsis = synposis
+	}
+
+	for _, o := range opts {
+		switch v := o.(type) {
+		case SummaryString:
+			field.Summary = string(v)
+		case Default:
+			field.Default = string(v)
+		case EnvVar:
+			field.EnvVar = string(v)
+		}
+	}
+
+	return nil
+}
+
 func (d *Documentation) OverrideField(f *FieldDocs) error {
 	d.fields[f.Field] = f
+	return nil
+}
+
+func (d *Documentation) OverrideTemplateField(f *FieldDocs) error {
+	d.templateFields[f.Field] = f
 	return nil
 }
 
@@ -225,6 +257,21 @@ func (d *Documentation) Fields() []*FieldDocs {
 
 	for _, k := range keys {
 		fields = append(fields, d.fields[k])
+	}
+
+	return fields
+}
+
+func (d *Documentation) TemplateFields() []*FieldDocs {
+	var keys []string
+	for k := range d.templateFields {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var fields []*FieldDocs
+	for _, k := range keys {
+		fields = append(fields, d.templateFields[k])
 	}
 
 	return fields

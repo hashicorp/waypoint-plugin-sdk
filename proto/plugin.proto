@@ -190,6 +190,7 @@ message Config {
     string input = 3;
     string output = 4;
     map<string, FieldDocumentation> fields = 5;
+    map<string, FieldDocumentation> template_fields = 7;
     repeated MapperDocumentation mappers = 6;
   }
 }

@@ -195,5 +195,11 @@ type Release interface {
 // based on exported variables of the result value. This may not be desirable
 // in which case you should implement Template and return nil.
 type Template interface {
+	// TemplateData returns the template information to make available.
+	//
+	// This should return empty values for available keys even if the
+	// struct it is attached to is nil. This enables the automated documentation
+	// generator to work properly. Do not return "nil" when there is no data!
+	// And expect that this will be called on nil or empty values.
 	TemplateData() map[string]interface{}
 }
