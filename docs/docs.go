@@ -35,12 +35,13 @@ type FieldDocs struct {
 }
 
 type Documentation struct {
-	description string
-	example     string
-	input       string
-	output      string
-	fields      map[string]*FieldDocs
-	mappers     []Mapper
+	description    string
+	example        string
+	input          string
+	output         string
+	fields         map[string]*FieldDocs
+	templateFields map[string]*FieldDocs
+	mappers        []Mapper
 }
 
 type Option func(*Documentation) error
@@ -225,6 +226,21 @@ func (d *Documentation) Fields() []*FieldDocs {
 
 	for _, k := range keys {
 		fields = append(fields, d.fields[k])
+	}
+
+	return fields
+}
+
+func (d *Documentation) TemplateFields() []*FieldDocs {
+	var keys []string
+	for k := range d.templateFields {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var fields []*FieldDocs
+	for _, k := range keys {
+		fields = append(fields, d.templateFields[k])
 	}
 
 	return fields
