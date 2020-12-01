@@ -198,6 +198,32 @@ func (d *Documentation) SetField(name, synposis string, opts ...DocOption) error
 	return nil
 }
 
+func (d *Documentation) SetTemplateField(name, synposis string, opts ...DocOption) error {
+	field, ok := d.fields[name]
+	if !ok {
+		field = &FieldDocs{
+			Field:    name,
+			Synopsis: synposis,
+		}
+		d.fields[name] = field
+	} else {
+		field.Synopsis = synposis
+	}
+
+	for _, o := range opts {
+		switch v := o.(type) {
+		case SummaryString:
+			field.Summary = string(v)
+		case Default:
+			field.Default = string(v)
+		case EnvVar:
+			field.EnvVar = string(v)
+		}
+	}
+
+	return nil
+}
+
 func (d *Documentation) OverrideField(f *FieldDocs) error {
 	d.fields[f.Field] = f
 	return nil
