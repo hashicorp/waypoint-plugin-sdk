@@ -96,19 +96,29 @@ func Documentation(c interface{}) (*docs.Documentation, error) {
 		return d.Documentation()
 	}
 
+	// Build up options we'll use to build our documentation implicitly
+	var opts []docs.Option
+
+	// Get the configuration value if we have one.
 	if c, ok := c.(Configurable); ok {
-		// Get the configuration value
 		v, err := c.Config()
-
-		// If there is no configuration structure for this component,
-		// then there is really no documentation, so just return an empty
-		// docs structure.
-		if err != nil || v == nil {
-			return docs.New()
+		if err == nil && v != nil {
+			opts = append(opts, docs.FromConfig(v))
 		}
-
-		return docs.New(docs.FromConfig(v))
 	}
 
-	return nil, nil
+	// Determine if we have a funciton type to populate
+	switch typ := c.(type) {
+	case Builder:
+		opts = append(opts, docs.FromFunc(typ.BuildFunc()))
+
+	case Registry:
+		opts = append(opts, docs.FromFunc(typ.PushFunc()))
+
+	case Platform:
+		opts = append(opts, docs.FromFunc(typ.DeployFunc()))
+	}
+
+	// Return. If we implemented nothing this will just be an empty docs value.
+	return docs.New(opts...)
 }
