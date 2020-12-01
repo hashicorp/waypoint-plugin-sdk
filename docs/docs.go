@@ -203,6 +203,11 @@ func (d *Documentation) OverrideField(f *FieldDocs) error {
 	return nil
 }
 
+func (d *Documentation) OverrideTemplateField(f *FieldDocs) error {
+	d.templateFields[f.Field] = f
+	return nil
+}
+
 func (d *Documentation) Details() *Details {
 	return &Details{
 		Example:     d.example,
