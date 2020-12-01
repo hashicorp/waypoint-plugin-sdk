@@ -19,7 +19,7 @@ import (
 func FromFunc(v interface{}) Option {
 	return func(d *Documentation) error {
 		v := reflect.ValueOf(v)
-		if v.Kind() != reflect.Func {
+		if !v.IsValid() || v.Kind() != reflect.Func {
 			return nil
 		}
 
