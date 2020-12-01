@@ -48,8 +48,8 @@ type Option func(*Documentation) error
 
 func New(opts ...Option) (*Documentation, error) {
 	var d Documentation
-
 	d.fields = make(map[string]*FieldDocs)
+	d.templateFields = make(map[string]*FieldDocs)
 
 	for _, opt := range opts {
 		err := opt(&d)
