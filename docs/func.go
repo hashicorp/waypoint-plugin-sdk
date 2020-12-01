@@ -51,10 +51,16 @@ func funcExtractTemplateFields(d *Documentation, t reflect.Type) error {
 	// type or an error. If it is an error we'll catch it below.
 	out := t.Out(0)
 	for {
+		// If the output type implements our template interface already
+		// then we can just use that now.
 		if out.Implements(templateType) {
 			return funcExtractTemplateFieldsFromImpl(d, out)
 		}
 
+		// If this is a pointer, we want to unwrap it and try again. We
+		// try again cause its possible for bare values to implement
+		// the interface. We loop here because people could in theory
+		// do `****struct{}` although its nonsensical.
 		if out.Kind() == reflect.Ptr {
 			out = out.Elem()
 			continue
@@ -112,7 +118,8 @@ func funcExtractTemplateFieldsFromImpl(d *Documentation, t reflect.Type) error {
 }
 
 // templateType is the type implemented by results that support
-// template data.
+// template data. We don't use component.TemplateData directly because
+// we are avoiding circular imports.
 var templateType = reflect.TypeOf((*interface {
 	TemplateData() map[string]interface{}
 })(nil)).Elem()
