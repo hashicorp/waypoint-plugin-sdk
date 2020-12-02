@@ -191,6 +191,7 @@ message Config {
     string output = 4;
     map<string, FieldDocumentation> fields = 5;
     map<string, FieldDocumentation> template_fields = 7;
+    map<string, FieldDocumentation> request_fields = 8;
     repeated MapperDocumentation mappers = 6;
   }
 }
@@ -515,6 +516,10 @@ message Release {
 
 // ConfigSourcer is a serivce that reads configuration for the application.
 service ConfigSourcer {
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
   rpc ReadSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc Read(FuncSpec.Args) returns (ConfigSource.ReadResponse);
 
