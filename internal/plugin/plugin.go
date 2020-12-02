@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-argmapper"
 )
 
 // Handshake is a common handshake that is shared by plugin and host.
@@ -40,6 +40,7 @@ func Plugins(opts ...Option) map[int]plugin.PluginSet {
 			"log_platform":   &LogPlatformPlugin{},
 			"registry":       &RegistryPlugin{},
 			"releasemanager": &ReleaseManagerPlugin{},
+			"config_sourcer": &ConfigSourcerPlugin{},
 		},
 	}
 

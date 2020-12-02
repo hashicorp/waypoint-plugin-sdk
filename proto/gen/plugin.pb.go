@@ -4023,8 +4023,24 @@ var file_plugin_proto_rawDesc = []byte{
 	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72,
 	0x67, 0x73, 0x1a, 0x24, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
 	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x52, 0x65, 0x6c, 0x65,
-	0x61, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x32, 0xc4, 0x02, 0x0a, 0x0d, 0x43, 0x6f, 0x6e,
-	0x66, 0x69, 0x67, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x72, 0x12, 0x44, 0x0a, 0x08, 0x52, 0x65,
+	0x61, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x32, 0xc4, 0x04, 0x0a, 0x0d, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x72, 0x12, 0x51, 0x0a, 0x0c, 0x43, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70,
+	0x74, 0x79, 0x1a, 0x29, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77,
+	0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66,
+	0x69, 0x67, 0x2e, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x54, 0x0a,
+	0x09, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65, 0x12, 0x2f, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x75, 0x72, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x12, 0x55, 0x0a, 0x0d, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2c, 0x2e, 0x68,
+	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x6f, 0x63,
+	0x75, 0x6d, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x44, 0x0a, 0x08, 0x52, 0x65,
 	0x61, 0x64, 0x53, 0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20,
 	0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f,
@@ -4228,76 +4244,82 @@ var file_plugin_proto_depIdxs = []int32{
 	27,  // 94: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
 	66,  // 95: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:input_type -> google.protobuf.Empty
 	27,  // 96: hashicorp.waypoint.sdk.ReleaseManager.Release:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	66,  // 97: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:input_type -> google.protobuf.Empty
-	27,  // 98: hashicorp.waypoint.sdk.ConfigSourcer.Read:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	66,  // 99: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:input_type -> google.protobuf.Empty
-	27,  // 100: hashicorp.waypoint.sdk.ConfigSourcer.Stop:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	66,  // 101: hashicorp.waypoint.sdk.TerminalUIService.Output:output_type -> google.protobuf.Empty
-	38,  // 102: hashicorp.waypoint.sdk.TerminalUIService.Events:output_type -> hashicorp.waypoint.sdk.TerminalUI.Response
-	36,  // 103: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:output_type -> hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
-	54,  // 104: hashicorp.waypoint.sdk.Mapper.ListMappers:output_type -> hashicorp.waypoint.sdk.Map.ListResponse
-	53,  // 105: hashicorp.waypoint.sdk.Mapper.Map:output_type -> hashicorp.waypoint.sdk.Map.Response
-	4,   // 106: hashicorp.waypoint.sdk.Builder.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	35,  // 107: hashicorp.waypoint.sdk.Builder.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	1,   // 108: hashicorp.waypoint.sdk.Builder.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 109: hashicorp.waypoint.sdk.Builder.ValidateAuth:output_type -> google.protobuf.Empty
-	1,   // 110: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	29,  // 111: hashicorp.waypoint.sdk.Builder.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	66,  // 112: hashicorp.waypoint.sdk.Builder.Configure:output_type -> google.protobuf.Empty
-	32,  // 113: hashicorp.waypoint.sdk.Builder.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	1,   // 114: hashicorp.waypoint.sdk.Builder.BuildSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	55,  // 115: hashicorp.waypoint.sdk.Builder.Build:output_type -> hashicorp.waypoint.sdk.Build.Resp
-	4,   // 116: hashicorp.waypoint.sdk.Platform.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	35,  // 117: hashicorp.waypoint.sdk.Platform.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	1,   // 118: hashicorp.waypoint.sdk.Platform.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 119: hashicorp.waypoint.sdk.Platform.ValidateAuth:output_type -> google.protobuf.Empty
-	1,   // 120: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	29,  // 121: hashicorp.waypoint.sdk.Platform.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	66,  // 122: hashicorp.waypoint.sdk.Platform.Configure:output_type -> google.protobuf.Empty
-	32,  // 123: hashicorp.waypoint.sdk.Platform.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	1,   // 124: hashicorp.waypoint.sdk.Platform.DeploySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	58,  // 125: hashicorp.waypoint.sdk.Platform.Deploy:output_type -> hashicorp.waypoint.sdk.Deploy.Resp
-	1,   // 126: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	57,  // 127: hashicorp.waypoint.sdk.Platform.DefaultReleaser:output_type -> hashicorp.waypoint.sdk.DefaultReleaser.Resp
-	4,   // 128: hashicorp.waypoint.sdk.Platform.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	1,   // 129: hashicorp.waypoint.sdk.Platform.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 130: hashicorp.waypoint.sdk.Platform.Destroy:output_type -> google.protobuf.Empty
-	4,   // 131: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	1,   // 132: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 133: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:output_type -> google.protobuf.Empty
-	4,   // 134: hashicorp.waypoint.sdk.Platform.IsLogPlatform:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 135: hashicorp.waypoint.sdk.Registry.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	35,  // 136: hashicorp.waypoint.sdk.Registry.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	1,   // 137: hashicorp.waypoint.sdk.Registry.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 138: hashicorp.waypoint.sdk.Registry.ValidateAuth:output_type -> google.protobuf.Empty
-	1,   // 139: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	29,  // 140: hashicorp.waypoint.sdk.Registry.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	66,  // 141: hashicorp.waypoint.sdk.Registry.Configure:output_type -> google.protobuf.Empty
-	32,  // 142: hashicorp.waypoint.sdk.Registry.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	1,   // 143: hashicorp.waypoint.sdk.Registry.PushSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	59,  // 144: hashicorp.waypoint.sdk.Registry.Push:output_type -> hashicorp.waypoint.sdk.Push.Resp
-	4,   // 145: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	35,  // 146: hashicorp.waypoint.sdk.ReleaseManager.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	1,   // 147: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 148: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:output_type -> google.protobuf.Empty
-	1,   // 149: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	29,  // 150: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	66,  // 151: hashicorp.waypoint.sdk.ReleaseManager.Configure:output_type -> google.protobuf.Empty
-	32,  // 152: hashicorp.waypoint.sdk.ReleaseManager.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	4,   // 153: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	1,   // 154: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 155: hashicorp.waypoint.sdk.ReleaseManager.Destroy:output_type -> google.protobuf.Empty
-	4,   // 156: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	1,   // 157: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 158: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:output_type -> google.protobuf.Empty
-	1,   // 159: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	60,  // 160: hashicorp.waypoint.sdk.ReleaseManager.Release:output_type -> hashicorp.waypoint.sdk.Release.Resp
-	1,   // 161: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	61,  // 162: hashicorp.waypoint.sdk.ConfigSourcer.Read:output_type -> hashicorp.waypoint.sdk.ConfigSource.ReadResponse
-	1,   // 163: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	66,  // 164: hashicorp.waypoint.sdk.ConfigSourcer.Stop:output_type -> google.protobuf.Empty
-	101, // [101:165] is the sub-list for method output_type
-	37,  // [37:101] is the sub-list for method input_type
+	66,  // 97: hashicorp.waypoint.sdk.ConfigSourcer.ConfigStruct:input_type -> google.protobuf.Empty
+	28,  // 98: hashicorp.waypoint.sdk.ConfigSourcer.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	66,  // 99: hashicorp.waypoint.sdk.ConfigSourcer.Documentation:input_type -> google.protobuf.Empty
+	66,  // 100: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:input_type -> google.protobuf.Empty
+	27,  // 101: hashicorp.waypoint.sdk.ConfigSourcer.Read:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	66,  // 102: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:input_type -> google.protobuf.Empty
+	27,  // 103: hashicorp.waypoint.sdk.ConfigSourcer.Stop:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	66,  // 104: hashicorp.waypoint.sdk.TerminalUIService.Output:output_type -> google.protobuf.Empty
+	38,  // 105: hashicorp.waypoint.sdk.TerminalUIService.Events:output_type -> hashicorp.waypoint.sdk.TerminalUI.Response
+	36,  // 106: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:output_type -> hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
+	54,  // 107: hashicorp.waypoint.sdk.Mapper.ListMappers:output_type -> hashicorp.waypoint.sdk.Map.ListResponse
+	53,  // 108: hashicorp.waypoint.sdk.Mapper.Map:output_type -> hashicorp.waypoint.sdk.Map.Response
+	4,   // 109: hashicorp.waypoint.sdk.Builder.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	35,  // 110: hashicorp.waypoint.sdk.Builder.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,   // 111: hashicorp.waypoint.sdk.Builder.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 112: hashicorp.waypoint.sdk.Builder.ValidateAuth:output_type -> google.protobuf.Empty
+	1,   // 113: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	29,  // 114: hashicorp.waypoint.sdk.Builder.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	66,  // 115: hashicorp.waypoint.sdk.Builder.Configure:output_type -> google.protobuf.Empty
+	32,  // 116: hashicorp.waypoint.sdk.Builder.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	1,   // 117: hashicorp.waypoint.sdk.Builder.BuildSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	55,  // 118: hashicorp.waypoint.sdk.Builder.Build:output_type -> hashicorp.waypoint.sdk.Build.Resp
+	4,   // 119: hashicorp.waypoint.sdk.Platform.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	35,  // 120: hashicorp.waypoint.sdk.Platform.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,   // 121: hashicorp.waypoint.sdk.Platform.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 122: hashicorp.waypoint.sdk.Platform.ValidateAuth:output_type -> google.protobuf.Empty
+	1,   // 123: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	29,  // 124: hashicorp.waypoint.sdk.Platform.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	66,  // 125: hashicorp.waypoint.sdk.Platform.Configure:output_type -> google.protobuf.Empty
+	32,  // 126: hashicorp.waypoint.sdk.Platform.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	1,   // 127: hashicorp.waypoint.sdk.Platform.DeploySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	58,  // 128: hashicorp.waypoint.sdk.Platform.Deploy:output_type -> hashicorp.waypoint.sdk.Deploy.Resp
+	1,   // 129: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	57,  // 130: hashicorp.waypoint.sdk.Platform.DefaultReleaser:output_type -> hashicorp.waypoint.sdk.DefaultReleaser.Resp
+	4,   // 131: hashicorp.waypoint.sdk.Platform.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,   // 132: hashicorp.waypoint.sdk.Platform.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 133: hashicorp.waypoint.sdk.Platform.Destroy:output_type -> google.protobuf.Empty
+	4,   // 134: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,   // 135: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 136: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:output_type -> google.protobuf.Empty
+	4,   // 137: hashicorp.waypoint.sdk.Platform.IsLogPlatform:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 138: hashicorp.waypoint.sdk.Registry.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	35,  // 139: hashicorp.waypoint.sdk.Registry.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,   // 140: hashicorp.waypoint.sdk.Registry.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 141: hashicorp.waypoint.sdk.Registry.ValidateAuth:output_type -> google.protobuf.Empty
+	1,   // 142: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	29,  // 143: hashicorp.waypoint.sdk.Registry.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	66,  // 144: hashicorp.waypoint.sdk.Registry.Configure:output_type -> google.protobuf.Empty
+	32,  // 145: hashicorp.waypoint.sdk.Registry.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	1,   // 146: hashicorp.waypoint.sdk.Registry.PushSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	59,  // 147: hashicorp.waypoint.sdk.Registry.Push:output_type -> hashicorp.waypoint.sdk.Push.Resp
+	4,   // 148: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	35,  // 149: hashicorp.waypoint.sdk.ReleaseManager.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	1,   // 150: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 151: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:output_type -> google.protobuf.Empty
+	1,   // 152: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	29,  // 153: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	66,  // 154: hashicorp.waypoint.sdk.ReleaseManager.Configure:output_type -> google.protobuf.Empty
+	32,  // 155: hashicorp.waypoint.sdk.ReleaseManager.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	4,   // 156: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,   // 157: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 158: hashicorp.waypoint.sdk.ReleaseManager.Destroy:output_type -> google.protobuf.Empty
+	4,   // 159: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	1,   // 160: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 161: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:output_type -> google.protobuf.Empty
+	1,   // 162: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	60,  // 163: hashicorp.waypoint.sdk.ReleaseManager.Release:output_type -> hashicorp.waypoint.sdk.Release.Resp
+	29,  // 164: hashicorp.waypoint.sdk.ConfigSourcer.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	66,  // 165: hashicorp.waypoint.sdk.ConfigSourcer.Configure:output_type -> google.protobuf.Empty
+	32,  // 166: hashicorp.waypoint.sdk.ConfigSourcer.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	1,   // 167: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	61,  // 168: hashicorp.waypoint.sdk.ConfigSourcer.Read:output_type -> hashicorp.waypoint.sdk.ConfigSource.ReadResponse
+	1,   // 169: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	66,  // 170: hashicorp.waypoint.sdk.ConfigSourcer.Stop:output_type -> google.protobuf.Empty
+	104, // [104:171] is the sub-list for method output_type
+	37,  // [37:104] is the sub-list for method input_type
 	37,  // [37:37] is the sub-list for extension type_name
 	37,  // [37:37] is the sub-list for extension extendee
 	0,   // [0:37] is the sub-list for field type_name
@@ -7492,6 +7514,9 @@ var _ReleaseManager_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ConfigSourcerClient interface {
+	ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error)
+	Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error)
 	ReadSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
 	Read(ctx context.Context, in *FuncSpec_Args, opts ...grpc.CallOption) (*ConfigSource_ReadResponse, error)
 	StopSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error)
@@ -7504,6 +7529,33 @@ type configSourcerClient struct {
 
 func NewConfigSourcerClient(cc grpc.ClientConnInterface) ConfigSourcerClient {
 	return &configSourcerClient{cc}
+}
+
+func (c *configSourcerClient) ConfigStruct(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_StructResp, error) {
+	out := new(Config_StructResp)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ConfigSourcer/ConfigStruct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configSourcerClient) Configure(ctx context.Context, in *Config_ConfigureRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ConfigSourcer/Configure", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configSourcerClient) Documentation(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Config_Documentation, error) {
+	out := new(Config_Documentation)
+	err := c.cc.Invoke(ctx, "/hashicorp.waypoint.sdk.ConfigSourcer/Documentation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *configSourcerClient) ReadSpec(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*FuncSpec, error) {
@@ -7544,6 +7596,9 @@ func (c *configSourcerClient) Stop(ctx context.Context, in *FuncSpec_Args, opts 
 
 // ConfigSourcerServer is the server API for ConfigSourcer service.
 type ConfigSourcerServer interface {
+	ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error)
+	Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error)
+	Documentation(context.Context, *empty.Empty) (*Config_Documentation, error)
 	ReadSpec(context.Context, *empty.Empty) (*FuncSpec, error)
 	Read(context.Context, *FuncSpec_Args) (*ConfigSource_ReadResponse, error)
 	StopSpec(context.Context, *empty.Empty) (*FuncSpec, error)
@@ -7554,6 +7609,15 @@ type ConfigSourcerServer interface {
 type UnimplementedConfigSourcerServer struct {
 }
 
+func (*UnimplementedConfigSourcerServer) ConfigStruct(context.Context, *empty.Empty) (*Config_StructResp, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ConfigStruct not implemented")
+}
+func (*UnimplementedConfigSourcerServer) Configure(context.Context, *Config_ConfigureRequest) (*empty.Empty, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Configure not implemented")
+}
+func (*UnimplementedConfigSourcerServer) Documentation(context.Context, *empty.Empty) (*Config_Documentation, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method Documentation not implemented")
+}
 func (*UnimplementedConfigSourcerServer) ReadSpec(context.Context, *empty.Empty) (*FuncSpec, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ReadSpec not implemented")
 }
@@ -7569,6 +7633,60 @@ func (*UnimplementedConfigSourcerServer) Stop(context.Context, *FuncSpec_Args) (
 
 func RegisterConfigSourcerServer(s *grpc.Server, srv ConfigSourcerServer) {
 	s.RegisterService(&_ConfigSourcer_serviceDesc, srv)
+}
+
+func _ConfigSourcer_ConfigStruct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigSourcerServer).ConfigStruct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ConfigSourcer/ConfigStruct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigSourcerServer).ConfigStruct(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigSourcer_Configure_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Config_ConfigureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigSourcerServer).Configure(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ConfigSourcer/Configure",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigSourcerServer).Configure(ctx, req.(*Config_ConfigureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigSourcer_Documentation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigSourcerServer).Documentation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hashicorp.waypoint.sdk.ConfigSourcer/Documentation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigSourcerServer).Documentation(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ConfigSourcer_ReadSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -7647,6 +7765,18 @@ var _ConfigSourcer_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "hashicorp.waypoint.sdk.ConfigSourcer",
 	HandlerType: (*ConfigSourcerServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ConfigStruct",
+			Handler:    _ConfigSourcer_ConfigStruct_Handler,
+		},
+		{
+			MethodName: "Configure",
+			Handler:    _ConfigSourcer_Configure_Handler,
+		},
+		{
+			MethodName: "Documentation",
+			Handler:    _ConfigSourcer_Documentation_Handler,
+		},
 		{
 			MethodName: "ReadSpec",
 			Handler:    _ConfigSourcer_ReadSpec_Handler,
