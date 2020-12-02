@@ -41,6 +41,7 @@ type Documentation struct {
 	output         string
 	fields         map[string]*FieldDocs
 	templateFields map[string]*FieldDocs
+	requestFields  map[string]*FieldDocs
 	mappers        []Mapper
 }
 
@@ -50,6 +51,7 @@ func New(opts ...Option) (*Documentation, error) {
 	var d Documentation
 	d.fields = make(map[string]*FieldDocs)
 	d.templateFields = make(map[string]*FieldDocs)
+	d.requestFields = make(map[string]*FieldDocs)
 
 	for _, opt := range opts {
 		err := opt(&d)
@@ -63,42 +65,52 @@ func New(opts ...Option) (*Documentation, error) {
 
 func FromConfig(v interface{}) Option {
 	return func(d *Documentation) error {
-		rv := reflect.ValueOf(v).Elem()
-		if rv.Kind() != reflect.Struct {
-			return fmt.Errorf("invalid config type, must be struct")
-		}
-
-		t := rv.Type()
-
-		for i := 0; i < t.NumField(); i++ {
-			f := t.Field(i)
-			name, ok := f.Tag.Lookup("hcl")
-			if !ok {
-				return fmt.Errorf("missing hcl tag on field: %s", f.Name)
-			}
-
-			parts := strings.Split(name, ",")
-
-			if parts[0] == "" {
-				continue
-			}
-
-			field := &FieldDocs{
-				Field: parts[0],
-				Type:  f.Type.String(),
-			}
-
-			for _, p := range parts[1:] {
-				if p == "optional" {
-					field.Optional = true
-				}
-			}
-
-			d.fields[parts[0]] = field
-		}
-
-		return nil
+		return fromConfig(v, d.fields)
 	}
+}
+
+func RequestFromStruct(v interface{}) Option {
+	return func(d *Documentation) error {
+		return fromConfig(v, d.requestFields)
+	}
+}
+
+func fromConfig(v interface{}, target map[string]*FieldDocs) error {
+	rv := reflect.ValueOf(v).Elem()
+	if rv.Kind() != reflect.Struct {
+		return fmt.Errorf("invalid config type, must be struct")
+	}
+
+	t := rv.Type()
+
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+		name, ok := f.Tag.Lookup("hcl")
+		if !ok {
+			return fmt.Errorf("missing hcl tag on field: %s", f.Name)
+		}
+
+		parts := strings.Split(name, ",")
+
+		if parts[0] == "" {
+			continue
+		}
+
+		field := &FieldDocs{
+			Field: parts[0],
+			Type:  f.Type.String(),
+		}
+
+		for _, p := range parts[1:] {
+			if p == "optional" {
+				field.Optional = true
+			}
+		}
+
+		target[parts[0]] = field
+	}
+
+	return nil
 }
 
 func formatHelp(lines ...string) string {
@@ -199,13 +211,39 @@ func (d *Documentation) SetField(name, synposis string, opts ...DocOption) error
 }
 
 func (d *Documentation) SetTemplateField(name, synposis string, opts ...DocOption) error {
-	field, ok := d.fields[name]
+	field, ok := d.templateFields[name]
 	if !ok {
 		field = &FieldDocs{
 			Field:    name,
 			Synopsis: synposis,
 		}
-		d.fields[name] = field
+		d.templateFields[name] = field
+	} else {
+		field.Synopsis = synposis
+	}
+
+	for _, o := range opts {
+		switch v := o.(type) {
+		case SummaryString:
+			field.Summary = string(v)
+		case Default:
+			field.Default = string(v)
+		case EnvVar:
+			field.EnvVar = string(v)
+		}
+	}
+
+	return nil
+}
+
+func (d *Documentation) SetRequestField(name, synposis string, opts ...DocOption) error {
+	field, ok := d.requestFields[name]
+	if !ok {
+		field = &FieldDocs{
+			Field:    name,
+			Synopsis: synposis,
+		}
+		d.requestFields[name] = field
 	} else {
 		field.Synopsis = synposis
 	}
@@ -231,6 +269,11 @@ func (d *Documentation) OverrideField(f *FieldDocs) error {
 
 func (d *Documentation) OverrideTemplateField(f *FieldDocs) error {
 	d.templateFields[f.Field] = f
+	return nil
+}
+
+func (d *Documentation) OverrideRequestField(f *FieldDocs) error {
+	d.requestFields[f.Field] = f
 	return nil
 }
 
@@ -272,6 +315,21 @@ func (d *Documentation) TemplateFields() []*FieldDocs {
 	var fields []*FieldDocs
 	for _, k := range keys {
 		fields = append(fields, d.templateFields[k])
+	}
+
+	return fields
+}
+
+func (d *Documentation) RequestFields() []*FieldDocs {
+	var keys []string
+	for k := range d.requestFields {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var fields []*FieldDocs
+	for _, k := range keys {
+		fields = append(fields, d.requestFields[k])
 	}
 
 	return fields
