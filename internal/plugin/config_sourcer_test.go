@@ -37,7 +37,7 @@ func TestConfigSourcerRead(t *testing.T) {
 	defer client.Close()
 	defer server.Stop()
 
-	raw, err := client.Dispense("config_sourcer")
+	raw, err := client.Dispense("configsourcer")
 	require.NoError(err)
 	source := raw.(component.ConfigSourcer)
 	f := source.ReadFunc().(*argmapper.Func)
@@ -76,7 +76,7 @@ func TestConfigSourcerStop(t *testing.T) {
 	defer client.Close()
 	defer server.Stop()
 
-	raw, err := client.Dispense("config_sourcer")
+	raw, err := client.Dispense("configsourcer")
 	require.NoError(err)
 	source := raw.(component.ConfigSourcer)
 	f := source.StopFunc().(*argmapper.Func)
@@ -92,7 +92,7 @@ func TestConfigSourcerStop(t *testing.T) {
 
 func TestConfigSourcerConfig(t *testing.T) {
 	mockV := &mockConfigSourcerConfigurable{}
-	testConfigurable(t, "config_sourcer", mockV, &mockV.Configurable)
+	testConfigurable(t, "configsourcer", mockV, &mockV.Configurable)
 }
 
 type mockConfigSourcerAuthenticator struct {

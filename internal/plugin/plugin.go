@@ -40,7 +40,7 @@ func Plugins(opts ...Option) map[int]plugin.PluginSet {
 			"log_platform":   &LogPlatformPlugin{},
 			"registry":       &RegistryPlugin{},
 			"releasemanager": &ReleaseManagerPlugin{},
-			"config_sourcer": &ConfigSourcerPlugin{},
+			"configsourcer":  &ConfigSourcerPlugin{},
 		},
 	}
 
