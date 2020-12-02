@@ -219,6 +219,18 @@ func documentationCall(ctx context.Context, c configurableClient) (*docs.Documen
 		})
 	}
 
+	for _, f := range resp.RequestFields {
+		d.OverrideRequestField(&docs.FieldDocs{
+			Field:    f.Name,
+			Type:     f.Type,
+			Default:  f.Default,
+			Synopsis: f.Synopsis,
+			Summary:  f.Summary,
+			Optional: f.Optional,
+			EnvVar:   f.EnvVar,
+		})
+	}
+
 	for _, m := range resp.Mappers {
 		d.AddMapper(m.Input, m.Output, m.Description)
 	}
