@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	"github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // PlatformPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -51,6 +51,10 @@ func (p *PlatformPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) e
 		},
 
 		authenticatorServer: &authenticatorServer{
+			base: base,
+			Impl: p.Impl,
+		},
+		execerServer: &execerServer{
 			base: base,
 			Impl: p.Impl,
 		},
@@ -136,6 +140,20 @@ func (p *PlatformPlugin) GRPCClient(
 		authenticator = nil
 	}
 
+	execer := &execerClient{
+		Client:  client.client,
+		Logger:  client.logger,
+		Broker:  client.broker,
+		Mappers: client.mappers,
+	}
+	if ok, err := execer.Implements(ctx); err != nil {
+		return nil, err
+	} else if ok {
+		p.Logger.Info("platform plugin capable of auth")
+	} else {
+		authenticator = nil
+	}
+
 	// Figure out what we're returning
 	var result interface{} = client
 	switch {
@@ -170,6 +188,15 @@ func (p *PlatformPlugin) GRPCClient(
 			PlatformReleaser:   client,
 			Destroyer:          destroyer,
 			WorkspaceDestroyer: wsDestroyer,
+			Documented:         client,
+		}
+	case execer != nil:
+		result = &mix_Platform_Exec{
+			Authenticator:      authenticator,
+			ConfigurableNotify: client,
+			Platform:           client,
+			PlatformReleaser:   client,
+			Execer:             execer,
 			Documented:         client,
 		}
 	default:
@@ -312,6 +339,7 @@ type platformServer struct {
 	*destroyerServer
 	*workspaceDestroyerServer
 	*authenticatorServer
+	*execerServer
 
 	Impl component.Platform
 }

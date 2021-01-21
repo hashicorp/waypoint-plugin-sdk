@@ -96,6 +96,13 @@ type Destroyer interface {
 	DestroyFunc() interface{}
 }
 
+// Exec is responsible for starting the exec plugin to allow a deployment
+// plugin to provide it's own exec functionality.
+type Execer interface {
+	// DestroyFunc should return the method handle for the destroy operation.
+	ExecFunc() interface{}
+}
+
 // WorkspaceDestroyer is called when a workspace destroy operation is
 // performed (typically via the "waypoint destroy" CLI). This can be implemented
 // by any plugin.

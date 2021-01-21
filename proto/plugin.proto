@@ -96,6 +96,25 @@ message Args {
   message LabelSet {
     map<string, string> labels = 1;
   }
+
+  // ExecSessionInfo is used to send the information about an exec plugin
+  // session.
+  message ExecSessionInfo {
+    // bidirection usd for stdin and stdout
+    uint32 stream_id = 1;
+
+    // The arguments to the command (includes the command itself)
+    repeated string args = 2;
+
+    // Indicate if the client is expecting a TTY
+    bool is_tty = 3;
+
+    // The size of the window on start, if is_tty is true
+    WindowSize initial_window = 4;
+
+    // The value of the TERM environment variable, if is_tty is true
+    string term_type = 5;
+  }
 }
 
 // FuncSpec describes a function and is used by the dependency-injection
@@ -207,6 +226,43 @@ message Auth {
 // ImplementsResp returns true if the component implements an additional interface.
 message ImplementsResp {
   bool implements = 1;
+}
+
+
+/********************************************************************
+* Exec Service
+********************************************************************/
+
+// Exec is a service that a work *component.ExecSessionInfo
+// to plugins. Plugins don't interact with this directly, they usually
+// interact with it indirectly via a *component.ExecSessionInfo.
+service ExecSessionService {
+  rpc Output(ExecSession.OutputRequest) returns (google.protobuf.Empty);
+  rpc Input(google.protobuf.Empty) returns (stream ExecSession.InputRequest);
+}
+
+message WindowSize {
+  uint32 height = 1;
+  uint32 width = 2;
+}
+
+message ExecSession {
+  message IsInteractiveResponse {
+    bool interactive = 1;
+  }
+
+  message OutputRequest {
+    bytes data = 1;
+    bool stderr = 2;
+  }
+
+  message InputRequest {
+    oneof input {
+      bytes data = 1;
+      WindowSize window_size = 2;
+      bool input_closed = 3;
+    }
+  }
 }
 
 /********************************************************************
@@ -411,6 +467,11 @@ service Platform {
 
   // IsLogPlatform returns true if this platform also implements LogPlatform.
   rpc IsLogPlatform(google.protobuf.Empty) returns (ImplementsResp);
+
+  // component.Execer optional implementation
+  rpc IsExecer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc ExecSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Exec(FuncSpec.Args) returns (google.protobuf.Empty);
 }
 
 message DefaultReleaser {
