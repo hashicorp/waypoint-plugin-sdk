@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
@@ -31,6 +33,12 @@ func (c *execerClient) Implements(ctx context.Context) (bool, error) {
 
 	resp, err := c.Client.IsExecer(ctx, &empty.Empty{})
 	if err != nil {
+		// If the plugin doesn't implement IsExecer the RPC, then it definitely doesn't
+		// implement it. If we return err here, it will blow up the whole usage of this
+		// type so just say "sorry, not implemented" so the core can continue to run.
+		if st, ok := status.FromError(err); ok && st.Code() == codes.Unavailable {
+			return false, nil
+		}
 		return false, err
 	}
 
