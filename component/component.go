@@ -97,9 +97,22 @@ type Destroyer interface {
 }
 
 // Exec is responsible for starting the exec plugin to allow a deployment
-// plugin to provide it's own exec functionality.
+// plugin to provide it's own exec functionality. By default, the waypoint exec
+// functionality is achieved by creating a session on a long running instance of
+// a deployment. But if a platform plugin type does not creat any long running
+// instances, they can implement this interface and provide the exec functionality
+// in their own bespoke way.
 type Execer interface {
-	// DestroyFunc should return the method handle for the destroy operation.
+	// ExecFunc should return the method handle for a exec session operation.
+	// This function has the following types available:
+	//  - hclog.Logger
+	//  - context.Context
+	//  - The Deployment type implemented by the plugin
+	//  - *component.ExecSessionInfo
+	//  - UI
+	//
+	// The ExecSessionInfo value contains all the things required launch the
+	// exec session.
 	ExecFunc() interface{}
 }
 

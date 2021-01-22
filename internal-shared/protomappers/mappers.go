@@ -38,7 +38,7 @@ var All = []interface{}{
 	TerminalUIProto,
 	LabelSet,
 	LabelSetProto,
-	ExceSessionInfo,
+	ExecSessionInfo,
 	ExecSessionInfoProto,
 }
 
@@ -199,8 +199,8 @@ func LabelSetProto(labels *component.LabelSet) *pb.Args_LabelSet {
 	return &pb.Args_LabelSet{Labels: labels.Labels}
 }
 
-// TerminalUI maps *pb.Args_TerminalUI to an hclog.TerminalUI
-func ExceSessionInfo(
+// ExecSessioInfo maps *pb.Args_ExecSessionInfo to a *component.ExecSessioInfo
+func ExecSessionInfo(
 	ctx context.Context,
 	input *pb.Args_ExecSessionInfo,
 	log hclog.Logger,
@@ -236,6 +236,7 @@ func ExceSessionInfo(
 	return esi, nil
 }
 
+// ExecSessionInfoProto maps a *component.ExecSessionInfo to a *pb.Args_ExecSessionInfo
 func ExecSessionInfoProto(
 	esi *component.ExecSessionInfo,
 	log hclog.Logger,

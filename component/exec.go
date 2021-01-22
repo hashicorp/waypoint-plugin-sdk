@@ -4,6 +4,8 @@ import "io"
 
 // ExecSessionInfo contains the information required by the exec plugin
 // to setup a new exec and send the data back to a client.
+// A ExecSessionInfo value is passed to a plugins ExecFunc() to allow
+// the function to properly create the exec session.
 type ExecSessionInfo struct {
 	Input  io.Reader // effectively the stdin from the user (stdin)
 	Output io.Writer // the output from the session (stdout)

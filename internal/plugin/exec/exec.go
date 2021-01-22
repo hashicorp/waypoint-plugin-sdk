@@ -139,7 +139,7 @@ func (s *execServer) Output(
 }
 
 func (s *execServer) Input(_ *empty.Empty, stream pb.ExecSessionService_InputServer) error {
-	s.Logger.Warn("starting exec server input")
+	s.Logger.Trace("starting exec server input")
 
 	readCh := make(chan []byte)
 
