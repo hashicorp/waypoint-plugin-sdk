@@ -247,10 +247,6 @@ message WindowSize {
 }
 
 message ExecSession {
-  message IsInteractiveResponse {
-    bool interactive = 1;
-  }
-
   message OutputRequest {
     bytes data = 1;
     bool stderr = 2;
