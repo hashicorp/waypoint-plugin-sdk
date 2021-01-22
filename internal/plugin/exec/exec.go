@@ -149,7 +149,7 @@ func (s *execServer) Input(_ *empty.Empty, stream pb.ExecSessionService_InputSer
 	// close this channel, the select loop will fire constantly on this channel.
 	// So instead we just send a bool and orphan the channel, knowing that the select
 	// loop will stop when the stream context is done.
-	closedCh := make(chan bool)
+	closedCh := make(chan bool, 1)
 
 	go func() {
 		for {
