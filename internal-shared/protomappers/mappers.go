@@ -11,6 +11,7 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/datadir"
+	pluginexec "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/exec"
 	pluginterminal "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/terminal"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -37,6 +38,8 @@ var All = []interface{}{
 	TerminalUIProto,
 	LabelSet,
 	LabelSetProto,
+	ExecSessionInfo,
+	ExecSessionInfoProto,
 }
 
 // Source maps Args.Source to component.Source.
@@ -194,4 +197,83 @@ func LabelSet(input *pb.Args_LabelSet) *component.LabelSet {
 
 func LabelSetProto(labels *component.LabelSet) *pb.Args_LabelSet {
 	return &pb.Args_LabelSet{Labels: labels.Labels}
+}
+
+// ExecSessioInfo maps *pb.Args_ExecSessionInfo to a *component.ExecSessioInfo
+func ExecSessionInfo(
+	ctx context.Context,
+	input *pb.Args_ExecSessionInfo,
+	log hclog.Logger,
+	internal *pluginargs.Internal,
+) (*component.ExecSessionInfo, error) {
+	// Create our plugin
+	p := &pluginexec.ExecPlugin{
+		Mappers: internal.Mappers,
+		Logger:  log,
+	}
+
+	conn, err := internal.Broker.Dial(input.StreamId)
+	if err != nil {
+		return nil, err
+	}
+	internal.Cleanup.Do(func() { conn.Close() })
+
+	v, err := p.GRPCClient(ctx, internal.Broker, conn)
+	if err != nil {
+		return nil, err
+	}
+
+	esi := v.(*component.ExecSessionInfo)
+	esi.Arguments = input.Args
+	esi.IsTTY = input.IsTty
+	esi.Term = input.TermType
+
+	if input.InitialWindow != nil {
+		esi.InitialWindowSize.Height = int(input.InitialWindow.Height)
+		esi.InitialWindowSize.Width = int(input.InitialWindow.Width)
+	}
+
+	return esi, nil
+}
+
+// ExecSessionInfoProto maps a *component.ExecSessionInfo to a *pb.Args_ExecSessionInfo
+func ExecSessionInfoProto(
+	esi *component.ExecSessionInfo,
+	log hclog.Logger,
+	internal *pluginargs.Internal,
+) *pb.Args_ExecSessionInfo {
+	// Create our plugin
+	p := &pluginexec.ExecPlugin{
+		Impl:    esi,
+		Mappers: internal.Mappers,
+		Logger:  log,
+	}
+
+	id := internal.Broker.NextId()
+
+	// Serve it
+	go internal.Broker.AcceptAndServe(id, func(opts []grpc.ServerOption) *grpc.Server {
+		server := plugin.DefaultGRPCServer(opts)
+		if err := p.GRPCServer(internal.Broker, server); err != nil {
+			panic(err)
+		}
+		return server
+	})
+
+	out := &pb.Args_ExecSessionInfo{
+		StreamId: id,
+		Args:     esi.Arguments,
+		IsTty:    esi.IsTTY,
+	}
+
+	if esi.IsTTY {
+		out.IsTty = true
+		out.InitialWindow = &pb.WindowSize{
+			Height: uint32(esi.InitialWindowSize.Height),
+			Width:  uint32(esi.InitialWindowSize.Width),
+		}
+		out.TermType = esi.Term
+	}
+
+	return out
 }

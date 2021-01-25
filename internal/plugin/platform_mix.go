@@ -23,6 +23,15 @@ type mix_Platform_Destroy struct {
 	component.WorkspaceDestroyer
 }
 
+type mix_Platform_Exec struct {
+	component.Authenticator
+	component.ConfigurableNotify
+	component.Documented
+	component.Platform
+	component.PlatformReleaser
+	component.Execer
+}
+
 type mix_Platform_Log struct {
 	component.Authenticator
 	component.ConfigurableNotify
