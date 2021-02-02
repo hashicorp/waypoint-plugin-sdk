@@ -19,6 +19,7 @@ type mix_Platform_Destroy struct {
 	component.Documented
 	component.Platform
 	component.PlatformReleaser
+	component.Execer
 	component.Destroyer
 	component.WorkspaceDestroyer
 }

@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
@@ -74,13 +75,19 @@ func (c *execerClient) exec(
 	ctx context.Context,
 	args funcspec.Args,
 	internal *pluginargs.Internal,
-) error {
+) (*component.ExecResult, error) {
 	// Run the cleanup
 	defer internal.Cleanup.Close()
 
 	// Call our function
-	_, err := c.Client.Exec(ctx, &pb.FuncSpec_Args{Args: args})
-	return err
+	resp, err := c.Client.Exec(ctx, &pb.FuncSpec_Args{Args: args})
+	if err != nil {
+		return nil, err
+	}
+
+	return &component.ExecResult{
+		ExitCode: int(resp.ExitCode),
+	}, nil
 }
 
 // execerServer implements the common Execer-related RPC calls.
@@ -109,17 +116,20 @@ func (s *execerServer) ExecSpec(
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(s.internal()),
+		argmapper.FilterOutput(
+			argmapper.FilterType(reflect.TypeOf((*component.ExecResult)(nil))),
+		),
 	)
 }
 
 func (s *execerServer) Exec(
 	ctx context.Context,
 	args *pb.FuncSpec_Args,
-) (*empty.Empty, error) {
+) (*pb.ExecResult, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	_, err := callDynamicFunc2(s.Impl.(component.Execer).ExecFunc(), args.Args,
+	result, err := callDynamicFunc2(s.Impl.(component.Execer).ExecFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Typed(internal),
 		argmapper.Typed(ctx),
@@ -128,7 +138,13 @@ func (s *execerServer) Exec(
 		return nil, err
 	}
 
-	return &empty.Empty{}, nil
+	ret := &pb.ExecResult{}
+
+	if ec, ok := result.(*component.ExecResult); ok {
+		ret.ExitCode = int32(ec.ExitCode)
+	}
+
+	return ret, nil
 }
 
 // execerProtoClient is the interface we expect any gRPC service that
@@ -136,7 +152,7 @@ func (s *execerServer) Exec(
 type execerProtoClient interface {
 	IsExecer(context.Context, *empty.Empty, ...grpc.CallOption) (*pb.ImplementsResp, error)
 	ExecSpec(context.Context, *empty.Empty, ...grpc.CallOption) (*pb.FuncSpec, error)
-	Exec(context.Context, *pb.FuncSpec_Args, ...grpc.CallOption) (*empty.Empty, error)
+	Exec(context.Context, *pb.FuncSpec_Args, ...grpc.CallOption) (*pb.ExecResult, error)
 }
 
 var (

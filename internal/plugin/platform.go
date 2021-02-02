@@ -189,6 +189,7 @@ func (p *PlatformPlugin) GRPCClient(
 			Destroyer:          destroyer,
 			WorkspaceDestroyer: wsDestroyer,
 			Documented:         client,
+			Execer:             execer,
 		}
 	case execer != nil:
 		result = &mix_Platform_Exec{
