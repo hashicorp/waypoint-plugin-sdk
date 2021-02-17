@@ -7,9 +7,13 @@ import (
 // LogViewer returns batches of log lines. This is expected to be returned
 // by a LogPlatform implementation.
 type LogViewer struct {
+	// This is the time horizon log entries must be beyond to be emitted.
 	StartingAt time.Time
-	Limit      int
 
+	// The maximum number of log entries to emit.
+	Limit int
+
+	// New LogEvents should be sent to this channel.
 	Output chan LogEvent
 }
 
