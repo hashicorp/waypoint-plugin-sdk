@@ -116,6 +116,13 @@ type Execer interface {
 	ExecFunc() interface{}
 }
 
+// ExecResult is returned by an Exec function to indicate the status of the
+// run command.
+type ExecResult struct {
+	// ExitCode is the exit code for the process that was run.
+	ExitCode int
+}
+
 // WorkspaceDestroyer is called when a workspace destroy operation is
 // performed (typically via the "waypoint destroy" CLI). This can be implemented
 // by any plugin.

@@ -27,6 +27,12 @@ type ExecSessionInfo struct {
 	// arguments to pass to the session. Normally interpreted as the first value
 	// being the command to run and the rest arguments to that command.
 	Arguments []string
+
+	// environment variables to set within the context of the session.
+	// This will contain configuration variables from the server
+	// as well as any variable derived from external systems like vault
+	// or kubernetes.
+	Environment []string
 }
 
 // WindowSize provides information about the size of the terminal

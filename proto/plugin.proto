@@ -114,6 +114,9 @@ message Args {
 
     // The value of the TERM environment variable, if is_tty is true
     string term_type = 5;
+
+    // The environment variables to set in the context
+    repeated string env = 6;
   }
 }
 
@@ -259,6 +262,12 @@ message ExecSession {
       bool input_closed = 3;
     }
   }
+}
+
+// Returned by Exec plugin functions to indicate the status of the executed
+// command.
+message ExecResult {
+  int32 exit_code = 1;
 }
 
 /********************************************************************
@@ -467,7 +476,7 @@ service Platform {
   // component.Execer optional implementation
   rpc IsExecer(google.protobuf.Empty) returns (ImplementsResp);
   rpc ExecSpec(google.protobuf.Empty) returns (FuncSpec);
-  rpc Exec(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc Exec(FuncSpec.Args) returns (ExecResult);
 }
 
 message DefaultReleaser {

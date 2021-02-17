@@ -225,6 +225,7 @@ func ExecSessionInfo(
 
 	esi := v.(*component.ExecSessionInfo)
 	esi.Arguments = input.Args
+	esi.Environment = input.Env
 	esi.IsTTY = input.IsTty
 	esi.Term = input.TermType
 
@@ -264,6 +265,7 @@ func ExecSessionInfoProto(
 		StreamId: id,
 		Args:     esi.Arguments,
 		IsTty:    esi.IsTTY,
+		Env:      esi.Environment,
 	}
 
 	if esi.IsTTY {
