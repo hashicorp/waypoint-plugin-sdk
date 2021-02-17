@@ -114,8 +114,8 @@ type Execer interface {
 	ExecFunc() interface{}
 }
 
-// LogPlatform is responsible for start the logs plugin that allows a plugin
-// to read logs for a deployment in it's own way.
+// LogPlatform is responsible for starting the logs plugin that allows a plugin
+// to read logs for a deployment in its own way.
 // This function has the following types available:
 type LogPlatform interface {
 	// LogsFunc should return the method handle for a logs operation.
