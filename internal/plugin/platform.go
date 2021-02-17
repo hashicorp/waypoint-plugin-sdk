@@ -58,6 +58,10 @@ func (p *PlatformPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) e
 			base: base,
 			Impl: p.Impl,
 		},
+		logPlatformServer: &logPlatformServer{
+			base: base,
+			Impl: p.Impl,
+		},
 
 		Impl: p.Impl,
 	})
@@ -78,22 +82,18 @@ func (p *PlatformPlugin) GRPCClient(
 		mappers: p.Mappers,
 	}
 
-	// Check if we also implement the LogPlatform
-	var logPlatform component.LogPlatform
-	resp, err := client.client.IsLogPlatform(ctx, &empty.Empty{})
-	if err != nil {
-		return nil, err
+	log := &logClient{
+		Client:  client.client,
+		Logger:  client.logger,
+		Broker:  client.broker,
+		Mappers: client.mappers,
 	}
-	if resp.Implements {
-		raw, err := (&LogPlatformPlugin{
-			Logger: p.Logger,
-		}).GRPCClient(ctx, broker, c)
-		if err != nil {
-			return nil, err
-		}
-
-		p.Logger.Info("platform plugin capable of logs")
-		logPlatform = raw.(component.LogPlatform)
+	if ok, err := log.Implements(ctx); err != nil {
+		return nil, err
+	} else if ok {
+		p.Logger.Info("platform plugin capable of destroy")
+	} else {
+		log = nil
 	}
 
 	// Compose destroyer
@@ -157,29 +157,6 @@ func (p *PlatformPlugin) GRPCClient(
 	// Figure out what we're returning
 	var result interface{} = client
 	switch {
-	case logPlatform != nil && destroyer != nil:
-		result = &mix_Platform_Log_Destroy{
-			Authenticator:      authenticator,
-			ConfigurableNotify: client,
-			Platform:           client,
-			PlatformReleaser:   client,
-			LogPlatform:        logPlatform,
-			Destroyer:          destroyer,
-			WorkspaceDestroyer: wsDestroyer,
-			Documented:         client,
-		}
-
-	case logPlatform != nil:
-		result = &mix_Platform_Log{
-			Authenticator:      authenticator,
-			ConfigurableNotify: client,
-			Platform:           client,
-			PlatformReleaser:   client,
-			LogPlatform:        logPlatform,
-			WorkspaceDestroyer: wsDestroyer,
-			Documented:         client,
-		}
-
 	case destroyer != nil:
 		result = &mix_Platform_Destroy{
 			Authenticator:      authenticator,
@@ -190,6 +167,7 @@ func (p *PlatformPlugin) GRPCClient(
 			WorkspaceDestroyer: wsDestroyer,
 			Documented:         client,
 			Execer:             execer,
+			LogPlatform:        log,
 		}
 	case execer != nil:
 		result = &mix_Platform_Exec{
@@ -199,6 +177,7 @@ func (p *PlatformPlugin) GRPCClient(
 			PlatformReleaser:   client,
 			Execer:             execer,
 			Documented:         client,
+			LogPlatform:        log,
 		}
 	default:
 		result = &mix_Platform_Authenticator{
@@ -208,6 +187,7 @@ func (p *PlatformPlugin) GRPCClient(
 			PlatformReleaser:   client,
 			WorkspaceDestroyer: wsDestroyer,
 			Documented:         client,
+			LogPlatform:        log,
 		}
 	}
 
@@ -341,6 +321,7 @@ type platformServer struct {
 	*workspaceDestroyerServer
 	*authenticatorServer
 	*execerServer
+	*logPlatformServer
 
 	Impl component.Platform
 }

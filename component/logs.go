@@ -1,25 +1,20 @@
 package component
 
 import (
-	"context"
 	"time"
 )
 
-// LogPlatform is responsible for reading the logs for a deployment.
-// This doesn't need to be the same as the Platform but a Platform can also
-// implement this interface to natively provide logs.
-type LogPlatform interface {
-	// LogsFunc should return an implementation of LogViewer.
-	LogsFunc() interface{}
-}
-
 // LogViewer returns batches of log lines. This is expected to be returned
 // by a LogPlatform implementation.
-type LogViewer interface {
-	// NextBatch is called to return the next batch of logs. This is expected
-	// to block if there are no logs available. The context passed in will be
-	// cancelled if the logs viewer is interrupted.
-	NextLogBatch(ctx context.Context) ([]LogEvent, error)
+type LogViewer struct {
+	// This is the time horizon log entries must be beyond to be emitted.
+	StartingAt time.Time
+
+	// The maximum number of log entries to emit.
+	Limit int
+
+	// New LogEvents should be sent to this channel.
+	Output chan LogEvent
 }
 
 // LogEvent represents a single log entry.

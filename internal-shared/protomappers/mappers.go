@@ -8,10 +8,12 @@ import (
 	"github.com/hashicorp/go-plugin"
 	"github.com/mitchellh/mapstructure"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/datadir"
 	pluginexec "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/exec"
+	pluginlogs "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/logs"
 	pluginterminal "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin/terminal"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -40,6 +42,8 @@ var All = []interface{}{
 	LabelSetProto,
 	ExecSessionInfo,
 	ExecSessionInfoProto,
+	LogViewer,
+	LogViewerProto,
 }
 
 // Source maps Args.Source to component.Source.
@@ -275,6 +279,70 @@ func ExecSessionInfoProto(
 			Width:  uint32(esi.InitialWindowSize.Width),
 		}
 		out.TermType = esi.Term
+	}
+
+	return out
+}
+
+// LogViewer maps *pb.Args_LogViewer to a *component.LogViewer
+func LogViewer(
+	ctx context.Context,
+	input *pb.Args_LogViewer,
+	log hclog.Logger,
+	internal *pluginargs.Internal,
+) (*component.LogViewer, error) {
+	// Create our plugin
+	p := &pluginlogs.LogsPlugin{
+		Mappers: internal.Mappers,
+		Logger:  log,
+	}
+
+	conn, err := internal.Broker.Dial(input.StreamId)
+	if err != nil {
+		return nil, err
+	}
+	internal.Cleanup.Do(func() { conn.Close() })
+
+	v, err := p.GRPCClient(ctx, internal.Broker, conn)
+	if err != nil {
+		return nil, err
+	}
+
+	lv := v.(*component.LogViewer)
+	lv.StartingAt = input.StartingAt.AsTime()
+	lv.Limit = int(input.Limit)
+
+	return lv, nil
+}
+
+// LogViewerProto maps a *component.LogViewer.Args_LogViewer
+func LogViewerProto(
+	lv *component.LogViewer,
+	log hclog.Logger,
+	internal *pluginargs.Internal,
+) *pb.Args_LogViewer {
+	// Create our plugin
+	p := &pluginlogs.LogsPlugin{
+		Impl:    lv,
+		Mappers: internal.Mappers,
+		Logger:  log,
+	}
+
+	id := internal.Broker.NextId()
+
+	// Serve it
+	go internal.Broker.AcceptAndServe(id, func(opts []grpc.ServerOption) *grpc.Server {
+		server := plugin.DefaultGRPCServer(opts)
+		if err := p.GRPCServer(internal.Broker, server); err != nil {
+			panic(err)
+		}
+		return server
+	})
+
+	out := &pb.Args_LogViewer{
+		StreamId:   id,
+		StartingAt: timestamppb.New(lv.StartingAt),
+		Limit:      uint32(lv.Limit),
 	}
 
 	return out

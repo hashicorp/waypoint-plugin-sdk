@@ -6,6 +6,7 @@ option go_package = ".;proto";
 
 import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 import "google/rpc/status.proto";
 import "protostructure.proto";
 
@@ -117,6 +118,14 @@ message Args {
 
     // The environment variables to set in the context
     repeated string env = 6;
+  }
+
+  message LogViewer {
+    uint32 stream_id = 1;
+
+    google.protobuf.Timestamp starting_at = 2;
+
+    uint32 limit = 3;
   }
 }
 
@@ -268,6 +277,40 @@ message ExecSession {
 // command.
 message ExecResult {
   int32 exit_code = 1;
+}
+
+/********************************************************************
+* Log Plugin Plugin Service
+********************************************************************/
+
+// LogPlatform is responsible for reading logs of a deployment. This is
+// optionally implemented by a plugin to provide an alternative way
+// to reading the deployments logs when the CEB are not used.
+
+// LogViewer returns batches of log lines for a single app deployed
+// on a platform (though that app may itself have multiple instances).
+// This service is used exclusively internally across the plugin boundary
+// for mapping the component.LogViewer value into a plugin's LogsFunc()
+service LogViewer {
+  rpc NextLogBatch(stream Logs.NextBatchResp) returns (google.protobuf.Empty);
+}
+
+message Logs {
+  message Resp {
+    // stream_id is the stream ID to connect to to get access to the
+    // LogViewer service.
+    uint32 stream_id = 1;
+  }
+
+  message NextBatchResp {
+    repeated Event events = 1;
+  }
+
+  message Event {
+    string partition = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    string contents = 3;
+  }
 }
 
 /********************************************************************
@@ -470,13 +513,16 @@ service Platform {
   rpc DestroyWorkspaceSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc DestroyWorkspace(FuncSpec.Args) returns (google.protobuf.Empty);
 
-  // IsLogPlatform returns true if this platform also implements LogPlatform.
-  rpc IsLogPlatform(google.protobuf.Empty) returns (ImplementsResp);
-
   // component.Execer optional implementation
   rpc IsExecer(google.protobuf.Empty) returns (ImplementsResp);
   rpc ExecSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc Exec(FuncSpec.Args) returns (ExecResult);
+
+  // component.LogViewer optional implementation
+  // IsLogPlatform returns true if this platform also implements LogPlatform.
+  rpc IsLogPlatform(google.protobuf.Empty) returns (ImplementsResp);
+  rpc LogsSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Logs(FuncSpec.Args) returns (google.protobuf.Empty);
 }
 
 message DefaultReleaser {
@@ -616,3 +662,4 @@ message ConfigSource {
     }
   }
 }
+
