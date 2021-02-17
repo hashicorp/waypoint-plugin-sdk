@@ -289,6 +289,8 @@ message ExecResult {
 
 // LogViewer returns batches of log lines for a single app deployed
 // on a platform (though that app may itself have multiple instances).
+// This service is used exclusively internally across the plugin boundary
+// for mapping the component.LogViewer value into a plugin's LogsFunc()
 service LogViewer {
   rpc NextLogBatch(stream Logs.NextBatchResp) returns (google.protobuf.Empty);
 }

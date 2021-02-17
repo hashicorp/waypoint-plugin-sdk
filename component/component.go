@@ -25,7 +25,6 @@ const (
 	PlatformType                   // Platform
 	ReleaseManagerType             // ReleaseManager
 	LogPlatformType                // LogPlatform
-	LogViewerType                  // LogViewer
 	AuthenticatorType              // Authenticator
 	MapperType                     // Mapper
 	ConfigSourcerType              // ConfigSourcer
@@ -40,7 +39,6 @@ var TypeMap = map[Type]interface{}{
 	PlatformType:       (*Platform)(nil),
 	ReleaseManagerType: (*ReleaseManager)(nil),
 	LogPlatformType:    (*LogPlatform)(nil),
-	LogViewerType:      (*LogViewer)(nil),
 	AuthenticatorType:  (*Authenticator)(nil),
 	ConfigSourcerType:  (*ConfigSourcer)(nil),
 }
@@ -114,6 +112,20 @@ type Execer interface {
 	// The ExecSessionInfo value contains all the things required launch the
 	// exec session.
 	ExecFunc() interface{}
+}
+
+// LogPlatform is responsible for start the logs plugin that allows a plugin
+// to read logs for a deployment in it's own way.
+// This function has the following types available:
+type LogPlatform interface {
+	// LogsFunc should return the method handle for a logs operation.
+	// This function has the following types available:
+	//  - hclog.Logger
+	//  - context.Context
+	//  - The Deployment type implemented by the plugin
+	//  - *component.LogViewer
+	//  - UI
+	LogsFunc() interface{}
 }
 
 // ExecResult is returned by an Exec function to indicate the status of the
