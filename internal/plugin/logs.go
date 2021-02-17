@@ -36,6 +36,11 @@ func (c *logClient) Implements(ctx context.Context) (bool, error) {
 }
 
 func (c *logClient) LogsFunc() interface{} {
+	// If we're not initialized, then it doesn't support LogsFunc
+	if c == nil {
+		return nil
+	}
+
 	// Get the spec
 	spec, err := c.Client.LogsSpec(context.Background(), &empty.Empty{})
 	if err != nil {
