@@ -1,7 +1,6 @@
 package component
 
 import (
-	"context"
 	"time"
 )
 
@@ -15,11 +14,11 @@ type LogPlatform interface {
 
 // LogViewer returns batches of log lines. This is expected to be returned
 // by a LogPlatform implementation.
-type LogViewer interface {
-	// NextBatch is called to return the next batch of logs. This is expected
-	// to block if there are no logs available. The context passed in will be
-	// cancelled if the logs viewer is interrupted.
-	NextLogBatch(ctx context.Context) ([]LogEvent, error)
+type LogViewer struct {
+	StartingAt time.Time
+	Limit      int
+
+	Output chan LogEvent
 }
 
 // LogEvent represents a single log entry.
