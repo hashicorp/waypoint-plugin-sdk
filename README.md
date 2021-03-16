@@ -82,7 +82,7 @@ For more information on Protocol Buffers and Go, please see the documentation on
 
 [https://developers.google.com/protocol-buffers/docs/gotutorial](https://developers.google.com/protocol-buffers/docs/gotutorial)
 
-For full walkthough for creating a Waypoint Plugin and reference documentation, please see the
+For full walkthrough for creating a Waypoint Plugin and reference documentation, please see the
 [Extending Waypoint](https://www.waypointproject.io/docs/extending-waypoint) section of the Waypoint website.
 
 
