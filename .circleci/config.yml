@@ -126,3 +126,47 @@ workflows:
       - go-test:
           requires:
             - lint
+
+commands:
+  notify_main_failure:
+    steps:
+      - run:
+          name: Notify failures on main branch
+          when: on_fail
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              curl -X POST -H 'Content-type: application/json' \
+              --data \
+              "{ \
+                \"text\": \":warning: Failed job on branch _${CIRCLE_BRANCH}_\", \
+                \"attachments\": [ \
+                  { \
+                    \"fallback\": \":warning: Failed job on branch _${CIRCLE_BRANCH}_\", \
+                    \"fields\": [ \
+                        { \
+                            \"title\": \"User\", \
+                            \"value\": \"${CIRCLE_USERNAME}\", \
+                            \"short\": \"true\" \
+                        }, \
+                        { \
+                            \"title\": \"Merge commit\", \
+                            \"value\": \"<https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|$(echo ${CIRCLE_SHA1} | cut -c1-10)>\", \
+                            \"short\": \"true\" \
+                        }, \
+                        { \
+                            \"title\": \"Failed job\", \
+                            \"value\": \"<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>\", \
+                            \"short\": \"true\" \
+                        }, \
+                        { \
+                            \"title\": \"Full Workflow\", \
+                            \"value\": \"<https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}>\", \
+                            \"short\": \"true\" \
+                        } \
+                    ], \
+                    \"ts\": \"$(date +%s)\", \
+                    \"color\": \"danger\" \
+                  } \
+                ] \
+              }" ${SLACK_WEBHOOK}
+            fi
