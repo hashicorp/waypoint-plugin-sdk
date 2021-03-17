@@ -2,8 +2,8 @@
 package pluginargs
 
 import (
-	"github.com/hashicorp/go-plugin"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/go-plugin"
 )
 
 // Internal is a struct that is available to mappers. This is an internal-only

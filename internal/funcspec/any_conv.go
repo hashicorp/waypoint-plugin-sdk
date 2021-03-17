@@ -28,7 +28,7 @@ func anyConvGen(v argmapper.Value) (*argmapper.Func, error) {
 	}
 
 	// Generate an int with the subtype of the string value
-	outputSet, err := argmapper.NewValueSet([]argmapper.Value{argmapper.Value{
+	outputSet, err := argmapper.NewValueSet([]argmapper.Value{{
 		Name:    v.Name,
 		Type:    anyType,
 		Subtype: proto.MessageName(reflect.Zero(v.Type).Interface().(proto.Message)),
