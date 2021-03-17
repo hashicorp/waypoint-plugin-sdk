@@ -18,7 +18,6 @@ references:
     GIT_COMMITTER_NAME: circleci-waypoint
     BASH_ENV: /home/circleci/project/.circleci/bash_env.sh
     DOCKER_BUILDKIT: 1
-    REBUILD_UI: &REBUILD_UI 1
 
 jobs:
   # Runs Go linters
