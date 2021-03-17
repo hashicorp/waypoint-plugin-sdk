@@ -111,3 +111,7 @@ Please see the following Plugins for examples of real world implementations of t
 [Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/releaser.go)  
 [Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/releaser.go)  
 [Amazon ALB](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/alb/releaser.go)
+
+## Contributing
+
+Thank you for your interest in contributing! Please refer to [CONTRIBUTING.md](https://github.com/hashicorp/waypoint-plugin-sdk/blob/master/.github/CONTRIBUTING.md) for guidance.
