@@ -9,8 +9,6 @@ import (
 // going to work on Windows (due to MAX_PATH). We should have an alternate
 // implementation for Windows.
 
-// TODO(mitchellh): tests! like any tests
-
 // Dir is the interface implemented so that consumers can store data
 // locally in a consistent way.
 type Dir interface {
