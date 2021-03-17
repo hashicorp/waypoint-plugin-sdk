@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/go-plugin"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/go-plugin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -38,13 +38,13 @@ func TestMapperClient(t *testing.T) {
 
 	targetSpec := &pb.FuncSpec{
 		Args: []*pb.FuncSpec_Value{
-			&pb.FuncSpec_Value{
+			{
 				Type: "testproto.B",
 			},
 		},
 
 		Result: []*pb.FuncSpec_Value{
-			&pb.FuncSpec_Value{
+			{
 				Type: "testproto.Data",
 			},
 		},

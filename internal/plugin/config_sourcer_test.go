@@ -23,7 +23,7 @@ func TestConfigSourcerRead(t *testing.T) {
 		called = true
 		assert.NotNil(ctx)
 		return []*pb.ConfigSource_Value{
-			&pb.ConfigSource_Value{
+			{
 				Name: "hello",
 			},
 		}

@@ -23,11 +23,11 @@ func TestFromFunc(t *testing.T) {
 				return nil, nil
 			},
 			[]*FieldDocs{
-				&FieldDocs{
+				{
 					Field: "full_name",
 					Type:  "string",
 				},
-				&FieldDocs{
+				{
 					Field: "image",
 					Type:  "string",
 				},
@@ -41,11 +41,11 @@ func TestFromFunc(t *testing.T) {
 				return nil, nil
 			},
 			[]*FieldDocs{
-				&FieldDocs{
+				{
 					Field: "full_name",
 					Type:  "string",
 				},
-				&FieldDocs{
+				{
 					Field: "image",
 					Type:  "string",
 				},
