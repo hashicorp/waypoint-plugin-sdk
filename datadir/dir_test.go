@@ -7,7 +7,7 @@ import (
 )
 
 func TestnewRootDir(t *testing.T) {
-	path := "/waypoint"
+	path := "/tmp/waypoint"
 	rootDir, err := newRootDir(path)
 
 	expectedCacheDir := "/cache" + path
