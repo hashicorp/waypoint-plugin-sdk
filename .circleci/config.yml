@@ -71,18 +71,6 @@ jobs:
   go-test:
     docker:
       - image: *GOLANG_IMAGE
-      - image: docker.mirror.hashicorp.services/localstack/localstack:latest
-      - image: docker.mirror.hashicorp.services/letsencrypt/pebble
-        command: ["pebble"]
-        environment:
-          PEBBLE_VA_NOSLEEP: 1
-          PEBBLE_VA_ALWAYS_VALID: 1
-      - image: docker.mirror.hashicorp.services/circleci/postgres:11-alpine
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_DB: waypoint_test
-      - image: docker.mirror.hashicorp.services/vault
-        command: ["server", "-dev", "-dev-root-token-id=hznroot"]
     parallelism: 4
     environment:
       <<: *ENVIRONMENT
@@ -109,16 +97,6 @@ jobs:
             curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
               sudo tar -xz --overwrite -C /usr/local/bin gotestsum
       - run: go mod download
-      - run:
-          name: Waiting for Postgres to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 5432 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for Postgres && exit 1
       - run:
           name: go test
           command: |
