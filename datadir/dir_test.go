@@ -10,8 +10,8 @@ func TestnewRootDir(t *testing.T) {
 	path := "/tmp/waypoint"
 	rootDir, err := newRootDir(path)
 
-	expectedCacheDir := "/cache" + path
-	expectedDataDir := "/data" + path
+	expectedCacheDir := path + "/cache"
+	expectedDataDir := path + "/data"
 
 	assert.Nil(t, err)
 	assert.Equal(t, rootDir.CacheDir(), expectedCacheDir)
