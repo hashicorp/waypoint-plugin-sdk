@@ -30,66 +30,6 @@ func TestPlatform_optionalInterfaces(t *testing.T) {
 		_, ok := raw.(component.Destroyer)
 		require.False(ok, "should not implement")
 	})
-
-	t.Run("doesn't implement LogPlatform", func(t *testing.T) {
-		require := require.New(t)
-
-		mockV := &mocks.Platform{}
-
-		plugins := Plugins(WithComponents(mockV), WithMappers(testDefaultMappers(t)...))
-		client, server := plugin.TestPluginGRPCConn(t, plugins[1])
-		defer client.Close()
-		defer server.Stop()
-
-		raw, err := client.Dispense("platform")
-		require.NoError(err)
-		require.Implements((*component.Platform)(nil), raw)
-
-		_, ok := raw.(component.LogPlatform)
-		require.False(ok, "does not implement LogPlatform")
-
-		_, ok = raw.(component.Destroyer)
-		require.False(ok, "should not implement")
-	})
-
-	t.Run("implements Destroyer", func(t *testing.T) {
-		require := require.New(t)
-
-		mockV := &mockPlatformDestroyer{}
-		mockV.Destroyer.On("DestroyFunc").Return(42)
-
-		plugins := Plugins(WithComponents(mockV), WithMappers(testDefaultMappers(t)...))
-		client, server := plugin.TestPluginGRPCConn(t, plugins[1])
-		defer client.Close()
-		defer server.Stop()
-
-		raw, err := client.Dispense("platform")
-		require.NoError(err)
-		require.Implements((*component.Platform)(nil), raw)
-		require.Implements((*component.Destroyer)(nil), raw)
-
-		_, ok := raw.(component.LogPlatform)
-		require.False(ok, "does not implement LogPlatform")
-	})
-
-	t.Run("implements Authenticator", func(t *testing.T) {
-		require := require.New(t)
-
-		mockV := &mockPlatformAuthenticator{}
-
-		plugins := Plugins(WithComponents(mockV), WithMappers(testDefaultMappers(t)...))
-		client, server := plugin.TestPluginGRPCConn(t, plugins[1])
-		defer client.Close()
-		defer server.Stop()
-
-		raw, err := client.Dispense("platform")
-		require.NoError(err)
-		require.Implements((*component.Platform)(nil), raw)
-		require.Implements((*component.Authenticator)(nil), raw)
-
-		_, ok := raw.(component.LogPlatform)
-		require.False(ok, "does not implement LogPlatform")
-	})
 }
 
 func TestPlatformDynamicFunc_core(t *testing.T) {

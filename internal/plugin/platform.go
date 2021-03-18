@@ -151,7 +151,7 @@ func (p *PlatformPlugin) GRPCClient(
 	} else if ok {
 		p.Logger.Info("platform plugin capable of auth")
 	} else {
-		authenticator = nil
+		execer = nil
 	}
 
 	// Figure out what we're returning
