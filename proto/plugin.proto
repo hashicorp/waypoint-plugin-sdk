@@ -207,6 +207,8 @@ message Config {
     string env_var = 5;
     string type = 6;
     string default = 7;
+    bool category = 8;
+    repeated FieldDocumentation sub_fields = 9;
   }
 
   message MapperDocumentation {
