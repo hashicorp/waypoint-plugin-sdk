@@ -28,11 +28,18 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 	// This lets us get our callback types in addition to our funcspec types.
 	inputValues := cbFunc.Input().Values()
 	for _, arg := range s.Args {
-		inputValues = append(inputValues, argmapper.Value{
-			Name:    arg.Name,
-			Type:    anyType,
-			Subtype: arg.Type,
-		})
+		value := argmapper.Value{Name: arg.Name, Subtype: arg.Type, Type: anyType}
+
+		// If we have a primitive type set, then we set the proper type.
+		switch arg.PrimitiveType {
+		case pb.FuncSpec_Value_BOOL:
+			value.Type = reflect.TypeOf(false)
+
+		case pb.FuncSpec_Value_INVALID:
+			// Ignore
+		}
+
+		inputValues = append(inputValues, value)
 	}
 
 	// Remove the Args value if there is one, since we're going to populate
@@ -81,10 +88,10 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 		// add them to our Args list.
 		var args Args
 		for _, v := range in.Values() {
-			// If we have any *any.Any then we append it to args
-			if v.Type == anyType {
+			// Append any *any.Any types or supported primitive to the Args
+			_, okPrim := validPrimitive[v.Type.Kind()]
+			if v.Type == anyType || okPrim {
 				args = appendValue(args, v)
-				continue
 			}
 
 			// If we have any other type, then we set it directly.

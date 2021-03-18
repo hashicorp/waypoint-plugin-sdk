@@ -57,7 +57,16 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 			continue
 		}
 
-		result.Args = appendValue(result.Args, v)
+		val := &pb.FuncSpec_Value{Name: v.Name}
+		switch {
+		case filterProto(v):
+			val.Type = typeToMessage(v.Type)
+
+		case filterPrimitive(v):
+			val.PrimitiveType = pb.FuncSpec_Value_PrimitiveType(v.Type.Kind())
+		}
+
+		result.Args = append(result.Args, val)
 	}
 
 	// Grab the output set and store that
@@ -92,8 +101,12 @@ var (
 
 	// validPrimitive is the map of primitive types we support coming
 	// over the plugin boundary. To add a new type to this, you must
-	// update the Primitive enum in plugin.proto, appendValue in
-	// args.go
+	// update:
+	//
+	//  1. the Primitive enum in plugin.proto
+	//  2. appendValue in args.go
+	//  3. value.Type setting in func.go Func
+	//
 	validPrimitive = map[reflect.Kind]struct{}{
 		reflect.Bool: struct{}{},
 	}
