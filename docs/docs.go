@@ -121,7 +121,7 @@ func FromConfig(v interface{}) Option {
 
 // RequestFromStruct populates the Documentation's request information
 // by reading the struct members on the value. Request information is
-// configuration defined by a Config Sourcer to be used as authentication
+// configuration defined by a ConfigSourcer to be used as authentication
 // and other non-config information.
 func RequestFromStruct(v interface{}) Option {
 	return func(d *Documentation) error {
