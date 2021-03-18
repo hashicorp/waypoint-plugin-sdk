@@ -65,6 +65,29 @@ jobs:
           fi
       - notify_main_failure
 
+  go-generate-test:
+    docker:
+      - image: *GOLANG_IMAGE
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "c6:96:98:82:dc:04:6c:39:dd:ac:83:05:e3:15:1c:98"
+      - checkout
+      - attach_workspace:
+          at: /go/bin
+      - setup_remote_docker:
+          docker_layer_cache: true
+      - run: go mod download
+      - run:
+          name: go generate
+          command: |
+            echo "Checking that go generate has no errors ..."
+            go generate .
+      - notify_main_failure
+
+
   go-test:
     docker:
       - image: *GOLANG_IMAGE
@@ -123,6 +146,10 @@ workflows:
       - go-test:
           requires:
             - lint
+      - go-generate-test:
+          requires:
+            - lint
+            - go-test
 
 commands:
   notify_main_failure:
