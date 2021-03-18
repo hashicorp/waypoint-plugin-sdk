@@ -357,7 +357,7 @@ func SubFields(f func(d *SubFieldDoc)) *SubFieldDoc {
 }
 
 // SetField sets various documentation for the given field. If the field is already
-// known, the documentation is mearly updated. If the field is missing, it is created.
+// known, the documentation is merely updated. If the field is missing, it is created.
 func (d *Documentation) SetField(name, synposis string, opts ...docOption) error {
 	field, ok := d.fields[name]
 	if !ok {
