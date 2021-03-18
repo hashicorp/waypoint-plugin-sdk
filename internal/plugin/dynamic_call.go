@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/go-argmapper"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // callDynamicFunc calls a dynamic (mapper-based) function with the
@@ -22,34 +23,21 @@ func callDynamicFunc2(
 ) (interface{}, error) {
 	// Decode our *any.Any values.
 	for _, arg := range args {
-		anyVal := arg.Value
+		var newArg argmapper.Arg
+		var err error
+		switch arg.Value.(type) {
+		case *pb.FuncSpec_Value_ProtoAny:
+			newArg, err = argProtoAny(arg)
 
-		name, err := ptypes.AnyMessageName(anyVal)
+		default:
+			return nil, fmt.Errorf("internal error! invalid argument value: %#v",
+				arg.Value)
+		}
 		if err != nil {
 			return nil, err
 		}
 
-		typ := proto.MessageType(name)
-		if typ == nil {
-			return nil, fmt.Errorf("cannot decode type: %s", name)
-		}
-
-		// Allocate the message type. If it is a pointer we want to
-		// allocate the actual structure and not the pointer to the structure.
-		if typ.Kind() == reflect.Ptr {
-			typ = typ.Elem()
-		}
-		v := reflect.New(typ)
-		v.Elem().Set(reflect.Zero(typ))
-
-		// Unmarshal directly into our newly allocated structure.
-		if err := ptypes.UnmarshalAny(anyVal, v.Interface().(proto.Message)); err != nil {
-			return nil, err
-		}
-
-		callArgs = append(callArgs,
-			argmapper.NamedSubtype(arg.Name, v.Interface(), arg.Type),
-		)
+		callArgs = append(callArgs, newArg)
 	}
 
 	mapF, err := argmapper.NewFunc(f)
@@ -91,4 +79,33 @@ func callDynamicFuncAny2(
 
 	anyVal, err := ptypes.MarshalAny(msg)
 	return anyVal, result, err
+}
+
+func argProtoAny(arg *pb.FuncSpec_Value) (argmapper.Arg, error) {
+	anyVal := arg.Value.(*pb.FuncSpec_Value_ProtoAny).ProtoAny
+
+	name, err := ptypes.AnyMessageName(anyVal)
+	if err != nil {
+		return nil, err
+	}
+
+	typ := proto.MessageType(name)
+	if typ == nil {
+		return nil, fmt.Errorf("cannot decode type: %s", name)
+	}
+
+	// Allocate the message type. If it is a pointer we want to
+	// allocate the actual structure and not the pointer to the structure.
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	v := reflect.New(typ)
+	v.Elem().Set(reflect.Zero(typ))
+
+	// Unmarshal directly into our newly allocated structure.
+	if err := ptypes.UnmarshalAny(anyVal, v.Interface().(proto.Message)); err != nil {
+		return nil, err
+	}
+
+	return argmapper.NamedSubtype(arg.Name, v.Interface(), arg.Type), nil
 }
