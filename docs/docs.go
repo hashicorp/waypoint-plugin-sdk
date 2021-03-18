@@ -376,7 +376,7 @@ func (d *Documentation) SetField(name, synposis string, opts ...docOption) error
 }
 
 // SetTemplateField sets various documentation for the given template field.
-// If the field is already known, the documentation is mearly updated.
+// If the field is already known, the documentation is merely updated.
 // If the field is missing, it is created.
 func (d *Documentation) SetTemplateField(name, synposis string, opts ...docOption) error {
 	field, ok := d.templateFields[name]
