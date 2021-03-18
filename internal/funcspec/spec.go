@@ -36,6 +36,7 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 
 	filter := argmapper.FilterOr(
 		argmapper.FilterType(contextType),
+		filterPrimitive,
 		filterProto,
 	)
 
@@ -52,14 +53,11 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 	// Grab the input set of the function and build up our funcspec
 	result := pb.FuncSpec{Name: f.Name()}
 	for _, v := range f.Input().Values() {
-		if !filterProto(v) {
+		if !filterProto(v) && !filterPrimitive(v) {
 			continue
 		}
 
-		result.Args = append(result.Args, &pb.FuncSpec_Value{
-			Name: v.Name,
-			Type: typeToMessage(v.Type),
-		})
+		result.Args = appendValue(result.Args, v)
 	}
 
 	// Grab the output set and store that
@@ -83,7 +81,20 @@ func typeToMessage(typ reflect.Type) string {
 	return proto.MessageName(reflect.Zero(typ).Interface().(proto.Message))
 }
 
+func filterPrimitive(v argmapper.Value) bool {
+	_, ok := validPrimitive[v.Type.Kind()]
+	return ok
+}
+
 var (
 	contextType      = reflect.TypeOf((*context.Context)(nil)).Elem()
 	protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
+
+	// validPrimitive is the map of primitive types we support coming
+	// over the plugin boundary. To add a new type to this, you must
+	// update the Primitive enum in plugin.proto, appendValue in
+	// args.go
+	validPrimitive = map[reflect.Kind]struct{}{
+		reflect.Bool: struct{}{},
+	}
 )
