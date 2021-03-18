@@ -479,7 +479,7 @@ func (d *Documentation) TemplateFields() []*FieldDocs {
 	return fields
 }
 
-// Fields returns the formatted FieldDocs values for the request fields
+// RequestFields returns the formatted FieldDocs values for the request fields
 func (d *Documentation) RequestFields() []*FieldDocs {
 	var keys []string
 	for k := range d.requestFields {
