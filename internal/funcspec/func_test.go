@@ -103,8 +103,9 @@ func TestFunc(t *testing.T) {
 		require.NotNil(spec)
 
 		f := Func(spec, func(args Args, v int) (*any.Any, error) {
-			require.Len(args, 1)
+			require.Len(args, 2)
 			require.NotNil(args[0])
+			require.NotNil(args[1])
 			require.Equal(42, v)
 
 			// At this point we'd normally RPC out.
@@ -115,6 +116,28 @@ func TestFunc(t *testing.T) {
 		require.NoError(err)
 
 		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&empty.Empty{})))
+		require.NoError(result.Err())
+		require.Equal(reflect.Struct, reflect.ValueOf(result.Out(0)).Kind())
+	})
+
+	t.Run("primitive arguments", func(t *testing.T) {
+		require := require.New(t)
+
+		spec, err := Spec(func(v bool) *empty.Empty { return &empty.Empty{} })
+		require.NoError(err)
+		require.NotNil(spec)
+
+		f := Func(spec, func(args Args, v int) (*any.Any, error) {
+			require.Len(args, 2)
+			require.NotNil(args[0])
+			require.NotNil(args[1])
+			require.Equal(42, v)
+
+			// At this point we'd normally RPC out.
+			return ptypes.MarshalAny(&empty.Empty{})
+		}, argmapper.Typed(int(42)))
+
+		result := f.Call(argmapper.Typed(true))
 		require.NoError(result.Err())
 		require.Equal(reflect.Struct, reflect.ValueOf(result.Out(0)).Kind())
 	})

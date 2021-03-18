@@ -152,14 +152,43 @@ message FuncSpec {
     // name is the name of the argument. This may be empty for typed arguments.
     string name = 1;
 
-    // type is the type of the argument. All arguments must be encoded using
-    // *any.Any so this type specifies the proto Any message type and not
-    // a language-specific type.
+    // type is the type of the argument. All arguments encoded using *any.Any
+    // specify the proto Any message type and not a language-specific type.
     string type = 2;
 
-    // value is the value for this Value. This is only expected to be set
-    // for Args and has no impact on specs.
-    google.protobuf.Any value = 3;
+    // primitive_type is set to a non-zero if the type is NOT an *any.Any.
+    PrimitiveType primitive_type = 4;
+
+    // value for this Value. This is only set for Args and has no impact on specs.
+    // This value MUST match the type or primitive_type fields.
+    oneof value {
+      // proto is set if the value is a protobuf message.
+      google.protobuf.Any proto_any = 3;
+
+      // Primitive values below
+      bool bool = 5;
+      int64 int = 6; // all sizes up to 64-bit
+      uint64 uint = 7; // all sizes up to 64-bit
+      string string = 8;
+    }
+
+    // PrimitiveType are the types of primitives we support. The enum
+    // value must exactly match the Go reflect.Kind enum value.
+    enum PrimitiveType {
+      INVALID = 0;
+      BOOL = 1;
+      INT = 2;
+      INT8 = 3;
+      INT16 = 4;
+      INT32 = 5;
+      INT64 = 6;
+      UINT = 7;
+      UINT8 = 8;
+      UINT16 = 9;
+      UINT32 = 10;
+      UINT64 = 11;
+      STRING = 24;
+    }
   }
 
   // Args is the standard argument type for an RPC that is calling a FuncSpec.

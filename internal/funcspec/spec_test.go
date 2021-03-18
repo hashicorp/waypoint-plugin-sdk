@@ -6,9 +6,10 @@ import (
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/go-hclog"
 	"github.com/stretchr/testify/require"
 
-	"github.com/hashicorp/go-hclog"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func init() {
@@ -43,6 +44,42 @@ func TestSpec(t *testing.T) {
 		require.Len(spec.Args, 1)
 		require.Empty(spec.Args[0].Name)
 		require.Equal("google.protobuf.Empty", spec.Args[0].Type)
+		require.Len(spec.Result, 1)
+		require.Empty(spec.Result[0].Name)
+		require.Equal("google.protobuf.Empty", spec.Result[0].Type)
+	})
+
+	t.Run("primitive args", func(t *testing.T) {
+		require := require.New(t)
+
+		spec, err := Spec(func(bool) *empty.Empty { return nil })
+		require.NoError(err)
+		require.NotNil(spec)
+		require.Len(spec.Args, 1)
+		require.Empty(spec.Args[0].Name)
+		require.Equal("", spec.Args[0].Type)
+		require.Equal(pb.FuncSpec_Value_BOOL, spec.Args[0].PrimitiveType)
+		require.Len(spec.Result, 1)
+		require.Empty(spec.Result[0].Name)
+		require.Equal("google.protobuf.Empty", spec.Result[0].Type)
+	})
+
+	t.Run("named primitive args", func(t *testing.T) {
+		require := require.New(t)
+
+		spec, err := Spec(func(struct {
+			argmapper.Struct
+
+			HasRegistry bool
+		}) *empty.Empty {
+			return nil
+		})
+		require.NoError(err)
+		require.NotNil(spec)
+		require.Len(spec.Args, 1)
+		require.Equal("hasregistry", spec.Args[0].Name)
+		require.Equal("", spec.Args[0].Type)
+		require.Equal(pb.FuncSpec_Value_BOOL, spec.Args[0].PrimitiveType)
 		require.Len(spec.Result, 1)
 		require.Empty(spec.Result[0].Name)
 		require.Equal("google.protobuf.Empty", spec.Result[0].Type)

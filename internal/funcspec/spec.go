@@ -36,6 +36,7 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 
 	filter := argmapper.FilterOr(
 		argmapper.FilterType(contextType),
+		filterPrimitive,
 		filterProto,
 	)
 
@@ -52,14 +53,20 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 	// Grab the input set of the function and build up our funcspec
 	result := pb.FuncSpec{Name: f.Name()}
 	for _, v := range f.Input().Values() {
-		if !filterProto(v) {
+		if !filterProto(v) && !filterPrimitive(v) {
 			continue
 		}
 
-		result.Args = append(result.Args, &pb.FuncSpec_Value{
-			Name: v.Name,
-			Type: typeToMessage(v.Type),
-		})
+		val := &pb.FuncSpec_Value{Name: v.Name}
+		switch {
+		case filterProto(v):
+			val.Type = typeToMessage(v.Type)
+
+		case filterPrimitive(v):
+			val.PrimitiveType = pb.FuncSpec_Value_PrimitiveType(v.Type.Kind())
+		}
+
+		result.Args = append(result.Args, val)
 	}
 
 	// Grab the output set and store that
@@ -83,7 +90,36 @@ func typeToMessage(typ reflect.Type) string {
 	return proto.MessageName(reflect.Zero(typ).Interface().(proto.Message))
 }
 
+func filterPrimitive(v argmapper.Value) bool {
+	_, ok := validPrimitive[v.Type.Kind()]
+	return ok
+}
+
 var (
 	contextType      = reflect.TypeOf((*context.Context)(nil)).Elem()
 	protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
+
+	// validPrimitive is the map of primitive types we support coming
+	// over the plugin boundary. To add a new type to this, you must
+	// update:
+	//
+	//  1. the Primitive enum in plugin.proto
+	//  2. appendValue in args.go
+	//  3. value.Type setting in func.go Func
+	//  4. arg decoding in internal/plugin/dynamic_call.go
+	//
+	validPrimitive = map[reflect.Kind]struct{}{
+		reflect.Bool:   struct{}{},
+		reflect.Int:    struct{}{},
+		reflect.Int8:   struct{}{},
+		reflect.Int16:  struct{}{},
+		reflect.Int32:  struct{}{},
+		reflect.Int64:  struct{}{},
+		reflect.Uint:   struct{}{},
+		reflect.Uint8:  struct{}{},
+		reflect.Uint16: struct{}{},
+		reflect.Uint32: struct{}{},
+		reflect.Uint64: struct{}{},
+		reflect.String: struct{}{},
+	}
 )

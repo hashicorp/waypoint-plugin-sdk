@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/go-argmapper"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // callDynamicFunc calls a dynamic (mapper-based) function with the
@@ -22,33 +23,62 @@ func callDynamicFunc2(
 ) (interface{}, error) {
 	// Decode our *any.Any values.
 	for _, arg := range args {
-		anyVal := arg.Value
+		var value interface{}
+		var err error
+		switch v := arg.Value.(type) {
+		case *pb.FuncSpec_Value_ProtoAny:
+			value, err = argProtoAny(arg)
 
-		name, err := ptypes.AnyMessageName(anyVal)
+		case *pb.FuncSpec_Value_Bool:
+			value = v.Bool
+
+		case *pb.FuncSpec_Value_Int:
+			switch arg.PrimitiveType {
+			case pb.FuncSpec_Value_INT8:
+				value = int8(v.Int)
+			case pb.FuncSpec_Value_INT16:
+				value = int16(v.Int)
+			case pb.FuncSpec_Value_INT32:
+				value = int32(v.Int)
+			case pb.FuncSpec_Value_INT64:
+				value = int64(v.Int)
+			case pb.FuncSpec_Value_INT:
+				fallthrough
+			default:
+				// Fallback to int as a default
+				value = int(v.Int)
+			}
+
+		case *pb.FuncSpec_Value_Uint:
+			switch arg.PrimitiveType {
+			case pb.FuncSpec_Value_INT8:
+				value = uint8(v.Uint)
+			case pb.FuncSpec_Value_INT16:
+				value = uint16(v.Uint)
+			case pb.FuncSpec_Value_INT32:
+				value = uint32(v.Uint)
+			case pb.FuncSpec_Value_INT64:
+				value = uint64(v.Uint)
+			case pb.FuncSpec_Value_INT:
+				fallthrough
+			default:
+				// Fallback to uint as a default
+				value = uint(v.Uint)
+			}
+
+		case *pb.FuncSpec_Value_String_:
+			value = v.String_
+
+		default:
+			return nil, fmt.Errorf("internal error! invalid argument value: %#v",
+				arg.Value)
+		}
 		if err != nil {
 			return nil, err
 		}
 
-		typ := proto.MessageType(name)
-		if typ == nil {
-			return nil, fmt.Errorf("cannot decode type: %s", name)
-		}
-
-		// Allocate the message type. If it is a pointer we want to
-		// allocate the actual structure and not the pointer to the structure.
-		if typ.Kind() == reflect.Ptr {
-			typ = typ.Elem()
-		}
-		v := reflect.New(typ)
-		v.Elem().Set(reflect.Zero(typ))
-
-		// Unmarshal directly into our newly allocated structure.
-		if err := ptypes.UnmarshalAny(anyVal, v.Interface().(proto.Message)); err != nil {
-			return nil, err
-		}
-
 		callArgs = append(callArgs,
-			argmapper.NamedSubtype(arg.Name, v.Interface(), arg.Type),
+			argmapper.NamedSubtype(arg.Name, value, arg.Type),
 		)
 	}
 
@@ -91,4 +121,33 @@ func callDynamicFuncAny2(
 
 	anyVal, err := ptypes.MarshalAny(msg)
 	return anyVal, result, err
+}
+
+func argProtoAny(arg *pb.FuncSpec_Value) (interface{}, error) {
+	anyVal := arg.Value.(*pb.FuncSpec_Value_ProtoAny).ProtoAny
+
+	name, err := ptypes.AnyMessageName(anyVal)
+	if err != nil {
+		return nil, err
+	}
+
+	typ := proto.MessageType(name)
+	if typ == nil {
+		return nil, fmt.Errorf("cannot decode type: %s", name)
+	}
+
+	// Allocate the message type. If it is a pointer we want to
+	// allocate the actual structure and not the pointer to the structure.
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	v := reflect.New(typ)
+	v.Elem().Set(reflect.Zero(typ))
+
+	// Unmarshal directly into our newly allocated structure.
+	if err := ptypes.UnmarshalAny(anyVal, v.Interface().(proto.Message)); err != nil {
+		return nil, err
+	}
+
+	return v.Interface(), nil
 }
