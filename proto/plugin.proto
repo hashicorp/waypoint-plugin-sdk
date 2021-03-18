@@ -164,6 +164,9 @@ message FuncSpec {
     oneof value {
       // proto is set if the value is a protobuf message.
       google.protobuf.Any proto_any = 3;
+
+      // Primitive values below
+      bool bool = 5;
     }
 
     // PrimitiveType are the types of primitives we support. The enum
