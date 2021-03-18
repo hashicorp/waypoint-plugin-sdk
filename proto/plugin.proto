@@ -166,6 +166,8 @@ message FuncSpec {
       google.protobuf.Any proto_any = 3;
     }
 
+    // PrimitiveType are the types of primitives we support. The enum
+    // value must exactly match the Go reflect.Kind enum value.
     enum PrimitiveType {
       INVALID = 0;
       BOOL = 1;
