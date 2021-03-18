@@ -396,7 +396,7 @@ func (d *Documentation) SetTemplateField(name, synposis string, opts ...docOptio
 }
 
 // SetRequestField sets various documentation for the given request field.
-// If the field is already known, the documentation is mearly updated.
+// If the field is already known, the documentation is merely updated.
 // If the field is missing, it is created.
 func (d *Documentation) SetRequestField(name, synposis string, opts ...docOption) error {
 	field, ok := d.requestFields[name]
