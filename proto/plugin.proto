@@ -152,14 +152,24 @@ message FuncSpec {
     // name is the name of the argument. This may be empty for typed arguments.
     string name = 1;
 
-    // type is the type of the argument. All arguments must be encoded using
-    // *any.Any so this type specifies the proto Any message type and not
-    // a language-specific type.
+    // type is the type of the argument. All arguments encoded using *any.Any
+    // specify the proto Any message type and not a language-specific type.
     string type = 2;
 
-    // value is the value for this Value. This is only expected to be set
-    // for Args and has no impact on specs.
-    google.protobuf.Any value = 3;
+    // primitive_type is set to a non-zero if the type is NOT an *any.Any.
+    PrimitiveType primitive_type = 4;
+
+    // value for this Value. This is only set for Args and has no impact on specs.
+    // This value MUST match the type or primitive_type fields.
+    oneof value {
+      // proto is set if the value is a protobuf message.
+      google.protobuf.Any proto_any = 3;
+    }
+
+    enum PrimitiveType {
+      INVALID = 0;
+      BOOL = 1;
+    }
   }
 
   // Args is the standard argument type for an RPC that is calling a FuncSpec.
