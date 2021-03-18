@@ -106,6 +106,7 @@ var (
 	//  1. the Primitive enum in plugin.proto
 	//  2. appendValue in args.go
 	//  3. value.Type setting in func.go Func
+	//  4. arg decoding in internal/plugin/dynamic_call.go
 	//
 	validPrimitive = map[reflect.Kind]struct{}{
 		reflect.Bool: struct{}{},
