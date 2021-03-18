@@ -77,7 +77,7 @@ type FieldDocs struct {
 	discoveredFields map[string]*FieldDocs
 }
 
-// Documentation allows a plugin to document it's many wonderful features.
+// Documentation allows a plugin to document its many wonderful features.
 type Documentation struct {
 	description    string
 	example        string
