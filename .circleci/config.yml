@@ -82,8 +82,12 @@ jobs:
           at: /go/bin
       - setup_remote_docker:
           docker_layer_cache: true
-      - run: go mod download
-      - run: git submodule update --init --recursive
+      - run:
+          name: setup go env
+          command: |
+            go mod download
+            git submodule update --init --recursive
+            go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
       - run:
           name: go generate
           command: |
