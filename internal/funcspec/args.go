@@ -34,6 +34,7 @@ func appendValue(args Args, v argmapper.Value) Args {
 
 	case bool:
 		value.PrimitiveType = pb.FuncSpec_Value_BOOL
+		value.Value = &pb.FuncSpec_Value_Bool{Bool: v}
 
 	default:
 		panic(fmt.Sprintf("invalid value type for args: %T", v))

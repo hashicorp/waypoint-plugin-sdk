@@ -23,11 +23,14 @@ func callDynamicFunc2(
 ) (interface{}, error) {
 	// Decode our *any.Any values.
 	for _, arg := range args {
-		var newArg argmapper.Arg
+		var value interface{}
 		var err error
-		switch arg.Value.(type) {
+		switch v := arg.Value.(type) {
 		case *pb.FuncSpec_Value_ProtoAny:
-			newArg, err = argProtoAny(arg)
+			value, err = argProtoAny(arg)
+
+		case *pb.FuncSpec_Value_Bool:
+			value = v.Bool
 
 		default:
 			return nil, fmt.Errorf("internal error! invalid argument value: %#v",
@@ -37,7 +40,9 @@ func callDynamicFunc2(
 			return nil, err
 		}
 
-		callArgs = append(callArgs, newArg)
+		callArgs = append(callArgs,
+			argmapper.NamedSubtype(arg.Name, value, arg.Type),
+		)
 	}
 
 	mapF, err := argmapper.NewFunc(f)
@@ -81,7 +86,7 @@ func callDynamicFuncAny2(
 	return anyVal, result, err
 }
 
-func argProtoAny(arg *pb.FuncSpec_Value) (argmapper.Arg, error) {
+func argProtoAny(arg *pb.FuncSpec_Value) (interface{}, error) {
 	anyVal := arg.Value.(*pb.FuncSpec_Value_ProtoAny).ProtoAny
 
 	name, err := ptypes.AnyMessageName(anyVal)
@@ -107,5 +112,5 @@ func argProtoAny(arg *pb.FuncSpec_Value) (argmapper.Arg, error) {
 		return nil, err
 	}
 
-	return argmapper.NamedSubtype(arg.Name, v.Interface(), arg.Type), nil
+	return v.Interface(), nil
 }
