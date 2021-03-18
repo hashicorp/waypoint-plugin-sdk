@@ -92,7 +92,7 @@ func funcExtractTemplateFields(d *Documentation, t reflect.Type) error {
 
 		d.templateFields[name] = &FieldDocs{
 			Field: name,
-			Type:  f.Type.String(),
+			Type:  cleanupType(f.Type.String()),
 		}
 	}
 
@@ -110,7 +110,7 @@ func funcExtractTemplateFieldsFromImpl(d *Documentation, t reflect.Type) error {
 	for k, v := range fields {
 		d.templateFields[k] = &FieldDocs{
 			Field: k,
-			Type:  reflect.TypeOf(v).String(),
+			Type:  cleanupType(reflect.TypeOf(v).String()),
 		}
 	}
 

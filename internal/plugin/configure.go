@@ -109,6 +109,25 @@ func configureCall(ctx context.Context, c configurableClient, v interface{}) err
 	return err
 }
 
+func convertFieldOut(f *docs.FieldDocs) *pb.Config_FieldDocumentation {
+	fd := &pb.Config_FieldDocumentation{
+		Name:     f.Field,
+		Type:     f.Type,
+		Default:  f.Default,
+		Synopsis: f.Synopsis,
+		Summary:  f.Summary,
+		EnvVar:   f.EnvVar,
+		Optional: f.Optional,
+		Category: f.Category,
+	}
+
+	for _, f := range f.SubFields {
+		fd.SubFields = append(fd.SubFields, convertFieldOut(f))
+	}
+
+	return fd
+}
+
 // documentation is the shared helper to implement the Documentation RPC call
 // for components. The logic is the same regardless of component so this can
 // be called instead.
@@ -131,39 +150,15 @@ func documentation(impl interface{}) (*pb.Config_Documentation, error) {
 	}
 
 	for _, f := range d.Fields() {
-		v.Fields[f.Field] = &pb.Config_FieldDocumentation{
-			Name:     f.Field,
-			Type:     f.Type,
-			Default:  f.Default,
-			Synopsis: f.Synopsis,
-			Summary:  f.Summary,
-			EnvVar:   f.EnvVar,
-			Optional: f.Optional,
-		}
+		v.Fields[f.Field] = convertFieldOut(f)
 	}
 
 	for _, f := range d.TemplateFields() {
-		v.TemplateFields[f.Field] = &pb.Config_FieldDocumentation{
-			Name:     f.Field,
-			Type:     f.Type,
-			Default:  f.Default,
-			Synopsis: f.Synopsis,
-			Summary:  f.Summary,
-			EnvVar:   f.EnvVar,
-			Optional: f.Optional,
-		}
+		v.TemplateFields[f.Field] = convertFieldOut(f)
 	}
 
 	for _, f := range d.RequestFields() {
-		v.RequestFields[f.Field] = &pb.Config_FieldDocumentation{
-			Name:     f.Field,
-			Type:     f.Type,
-			Default:  f.Default,
-			Synopsis: f.Synopsis,
-			Summary:  f.Summary,
-			EnvVar:   f.EnvVar,
-			Optional: f.Optional,
-		}
+		v.RequestFields[f.Field] = convertFieldOut(f)
 	}
 
 	for _, m := range dets.Mappers {
@@ -175,6 +170,26 @@ func documentation(impl interface{}) (*pb.Config_Documentation, error) {
 	}
 
 	return v, nil
+}
+
+func convertFieldIn(f *pb.Config_FieldDocumentation) *docs.FieldDocs {
+	var sf []*docs.FieldDocs
+
+	for _, f := range f.SubFields {
+		sf = append(sf, convertFieldIn(f))
+	}
+
+	return &docs.FieldDocs{
+		Field:     f.Name,
+		Type:      f.Type,
+		Default:   f.Default,
+		Synopsis:  f.Synopsis,
+		Summary:   f.Summary,
+		Optional:  f.Optional,
+		EnvVar:    f.EnvVar,
+		Category:  f.Category,
+		SubFields: sf,
+	}
 }
 
 // configStructCall is the shared helper to call the ConfigStruct RPC call
@@ -196,39 +211,15 @@ func documentationCall(ctx context.Context, c configurableClient) (*docs.Documen
 	d.Output(resp.Output)
 
 	for _, f := range resp.Fields {
-		d.OverrideField(&docs.FieldDocs{
-			Field:    f.Name,
-			Type:     f.Type,
-			Default:  f.Default,
-			Synopsis: f.Synopsis,
-			Summary:  f.Summary,
-			Optional: f.Optional,
-			EnvVar:   f.EnvVar,
-		})
+		d.OverrideField(convertFieldIn(f))
 	}
 
 	for _, f := range resp.TemplateFields {
-		d.OverrideTemplateField(&docs.FieldDocs{
-			Field:    f.Name,
-			Type:     f.Type,
-			Default:  f.Default,
-			Synopsis: f.Synopsis,
-			Summary:  f.Summary,
-			Optional: f.Optional,
-			EnvVar:   f.EnvVar,
-		})
+		d.OverrideTemplateField(convertFieldIn(f))
 	}
 
 	for _, f := range resp.RequestFields {
-		d.OverrideRequestField(&docs.FieldDocs{
-			Field:    f.Name,
-			Type:     f.Type,
-			Default:  f.Default,
-			Synopsis: f.Synopsis,
-			Summary:  f.Summary,
-			Optional: f.Optional,
-			EnvVar:   f.EnvVar,
-		})
+		d.OverrideRequestField(convertFieldIn(f))
 	}
 
 	for _, m := range resp.Mappers {
