@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestnewRootDir(t *testing.T) {
+func TestNewRootDir(t *testing.T) {
 	path := "/tmp/waypoint"
 	rootDir, err := newRootDir(path)
 
