@@ -463,7 +463,7 @@ func (d *Documentation) Fields() []*FieldDocs {
 	return fields
 }
 
-// Fields returns the formatted FieldDocs values for the template fields
+// TemplateFields returns the formatted FieldDocs values for the template fields
 func (d *Documentation) TemplateFields() []*FieldDocs {
 	var keys []string
 	for k := range d.templateFields {
