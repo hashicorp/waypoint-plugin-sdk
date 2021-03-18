@@ -112,7 +112,7 @@ func New(opts ...Option) (*Documentation, error) {
 
 // FromConfig populates the Documentation value by reading the struct
 // members on the value. This is typically passed the value that is returned
-// by the plugins Config function.
+// by the plugin's Config function.
 func FromConfig(v interface{}) Option {
 	return func(d *Documentation) error {
 		return fromConfig(v, d.fields)
