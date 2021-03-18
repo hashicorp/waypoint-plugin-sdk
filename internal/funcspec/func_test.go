@@ -103,8 +103,9 @@ func TestFunc(t *testing.T) {
 		require.NotNil(spec)
 
 		f := Func(spec, func(args Args, v int) (*any.Any, error) {
-			require.Len(args, 1)
+			require.Len(args, 2)
 			require.NotNil(args[0])
+			require.NotNil(args[1])
 			require.Equal(42, v)
 
 			// At this point we'd normally RPC out.
@@ -127,8 +128,9 @@ func TestFunc(t *testing.T) {
 		require.NotNil(spec)
 
 		f := Func(spec, func(args Args, v int) (*any.Any, error) {
-			require.Len(args, 1)
+			require.Len(args, 2)
 			require.NotNil(args[0])
+			require.NotNil(args[1])
 			require.Equal(42, v)
 
 			// At this point we'd normally RPC out.

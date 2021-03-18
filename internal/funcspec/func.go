@@ -34,6 +34,30 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 		switch arg.PrimitiveType {
 		case pb.FuncSpec_Value_BOOL:
 			value.Type = reflect.TypeOf(false)
+		case pb.FuncSpec_Value_INT:
+			value.Type = reflect.TypeOf(int(0))
+		case pb.FuncSpec_Value_INT8:
+			value.Type = reflect.TypeOf(int8(0))
+		case pb.FuncSpec_Value_INT16:
+			value.Type = reflect.TypeOf(int16(0))
+		case pb.FuncSpec_Value_INT32:
+			value.Type = reflect.TypeOf(int32(0))
+		case pb.FuncSpec_Value_INT64:
+			value.Type = reflect.TypeOf(int64(0))
+
+		case pb.FuncSpec_Value_UINT:
+			value.Type = reflect.TypeOf(uint(0))
+		case pb.FuncSpec_Value_UINT8:
+			value.Type = reflect.TypeOf(uint8(0))
+		case pb.FuncSpec_Value_UINT16:
+			value.Type = reflect.TypeOf(uint16(0))
+		case pb.FuncSpec_Value_UINT32:
+			value.Type = reflect.TypeOf(uint32(0))
+		case pb.FuncSpec_Value_UINT64:
+			value.Type = reflect.TypeOf(uint64(0))
+
+		case pb.FuncSpec_Value_STRING:
+			value.Type = reflect.TypeOf("")
 
 		case pb.FuncSpec_Value_INVALID:
 			// Ignore

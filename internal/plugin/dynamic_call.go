@@ -32,6 +32,43 @@ func callDynamicFunc2(
 		case *pb.FuncSpec_Value_Bool:
 			value = v.Bool
 
+		case *pb.FuncSpec_Value_Int:
+			switch arg.PrimitiveType {
+			case pb.FuncSpec_Value_INT8:
+				value = int8(v.Int)
+			case pb.FuncSpec_Value_INT16:
+				value = int16(v.Int)
+			case pb.FuncSpec_Value_INT32:
+				value = int32(v.Int)
+			case pb.FuncSpec_Value_INT64:
+				value = int64(v.Int)
+			case pb.FuncSpec_Value_INT:
+				fallthrough
+			default:
+				// Fallback to int as a default
+				value = int(v.Int)
+			}
+
+		case *pb.FuncSpec_Value_Uint:
+			switch arg.PrimitiveType {
+			case pb.FuncSpec_Value_INT8:
+				value = uint8(v.Uint)
+			case pb.FuncSpec_Value_INT16:
+				value = uint16(v.Uint)
+			case pb.FuncSpec_Value_INT32:
+				value = uint32(v.Uint)
+			case pb.FuncSpec_Value_INT64:
+				value = uint64(v.Uint)
+			case pb.FuncSpec_Value_INT:
+				fallthrough
+			default:
+				// Fallback to uint as a default
+				value = uint(v.Uint)
+			}
+
+		case *pb.FuncSpec_Value_String_:
+			value = v.String_
+
 		default:
 			return nil, fmt.Errorf("internal error! invalid argument value: %#v",
 				arg.Value)

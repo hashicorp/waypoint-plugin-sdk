@@ -109,6 +109,17 @@ var (
 	//  4. arg decoding in internal/plugin/dynamic_call.go
 	//
 	validPrimitive = map[reflect.Kind]struct{}{
-		reflect.Bool: struct{}{},
+		reflect.Bool:   struct{}{},
+		reflect.Int:    struct{}{},
+		reflect.Int8:   struct{}{},
+		reflect.Int16:  struct{}{},
+		reflect.Int32:  struct{}{},
+		reflect.Int64:  struct{}{},
+		reflect.Uint:   struct{}{},
+		reflect.Uint8:  struct{}{},
+		reflect.Uint16: struct{}{},
+		reflect.Uint32: struct{}{},
+		reflect.Uint64: struct{}{},
+		reflect.String: struct{}{},
 	}
 )

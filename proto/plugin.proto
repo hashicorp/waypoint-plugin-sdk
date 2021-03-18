@@ -167,6 +167,9 @@ message FuncSpec {
 
       // Primitive values below
       bool bool = 5;
+      int64 int = 6; // all sizes up to 64-bit
+      uint64 uint = 7; // all sizes up to 64-bit
+      string string = 8;
     }
 
     // PrimitiveType are the types of primitives we support. The enum
@@ -174,6 +177,17 @@ message FuncSpec {
     enum PrimitiveType {
       INVALID = 0;
       BOOL = 1;
+      INT = 2;
+      INT8 = 3;
+      INT16 = 4;
+      INT32 = 5;
+      INT64 = 6;
+      UINT = 7;
+      UINT8 = 8;
+      UINT16 = 9;
+      UINT32 = 10;
+      UINT64 = 11;
+      STRING = 24;
     }
   }
 
