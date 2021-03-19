@@ -76,7 +76,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "c6:96:98:82:dc:04:6c:39:dd:ac:83:05:e3:15:1c:98"
-      - protobuf/install
+      - protobuf/install:
+          version: 3.0.0
       - checkout
       - attach_workspace:
           at: /go/bin
@@ -92,6 +93,9 @@ jobs:
           name: go generate
           command: |
             echo "Checking that go generate has no errors ..."
+            sudo chmod 755 -R /usr/local/bin/protoc
+            sudo chmod 755 -R /usr/local/include/google
+            protoc --version
             go generate .
       - notify_main_failure
 
