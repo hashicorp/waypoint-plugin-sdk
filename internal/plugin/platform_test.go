@@ -1,8 +1,10 @@
 package plugin
 
 import (
+	"context"
 	"testing"
 
+	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-plugin"
 	"github.com/stretchr/testify/require"
 
@@ -69,6 +71,60 @@ func TestPlatformConfig(t *testing.T) {
 	testConfigurable(t, "platform", mockV, &mockV.Configurable)
 }
 
+func TestPlatform_generation(t *testing.T) {
+	require := require.New(t)
+
+	called := false
+	genFunc := func(ctx context.Context) ([]byte, error) {
+		called = true
+		return []byte("HELLO"), nil
+	}
+
+	mockV := &mockPlatformGeneration{}
+	mockG := &mockV.Generation
+	mockG.On("GenerationFunc").Return(genFunc)
+
+	plugins := Plugins(WithComponents(mockV), WithMappers(testDefaultMappers(t)...))
+	client, server := plugin.TestPluginGRPCConn(t, plugins[1])
+	defer client.Close()
+	defer server.Stop()
+
+	raw, err := client.Dispense("platform")
+	require.NoError(err)
+	value := raw.(component.Generation)
+	f := value.GenerationFunc().(*argmapper.Func)
+	require.NotNil(f)
+
+	result := f.Call(
+		argmapper.Typed(context.Background()),
+	)
+	require.NoError(result.Err())
+
+	raw = result.Out(0)
+	require.NotNil(raw)
+
+	id := raw.([]byte)
+	require.Equal("HELLO", string(id))
+
+	require.True(called)
+}
+
+func TestPlatform_generationNoImpl(t *testing.T) {
+	require := require.New(t)
+
+	mockV := &mockPlatformLog{}
+
+	plugins := Plugins(WithComponents(mockV), WithMappers(testDefaultMappers(t)...))
+	client, server := plugin.TestPluginGRPCConn(t, plugins[1])
+	defer client.Close()
+	defer server.Stop()
+
+	raw, err := client.Dispense("platform")
+	require.NoError(err)
+	value := raw.(component.Generation)
+	require.Nil(value.GenerationFunc())
+}
+
 type mockPlatformAuthenticator struct {
 	mocks.Platform
 	mocks.Authenticator
@@ -87,4 +143,9 @@ type mockPlatformLog struct {
 type mockPlatformDestroyer struct {
 	mocks.Platform
 	mocks.Destroyer
+}
+
+type mockPlatformGeneration struct {
+	mocks.Platform
+	mocks.Generation
 }
