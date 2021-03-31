@@ -266,6 +266,13 @@ message Auth {
   }
 }
 
+message Generation {
+  // Resp is the response for the Generation function.
+  message Resp {
+    bytes id = 1;
+  }
+}
+
 // ImplementsResp returns true if the component implements an additional interface.
 message ImplementsResp {
   bool implements = 1;
@@ -447,6 +454,7 @@ message TerminalUI {
     }
   }
 }
+
 /********************************************************************
 * Mapper Plugin
 ********************************************************************/
@@ -554,6 +562,11 @@ service Platform {
   rpc IsLogPlatform(google.protobuf.Empty) returns (ImplementsResp);
   rpc LogsSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc Logs(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // component.Generation optional implementation
+  rpc IsGeneration(google.protobuf.Empty) returns (ImplementsResp);
+  rpc GenerationSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Generation(FuncSpec.Args) returns (Generation.Resp);
 }
 
 message DefaultReleaser {
