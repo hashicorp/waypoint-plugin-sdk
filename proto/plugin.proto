@@ -92,7 +92,7 @@ message Args {
     }
   }
 
-  // LabelSet is a set of labels for anything that can be labelled, such
+  // LabelSet is a set of labels for anything that can be labeled, such
   // as a deployment, build, etc.
   message LabelSet {
     map<string, string> labels = 1;
@@ -101,7 +101,7 @@ message Args {
   // ExecSessionInfo is used to send the information about an exec plugin
   // session.
   message ExecSessionInfo {
-    // bidirection usd for stdin and stdout
+    // bidirectional usd for stdin and stdout
     uint32 stream_id = 1;
 
     // The arguments to the command (includes the command itself)
@@ -278,6 +278,51 @@ message ImplementsResp {
   bool implements = 1;
 }
 
+/********************************************************************
+* Status Report Messages
+********************************************************************/
+
+// StatusReport is the report genrated when querying the overall health of
+// a deployed or released application. This report can be either generated
+// by querying the platform itself which has performed the health checks,
+// or by Waypoint running user-defined health checks.
+message StatusReport {
+  // a collection of resources for a deployed application
+  repeated Resource resources = 1;
+
+  // the current overall health state for a deployment
+  Health health = 2;
+
+  // a simple human readable message detailing the Health state
+  string health_message = 3;
+
+  // the time when this report was generated
+  google.protobuf.Timestamp time_generated = 4;
+
+  // where the health check was performed. External means not executed by Waypoint,
+  // but by the platform deployed to.
+  bool external = 5;
+
+  message Resource {
+    // the resource name
+    string name = 1;
+
+    // the current health state for a single resource
+    Health health = 2;
+
+    // a simple human readable message detailing the Health state
+    string health_message = 3;
+  }
+
+  // the state of overall health of a deployed application
+  enum Health {
+    UNKNOWN = 0;
+    ALIVE = 1;
+    READY = 2;
+    DOWN = 3;
+    PARTIAL = 4; // Some resources in deployment are OK, others are not OK
+  }
+}
 
 /********************************************************************
 * Exec Service
@@ -567,6 +612,11 @@ service Platform {
   rpc IsGeneration(google.protobuf.Empty) returns (ImplementsResp);
   rpc GenerationSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc Generation(FuncSpec.Args) returns (Generation.Resp);
+
+  // component.Status optional implementation
+  rpc IsStatus(google.protobuf.Empty) returns (ImplementsResp);
+  rpc StatusSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Status(FuncSpec.Args) returns (StatusReport);
 }
 
 message DefaultReleaser {
@@ -624,7 +674,7 @@ message Push {
 * Release Plugin Service
 ********************************************************************/
 
-// ReleaseManager is a serivce that handles the process of exposing
+// ReleaseManager is a service that handles the process of exposing
 // a deployment to traffic.
 service ReleaseManager {
   rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
@@ -670,7 +720,7 @@ message Release {
 * Config Sourcer Plugin Service
 ********************************************************************/
 
-// ConfigSourcer is a serivce that reads configuration for the application.
+// ConfigSourcer is a service that reads configuration for the application.
 service ConfigSourcer {
   rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
   rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
@@ -706,4 +756,3 @@ message ConfigSource {
     }
   }
 }
-

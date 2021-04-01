@@ -66,6 +66,10 @@ func (p *PlatformPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) e
 			base: base,
 			Impl: p.Impl,
 		},
+		statusServer: &statusServer{
+			base: base,
+			Impl: p.Impl,
+		},
 
 		Impl: p.Impl,
 	})
@@ -172,6 +176,20 @@ func (p *PlatformPlugin) GRPCClient(
 		generation = nil
 	}
 
+	status := &statusClient{
+		Client:  client.client,
+		Logger:  client.logger,
+		Broker:  client.broker,
+		Mappers: client.mappers,
+	}
+	if ok, err := status.Implements(ctx); err != nil {
+		return nil, err
+	} else if ok {
+		p.Logger.Info("platform plugin capable of status")
+	} else {
+		status = nil
+	}
+
 	// Figure out what we're returning
 	var result interface{} = client
 	switch {
@@ -187,6 +205,7 @@ func (p *PlatformPlugin) GRPCClient(
 			Execer:             execer,
 			LogPlatform:        log,
 			Generation:         generation,
+			Status:             status,
 		}
 	case execer != nil:
 		result = &mix_Platform_Exec{
@@ -198,6 +217,7 @@ func (p *PlatformPlugin) GRPCClient(
 			Documented:         client,
 			LogPlatform:        log,
 			Generation:         generation,
+			Status:             status,
 		}
 	default:
 		result = &mix_Platform_Authenticator{
@@ -209,6 +229,7 @@ func (p *PlatformPlugin) GRPCClient(
 			Documented:         client,
 			LogPlatform:        log,
 			Generation:         generation,
+			Status:             status,
 		}
 	}
 
@@ -344,6 +365,7 @@ type platformServer struct {
 	*execerServer
 	*logPlatformServer
 	*generationServer
+	*statusServer
 
 	Impl component.Platform
 }
