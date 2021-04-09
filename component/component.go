@@ -230,8 +230,8 @@ type Release interface {
 // the target platform and build a report of the current deployments health. If
 // this isn't implemented, no status report will be built for the deployments.
 type Status interface {
-	// StatusReportFunc should return a Status struct that details the result of
-	// the most recent health check for a deployment.
+	// StatusReportFunc should return a proto.StatusReport that details the
+	// result of the most recent health check for a deployment.
 	StatusFunc() interface{}
 }
 
