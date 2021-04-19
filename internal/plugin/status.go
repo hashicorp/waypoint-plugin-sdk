@@ -82,13 +82,7 @@ func (c *statusClient) status(
 	}
 
 	// just return `resp` here, pass it along
-	return &pb.StatusReport{
-		Resources:     resp.Resources,
-		External:      resp.External,
-		HealthMessage: resp.HealthMessage,
-		TimeGenerated: resp.TimeGenerated,
-		Health:        resp.Health,
-	}, nil
+	return resp, nil
 }
 
 // statusServer implements the common Status-related RPC calls.
