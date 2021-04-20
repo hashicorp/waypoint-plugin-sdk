@@ -242,3 +242,30 @@ type Template interface {
 	// And expect that this will be called on nil or empty values.
 	TemplateData() map[string]interface{}
 }
+
+// Generation can be implemented by Platform and PlatformReleaser to explicitly
+// specify a "generation" for a deploy or release. If this isn't implemented,
+// Waypoint generates a random new generation per operation and assumes
+// immutable behavior.
+//
+// A "generation" specifies a unique identifier to the physical resources used
+// by that operation. Two  operations with the same generation are operating
+// on the same underlying resources. This is used by Waypoint to detect mutable
+// vs immutable  operations; if two operations change generations, then Waypoint
+// knows the operation created new resources rather than mutating old ones.
+//
+// Waypoint uses this information to alter its behavior slightly. For example:
+//
+//  - a user can only release a generation that isn't already released.
+//  - deployment URLs are identical for matching generations
+//  - certain functionality in the future such as canaries will use this
+//
+type Generation interface {
+	// GenerationFunc should return the method handle for a function that
+	// returns a `[]byte` result (and optionally an error). The `[]byte` is
+	// the unique generation for the operation.
+	//
+	// The returned function will have access to all of the same parameters
+	// as the operation function itself such as Deploy or Release.
+	GenerationFunc() interface{}
+}
