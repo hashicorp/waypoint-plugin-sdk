@@ -262,7 +262,7 @@ type Template interface {
 //
 type Generation interface {
 	// GenerationFunc should return the method handle for a function that
-	// returns a `[]byte` result (an optionally an error). The `[]byte` is
+	// returns a `[]byte` result (and optionally an error). The `[]byte` is
 	// the unique generation for the operation.
 	//
 	// The returned function will have access to all of the same parameters
