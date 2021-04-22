@@ -3,6 +3,7 @@ package plugin
 import (
 	"context"
 	"encoding/json"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
@@ -151,6 +152,7 @@ func (c *registryClient) push(
 // registryServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type registryServer struct {
+	proto.UnimplementedRegistryServer
 	*base
 	*authenticatorServer
 
@@ -217,6 +219,22 @@ func (s *registryServer) Push(
 	}
 
 	return result, nil
+}
+
+func (s *registryServer) IsAuthenticator(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+func (s *registryServer) Auth(context.Context, *proto.FuncSpec_Args) (*proto.Auth_AuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (s *registryServer) AuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+func (s *registryServer) ValidateAuth(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+func (s *registryServer) ValidateAuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
 }
 
 var (

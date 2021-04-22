@@ -14,7 +14,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/stdio"
 )
 
-//go:generate sh -c "protoc -I`go list -m -f \"{{.Dir}}\" github.com/mitchellh/protostructure` -I ./3rdparty/proto/api-common-protos -I proto/ proto/*.proto --go_out=plugins=grpc:proto/gen/"
+//go:generate sh -c "protoc -I`go list -m -f \"{{.Dir}}\" github.com/mitchellh/protostructure` -I ./3rdparty/proto/api-common-protos -I proto/ proto/*.proto --go-grpc_out=proto/gen/ --go_out=proto/gen/ --go-grpc_opt=paths=source_relative --go_opt=paths=source_relative"
 
 // Main is the primary entrypoint for plugins serving components. This
 // function never returns; it blocks until the program is exited. This should

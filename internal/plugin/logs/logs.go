@@ -111,6 +111,7 @@ func (p *LogsPlugin) GRPCClient(
 // logsServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type logsServer struct {
+	pb.UnimplementedLogViewerServer
 	Impl    *component.LogViewer
 	Mappers []*argmapper.Func
 	Logger  hclog.Logger
@@ -166,6 +167,7 @@ func (s *logsServer) NextLogBatch(lv pb.LogViewer_NextLogBatchServer) error {
 		}
 	*/
 }
+
 
 var (
 	_ plugin.Plugin      = (*LogsPlugin)(nil)

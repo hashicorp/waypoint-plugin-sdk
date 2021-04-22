@@ -3,6 +3,7 @@ package plugin
 import (
 	"context"
 	"encoding/json"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
@@ -153,6 +154,7 @@ func (c *builderClient) build(
 // builderServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type builderServer struct {
+	proto.UnimplementedBuilderServer
 	*base
 	*authenticatorServer
 
@@ -223,6 +225,26 @@ func (s *builderServer) Build(
 	}
 
 	return result, nil
+}
+
+func (s *builderServer) Auth(context.Context, *proto.FuncSpec_Args) (*proto.Auth_AuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+
+func (s *builderServer) AuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+
+func (s *builderServer) IsAuthenticator(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+
+func (s *builderServer) ValidateAuth(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+
+func (s *builderServer) ValidateAuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
 }
 
 var (

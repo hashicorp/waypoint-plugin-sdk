@@ -13,6 +13,7 @@ type Deployment struct {
 	TemplateVal map[string]interface{}
 }
 
+func (c *Deployment) URL() string { return ""}
 func (c *Deployment) Proto() proto.Message                 { return c.Any }
 func (c *Deployment) String() string                       { return "" }
 func (c *Deployment) TemplateData() map[string]interface{} { return c.TemplateVal }

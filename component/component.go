@@ -219,7 +219,10 @@ type Artifact interface {
 	Labels() map[string]string
 }
 
-type Deployment interface{}
+type Deployment interface{
+	// URL is the URL to access this deployment
+	URL() string
+}
 
 type Release interface {
 	// URL is the URL to access this release.

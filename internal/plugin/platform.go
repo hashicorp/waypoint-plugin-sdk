@@ -3,6 +3,7 @@ package plugin
 import (
 	"context"
 	"encoding/json"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"reflect"
 
 	"github.com/davecgh/go-spew/spew"
@@ -337,6 +338,7 @@ func (c *platformClient) defaultReleaser(
 // platformServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type platformServer struct {
+	proto.UnimplementedPlatformServer
 	*base
 	*destroyerServer
 	*workspaceDestroyerServer
@@ -494,6 +496,76 @@ func (s *platformServer) DefaultReleaser(
 	})
 
 	return &proto.DefaultReleaser_Resp{StreamId: id}, nil
+}
+
+func (p *platformServer) Auth(context.Context, *proto.FuncSpec_Args) (*proto.Auth_AuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (p *platformServer) AuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+func (p *platformServer) ValidateAuth(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+func (p *platformServer) ValidateAuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
+}
+
+func (p *platformServer) Destroy(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Destroy not implemented")
+}
+
+func (p *platformServer) IsExecer(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsExecer not implemented")
+}
+
+func (p *platformServer) DestroySpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroySpec not implemented")
+}
+
+func (p *platformServer) IsAuthenticator(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+
+func (p *platformServer) DestroyWorkspace(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroyWorkspace not implemented")
+}
+
+func (p *platformServer) DestroyWorkspaceSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroyWorkspaceSpec not implemented")
+}
+
+func (p *platformServer) ExecSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExecSpec not implemented")
+}
+func (p *platformServer) Exec(context.Context, *proto.FuncSpec_Args) (*proto.ExecResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Exec not implemented")
+}
+
+func (p *platformServer) IsWorkspaceDestroyer(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsWorkspaceDestroyer not implemented")
+}
+
+func (p *platformServer) LogsSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LogsSpec not implemented")
+}
+func (p *platformServer) Logs(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logs not implemented")
+}
+
+func (p *platformServer) IsGeneration(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsGeneration not implemented")
+}
+
+func (p *platformServer) GenerationSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerationSpec not implemented")
+}
+func (p *platformServer) Generation(context.Context, *proto.FuncSpec_Args) (*proto.Generation_Resp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Generation not implemented")
+}
+
+func (p *platformServer) IsDestroyer(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsDestroyer not implemented")
 }
 
 var (

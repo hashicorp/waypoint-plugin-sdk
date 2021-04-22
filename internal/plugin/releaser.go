@@ -3,6 +3,7 @@ package plugin
 import (
 	"context"
 	"encoding/json"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
@@ -199,6 +200,7 @@ func (c *releaseManagerClient) build(
 // releaseManagerServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type releaseManagerServer struct {
+	proto.UnimplementedReleaseManagerServer
 	*base
 	*authenticatorServer
 	*destroyerServer
@@ -278,6 +280,45 @@ func (s *releaseManagerServer) Release(
 	}
 
 	return result, nil
+}
+
+func (s *releaseManagerServer) Auth(context.Context, *proto.FuncSpec_Args) (*proto.Auth_AuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (s *releaseManagerServer) AuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthSpec not implemented")
+}
+
+func (s *releaseManagerServer) ValidateAuth(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuth not implemented")
+}
+func (s *releaseManagerServer) ValidateAuthSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuthSpec not implemented")
+}
+
+func (s *releaseManagerServer) DestroySpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroySpec not implemented")
+}
+func (s *releaseManagerServer) Destroy(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Destroy not implemented")
+}
+
+func (s *releaseManagerServer) DestroyWorkspaceSpec(context.Context, *emptypb.Empty) (*proto.FuncSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroyWorkspaceSpec not implemented")
+}
+func (s *releaseManagerServer) DestroyWorkspace(context.Context, *proto.FuncSpec_Args) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroyWorkspace not implemented")
+}
+
+func (s *releaseManagerServer) IsAuthenticator(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsAuthenticator not implemented")
+}
+func (s *releaseManagerServer) IsDestroyer(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsDestroyer not implemented")
+}
+
+func (s *releaseManagerServer) IsWorkspaceDestroyer(context.Context, *emptypb.Empty) (*proto.ImplementsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsWorkspaceDestroyer not implemented")
 }
 
 var (

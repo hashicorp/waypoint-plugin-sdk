@@ -68,6 +68,7 @@ func (p *UIPlugin) GRPCClient(
 // uiServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type uiServer struct {
+	pb.UnimplementedTerminalUIServiceServer
 	Impl    terminal.UI
 	Mappers []*argmapper.Func
 	Logger  hclog.Logger

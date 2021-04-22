@@ -144,6 +144,7 @@ func (c *configSourcerClient) stop(
 // configSourcerServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type configSourcerServer struct {
+	proto.UnimplementedConfigSourcerServer
 	*base
 
 	Impl component.ConfigSourcer
