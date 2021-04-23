@@ -662,9 +662,18 @@ message DefaultReleaser {
 }
 
 message Deploy {
+  // url is the URL provided by the plugin used to reach this deployment
+  // note that not all the plugins are able to return a meaningful
+  // entry here. In such cases, the best option is to leave this
+  // field empty and let the URL service (Hashicorp Horizon) provide
+  // an URL.
+  string url = 1;
   message Resp {
     // result is the resulting opaque data type
     google.protobuf.Any result = 1;
+
+    // deployment structure
+    Deploy deployment = 3;
 
     // template data for the deployment
     bytes template_data = 2;

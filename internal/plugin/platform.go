@@ -299,6 +299,7 @@ func (c *platformClient) deploy(
 
 	return &plugincomponent.Deployment{
 		Any:         resp.Result,
+		Deployment:  resp.Deployment,
 		TemplateVal: tplData,
 	}, nil
 }
@@ -436,7 +437,13 @@ func (s *platformServer) Deploy(
 		return nil, err
 	}
 
-	result := &proto.Deploy_Resp{Result: encoded}
+	result := &proto.Deploy_Resp{Result: encoded, Deployment: &proto.Deploy{}}
+
+	deploymentWithUrl, ok := raw.(component.DeploymentWithUrl)
+	if ok {
+		result.Deployment.Url = deploymentWithUrl.URL()
+	}
+
 	result.TemplateData, err = templateData(raw)
 	if err != nil {
 		return nil, err
