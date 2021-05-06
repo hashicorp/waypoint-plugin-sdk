@@ -6,12 +6,16 @@ import (
 	"github.com/hashicorp/go-argmapper"
 )
 
+// markerType is used for markerValue on Resource.
+type markerType struct{}
+
 // Resource is a single resource type with an associated lifecycle and state.
 // A "resource" is any external thing a plugin creates such as a load balancer,
 // networking primitives, files, etc. Representing these things as "resources"
 // assists in lifecycle management, such as preventing dangling resources
 // in the case of an error and properly cleaning them up.
 type Resource struct {
+	seq         uint64
 	name        string
 	stateType   reflect.Type
 	stateValue  interface{}
@@ -67,6 +71,26 @@ func (r *Resource) Create(args ...interface{}) error {
 	return result.Err()
 }
 
+// markerValue returns a argmapper.Value that is unique to this resource.
+// This is used by the resource manager to ensure that all resource
+// lifecycle functions are called.
+//
+// Details on how this works: argmapper only calls the functions in its
+// chain that are necessary to call the final function in the chain. In order
+// to ensure a function is called, you must depend on a unique value that
+// it outputs. The resource manager works by adding these unique marker values
+// as dependencies on the final function in the chain, thus ensuring that
+// the intermediate functions are called.
+func (r *Resource) markerValue() argmapper.Value {
+	val := markerType(struct{}{})
+	return argmapper.Value{
+		Name:    "marker",
+		Type:    reflect.TypeOf(val),
+		Subtype: r.name,
+		Value:   reflect.ValueOf(val),
+	}
+}
+
 // mapperForCreate returns an argmapper func that takes as input the
 // requirements for the createFunc and returns the state type plus an error.
 // This creates a valid "mapper" we can use with Manager.
@@ -77,18 +101,26 @@ func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
 		return nil, err
 	}
 
+	// For our output, we will always output our unique marker type.
+	// This unique marker type will allow our resource manager to create
+	// a function chain that calls all the resources necessary.
+	markerVal := r.markerValue()
+	outputs, err := argmapper.NewValueSet([]argmapper.Value{markerVal})
+	if err != nil {
+		return nil, err
+	}
+
 	// Our inputs default to whatever the function requires and our
 	// output defaulst to nothing (only the error type). We will proceed to
 	// modify these so that the output contains our state type and the input
 	// does NOT contain our state type (since it'll be allocated and provided
 	// by us). If we have no state type, we do nothing!
-	var outputs *argmapper.ValueSet
 	inputs := original.Input()
 	if r.stateType != nil {
 		// For outputs, we will only return the state type.
-		outputs, err = argmapper.NewValueSet([]argmapper.Value{
-			{Type: r.stateType},
-		})
+		outputs, err = argmapper.NewValueSet(append(outputs.Values(), argmapper.Value{
+			Type: r.stateType,
+		}))
 		if err != nil {
 			return nil, err
 		}
@@ -129,6 +161,11 @@ func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
 			if v := out.Typed(r.stateType); v != nil {
 				v.Value = reflect.ValueOf(r.stateValue)
 			}
+		}
+
+		// Ensure our output marker type is set
+		if v := out.TypedSubtype(markerVal.Type, markerVal.Subtype); v != nil {
+			v.Value = markerVal.Value
 		}
 
 		// Call our function. We throw away any result types except for the error.
