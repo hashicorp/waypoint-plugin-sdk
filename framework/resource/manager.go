@@ -1,6 +1,8 @@
 package resource
 
 import (
+	"fmt"
+
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
 
@@ -17,7 +19,7 @@ import (
 //
 // Create a Manager with NewManager and a set of options.
 type Manager struct {
-	resources []*Resource
+	resources map[string]*Resource
 }
 
 // NewManager creates a new resource manager.
@@ -25,10 +27,39 @@ type Manager struct {
 // Callers should call Validate on the result to check for errors.
 func NewManager(opts ...ManagerOption) *Manager {
 	var m Manager
+	m.resources = map[string]*Resource{}
 	for _, opt := range opts {
 		opt(&m)
 	}
 	return &m
+}
+
+// Resource returns the resource with the given name. This will return nil
+// if the resource is not known.
+func (m *Manager) Resource(n string) *Resource {
+	return m.resources[n]
+}
+
+// LoadState loads the serialized state from Proto.
+func (m *Manager) LoadState(v *any.Any) error {
+	var s pb.Framework_ResourceManagerState
+	if err := component.ProtoAnyUnmarshal(v, &s); err != nil {
+		return err
+	}
+
+	for _, sr := range s.Resources {
+		r, ok := m.resources[sr.Name]
+		if !ok {
+			return fmt.Errorf(
+				"failed to deserialize state: unknown resource %q", sr.Name)
+		}
+
+		if err := r.loadState(sr); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Proto returns the serialized state for this manager and all the resources
@@ -71,9 +102,9 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 	// function will do nothing, but will take as an input all the marker
 	// values for the resources we want to create. This will force argmapper
 	// to call all our create functions for all our resources.
-	finalInputs := make([]argmapper.Value, len(m.resources))
-	for i, r := range m.resources {
-		finalInputs[i] = r.markerValue()
+	finalInputs := make([]argmapper.Value, 0, len(m.resources))
+	for _, r := range m.resources {
+		finalInputs = append(finalInputs, r.markerValue())
 	}
 
 	finalInputSet, err := argmapper.NewValueSet(finalInputs)
@@ -119,6 +150,6 @@ type ManagerOption func(*Manager)
 // multiple times and the resources will be appended to the manager.
 func WithResource(r *Resource) ManagerOption {
 	return func(m *Manager) {
-		m.resources = append(m.resources, r)
+		m.resources[r.name] = r
 	}
 }

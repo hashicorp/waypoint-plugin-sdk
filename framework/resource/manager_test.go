@@ -3,8 +3,8 @@ package resource
 import (
 	"testing"
 
+	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 	"github.com/stretchr/testify/require"
-	//"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 )
 
 func TestManagerCreateAll(t *testing.T) {
@@ -75,4 +75,48 @@ func TestManagerCreateAll(t *testing.T) {
 		// Ensure we have state
 		require.NotNil(m.Proto())
 	})
+}
+
+func TestManagerLoadState(t *testing.T) {
+	var calledB int32
+	require := require.New(t)
+
+	// init is a function so that we can reinitialize an empty manager
+	// for this test to test loading state
+	init := func() *Manager {
+		return NewManager(
+			WithResource(NewResource(
+				WithName("A"),
+				WithState(&testproto.Data{}),
+				WithCreate(func(s *testproto.Data, v int32) error {
+					s.Number = v
+					return nil
+				}),
+			)),
+
+			WithResource(NewResource(
+				WithName("B"),
+				WithCreate(func(s *testproto.Data) error {
+					calledB = s.Number
+					return nil
+				}),
+			)),
+		)
+	}
+
+	// Create
+	m := init()
+	require.NoError(m.CreateAll(int32(42)))
+
+	// Ensure we called all
+	require.Equal(calledB, int32(42))
+
+	// Create a new manager, load the state, and verify it works
+	m2 := init()
+	require.NoError(m2.LoadState(m.Proto()))
+
+	// Grab our resource state
+	actual := m2.Resource("A").State().(*testproto.Data)
+	require.NotNil(actual)
+	require.Equal(actual.Number, int32(42))
 }

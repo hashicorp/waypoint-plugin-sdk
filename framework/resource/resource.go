@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
 	"github.com/hashicorp/go-argmapper"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
@@ -158,7 +159,7 @@ func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
 
 		if r.stateType != nil {
 			// Initialize our state type and add it to our available args
-			r.stateValue = reflect.New(r.stateType.Elem()).Interface()
+			r.initState()
 			args = append(args, argmapper.Typed(r.stateValue))
 
 			// Ensure our output value for our state type is set
@@ -176,6 +177,39 @@ func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
 		result := original.Call(args...)
 		return result.Err()
 	})
+}
+
+// initState sets the r.stateValue to a new, empty state value.
+func (r *Resource) initState() {
+	if r.stateType != nil {
+		r.stateValue = reflect.New(r.stateType.Elem()).Interface()
+	}
+}
+
+// loadState is the inverse of proto. This repopulates the state from the
+// serialized proto format. This will discard any previous state that is
+// currently loaded.
+func (r *Resource) loadState(s *pb.Framework_ResourceState) error {
+	// If we have no raw value in the state then ignore it.
+	if s == nil || s.Raw == nil {
+		return nil
+	}
+
+	// We try to unmarshal directly into a state value
+	r.initState()
+	if r.stateValue == nil {
+		return fmt.Errorf(
+			"resource %q: can't unserialize state because the resource "+
+				"has no defined state type", r.name)
+	}
+
+	pm, ok := r.stateValue.(proto.Message)
+	if !ok {
+		return fmt.Errorf(
+			"resource %q: can't unserialize state because the resource "+
+				"state type is not a protobuf message.", r.name)
+	}
+	return component.ProtoAnyUnmarshal(s.Raw, pm)
 }
 
 // proto returns the protobuf message for the state of this resource.
