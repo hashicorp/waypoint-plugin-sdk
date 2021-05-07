@@ -154,7 +154,7 @@ func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
 
 		if r.stateType != nil {
 			// Initialize our state type and add it to our available args
-			r.stateValue = reflect.New(r.stateType).Elem()
+			r.stateValue = reflect.New(r.stateType.Elem()).Interface()
 			args = append(args, argmapper.Typed(r.stateValue))
 
 			// Ensure our output value for our state type is set
