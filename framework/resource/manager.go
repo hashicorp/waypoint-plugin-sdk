@@ -62,12 +62,12 @@ func (m *Manager) LoadState(v *any.Any) error {
 	return nil
 }
 
-// Proto returns the serialized state for this manager and all the resources
+// State returns the serialized state for this manager and all the resources
 // that are part of this manager. This is a `google.protobuf.Any` type and
 // plugin authors are expected to serialize this type directly into their
 // return values. This is an opaque type; plugin authors should make no attempt
 // to deserialize this.
-func (m *Manager) Proto() *any.Any {
+func (m *Manager) State() *any.Any {
 	result, err := component.ProtoAny(m.proto())
 	if err != nil {
 		// This should never happen. Errors that happen are usually encoded

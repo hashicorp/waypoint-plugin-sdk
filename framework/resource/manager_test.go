@@ -73,7 +73,7 @@ func TestManagerCreateAll(t *testing.T) {
 		require.Equal(calledB, 42)
 
 		// Ensure we have state
-		require.NotNil(m.Proto())
+		require.NotNil(m.State())
 	})
 }
 
@@ -113,7 +113,7 @@ func TestManagerLoadState(t *testing.T) {
 
 	// Create a new manager, load the state, and verify it works
 	m2 := init()
-	require.NoError(m2.LoadState(m.Proto()))
+	require.NoError(m2.LoadState(m.State()))
 
 	// Grab our resource state
 	actual := m2.Resource("A").State().(*testproto.Data)
