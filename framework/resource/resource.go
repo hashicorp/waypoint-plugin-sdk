@@ -186,6 +186,11 @@ func (r *Resource) proto() *pb.Framework_ResourceState {
 		panic(err)
 	}
 
+	// This means we have no state value, we return just the name.
+	if stateProto == nil {
+		return &pb.Framework_ResourceState{Name: r.name}
+	}
+
 	// Encode our state
 	anyVal, err := component.ProtoAny(stateProto)
 	if err != nil {

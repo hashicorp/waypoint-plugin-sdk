@@ -55,7 +55,7 @@ func (m *Manager) proto() *pb.Framework_ResourceManagerState {
 		result.Resources = append(result.Resources, r.proto())
 	}
 
-	return nil
+	return &result
 }
 
 // CreateAll creates all the resources for this manager.

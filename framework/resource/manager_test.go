@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	//"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 )
 
 func TestManagerCreateAll(t *testing.T) {
@@ -70,5 +71,8 @@ func TestManagerCreateAll(t *testing.T) {
 
 		// Ensure we called all
 		require.Equal(calledB, 42)
+
+		// Ensure we have state
+		require.NotNil(m.Proto())
 	})
 }
