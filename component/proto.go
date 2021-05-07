@@ -25,18 +25,29 @@ type ProtoMarshaler interface {
 	Proto() proto.Message
 }
 
-// ProtoAny returns an *any.Any for the given ProtoMarshaler object.
-func ProtoAny(m interface{}) (*any.Any, error) {
+// Proto returns the proto.Message for a given value that is either already
+// a proto.Message or implements ProtoMarshaler. If the value implements neither,
+// then this returns (nil, nil).
+func Proto(m interface{}) (proto.Message, error) {
 	msg, ok := m.(proto.Message)
+	if ok {
+		return msg, nil
+	}
 
 	// If it isn't a message directly, we accept marshalers
+	pm, ok := m.(ProtoMarshaler)
 	if !ok {
-		pm, ok := m.(ProtoMarshaler)
-		if !ok {
-			return nil, nil
-		}
+		return nil, nil
+	}
 
-		msg = pm.Proto()
+	return pm.Proto(), nil
+}
+
+// ProtoAny returns an *any.Any for the given ProtoMarshaler object.
+func ProtoAny(m interface{}) (*any.Any, error) {
+	msg, err := Proto(m)
+	if err != nil {
+		return nil, err
 	}
 
 	// If the message is already an Any, then we're done

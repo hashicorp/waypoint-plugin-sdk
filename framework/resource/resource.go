@@ -1,9 +1,14 @@
 package resource
 
 import (
+	"fmt"
 	"reflect"
 
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/hashicorp/go-argmapper"
+
+	"github.com/hashicorp/waypoint-plugin-sdk/component"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // markerType is used for markerValue on Resource.
@@ -171,6 +176,35 @@ func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
 		result := original.Call(args...)
 		return result.Err()
 	})
+}
+
+// proto returns the protobuf message for the state of this resource.
+func (r *Resource) proto() *pb.Framework_ResourceState {
+	stateProto, err := component.Proto(r.stateValue)
+	if err != nil {
+		// This shouldn't happen.
+		panic(err)
+	}
+
+	// Encode our state
+	anyVal, err := component.ProtoAny(stateProto)
+	if err != nil {
+		// This shouldn't happen.
+		panic(err)
+	}
+
+	var m jsonpb.Marshaler
+	m.Indent = "\t" // make it human-readable
+	jsonVal, err := m.MarshalToString(stateProto)
+	if err != nil {
+		jsonVal = fmt.Sprintf(`{"error": %q}`, err)
+	}
+
+	return &pb.Framework_ResourceState{
+		Name: r.name,
+		Raw:  anyVal,
+		Json: jsonVal,
+	}
 }
 
 // ResourceOption is used to configure NewResource.

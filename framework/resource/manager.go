@@ -1,7 +1,11 @@
 package resource
 
 import (
+	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
+
+	"github.com/hashicorp/waypoint-plugin-sdk/component"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // Manager manages the lifecycle and state of one or more resources.
@@ -11,7 +15,7 @@ import (
 // resources you've created (such as IDs or other metadata) so that you can
 // update or destroy the resources later.
 //
-// Create a Manager with NewManager and a set of optiions.
+// Create a Manager with NewManager and a set of options.
 type Manager struct {
 	resources []*Resource
 }
@@ -25,6 +29,33 @@ func NewManager(opts ...ManagerOption) *Manager {
 		opt(&m)
 	}
 	return &m
+}
+
+// Proto returns the serialized state for this manager and all the resources
+// that are part of this manager. This is a `google.protobuf.Any` type and
+// plugin authors are expected to serialize this type directly into their
+// return values. This is an opaque type; plugin authors should make no attempt
+// to deserialize this.
+func (m *Manager) Proto() *any.Any {
+	result, err := component.ProtoAny(m.proto())
+	if err != nil {
+		// This should never happen. Errors that happen are usually encoded
+		// into the state as messages or a panic occurs if it is critical.
+		// We don't expect this to ever panic because Validate should test
+		// this.
+		panic(err)
+	}
+
+	return result
+}
+
+func (m *Manager) proto() *pb.Framework_ResourceManagerState {
+	var result pb.Framework_ResourceManagerState
+	for _, r := range m.resources {
+		result.Resources = append(result.Resources, r.proto())
+	}
+
+	return nil
 }
 
 // CreateAll creates all the resources for this manager.

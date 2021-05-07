@@ -279,6 +279,34 @@ message ImplementsResp {
 }
 
 /********************************************************************
+* Framework Types (for package "framework")
+********************************************************************/
+
+message Framework {
+  // ResourceManagerState is the state stored by the framework/resource.Manager
+  // structure. This should not be used directly by plugin authors.
+  message ResourceManagerState {
+    repeated ResourceState resources = 1;
+  }
+
+  // ResourceState is the state of a single resource managed by the framework.
+  message ResourceState {
+    // name is the name of this resource
+    string name = 1;
+
+    // raw is the raw state for this resource (if any, this can be nil).
+    // The type can't typically be known since this is opaque and only
+    // known by the plugin implementation.
+    google.protobuf.Any raw = 2;
+
+    // json is the jsonpb-encoded version of the raw state. This might be
+    // used downstream even by consumers who don't know the original protobuf
+    // type.
+    string json = 3;
+  }
+}
+
+/********************************************************************
 * Status Report Messages
 ********************************************************************/
 
