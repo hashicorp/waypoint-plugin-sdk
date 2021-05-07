@@ -1,5 +1,9 @@
 package resource
 
+import (
+	"github.com/hashicorp/go-argmapper"
+)
+
 // Manager manages the lifecycle and state of one or more resources.
 //
 // A resource manager makes it easy to define the set of resources you want
@@ -31,8 +35,50 @@ func NewManager(opts ...ManagerOption) *Manager {
 // Create will initialize brand new state. This will not reuse existing state.
 // If there is any existing state loaded, this will return an error immediately
 // because it risks that state being lost.
-func (m *Manager) CreateAll() error {
-	return nil
+func (m *Manager) CreateAll(args ...interface{}) error {
+	// We need to build up the final function in our argmapper chain. This
+	// function will do nothing, but will take as an input all the marker
+	// values for the resources we want to create. This will force argmapper
+	// to call all our create functions for all our resources.
+	finalInputs := make([]argmapper.Value, len(m.resources))
+	for i, r := range m.resources {
+		finalInputs[i] = r.markerValue()
+	}
+
+	finalInputSet, err := argmapper.NewValueSet(finalInputs)
+	if err != nil {
+		return err
+	}
+
+	finalFunc, err := argmapper.BuildFunc(
+		finalInputSet, nil,
+		func(in, out *argmapper.ValueSet) error {
+			// no-op on purpose. This function only exists to set the
+			// required inputs for argmapper to create the correct call
+			// graph.
+			return nil
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	// Start building our arguments
+	var mapperArgs []argmapper.Arg
+	for _, arg := range args {
+		mapperArgs = append(mapperArgs, argmapper.Typed(arg))
+	}
+	for _, r := range m.resources {
+		createFunc, err := r.mapperForCreate()
+		if err != nil {
+			return err
+		}
+
+		mapperArgs = append(mapperArgs, argmapper.ConverterFunc(createFunc))
+	}
+
+	result := finalFunc.Call(mapperArgs...)
+	return result.Err()
 }
 
 // ManagerOption is used to configure NewManager.

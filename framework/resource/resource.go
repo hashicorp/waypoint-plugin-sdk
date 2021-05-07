@@ -84,7 +84,6 @@ func (r *Resource) Create(args ...interface{}) error {
 func (r *Resource) markerValue() argmapper.Value {
 	val := markerType(struct{}{})
 	return argmapper.Value{
-		Name:    "marker",
 		Type:    reflect.TypeOf(val),
 		Subtype: r.name,
 		Value:   reflect.ValueOf(val),
