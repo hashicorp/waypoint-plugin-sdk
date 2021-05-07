@@ -111,7 +111,7 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 	// to call all our create functions for all our resources.
 	finalInputs := make([]argmapper.Value, 0, len(m.resources))
 	for _, r := range m.resources {
-		finalInputs = append(finalInputs, r.markerValue())
+		finalInputs = append(finalInputs, markerValue(r.name))
 	}
 
 	finalInputSet, err := argmapper.NewValueSet(finalInputs)

@@ -86,23 +86,35 @@ func (r *Resource) Create(args ...interface{}) error {
 	return result.Err()
 }
 
-// markerValue returns a argmapper.Value that is unique to this resource.
-// This is used by the resource manager to ensure that all resource
-// lifecycle functions are called.
+// Destroy destroys this resource. args is a list of arguments to make
+// available to the destroy function via dependency injection. The state
+// value will always be available as an argument (though it may be nil
+// if this resource has no state).
 //
-// Details on how this works: argmapper only calls the functions in its
-// chain that are necessary to call the final function in the chain. In order
-// to ensure a function is called, you must depend on a unique value that
-// it outputs. The resource manager works by adding these unique marker values
-// as dependencies on the final function in the chain, thus ensuring that
-// the intermediate functions are called.
-func (r *Resource) markerValue() argmapper.Value {
-	val := markerType(struct{}{})
-	return argmapper.Value{
-		Type:    reflect.TypeOf(val),
-		Subtype: r.name,
-		Value:   reflect.ValueOf(val),
+// After Destroy is called successfully (without an error result), the
+// state will always be nil.
+func (r *Resource) Destroy(args ...interface{}) error {
+	f, err := r.mapperForDestroy(nil)
+	if err != nil {
+		return err
 	}
+
+	mapperArgs := make([]argmapper.Arg, len(args))
+	for i, v := range args {
+		mapperArgs[i] = argmapper.Typed(v)
+	}
+
+	// Ensure we have the state available as an argument. If it is
+	// nil then we initialize it.
+	if r.stateType != nil {
+		if r.stateValue == nil {
+			r.initState(true)
+		}
+		mapperArgs = append(mapperArgs, argmapper.Typed(r.stateValue))
+	}
+
+	result := f.Call(mapperArgs...)
+	return result.Err()
 }
 
 // mapperForCreate returns an argmapper func that takes as input the
@@ -118,7 +130,7 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 	// For our output, we will always output our unique marker type.
 	// This unique marker type will allow our resource manager to create
 	// a function chain that calls all the resources necessary.
-	markerVal := r.markerValue()
+	markerVal := markerValue(r.name)
 	outputs, err := argmapper.NewValueSet([]argmapper.Value{markerVal})
 	if err != nil {
 		return nil, err
@@ -168,7 +180,7 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 
 		if r.stateType != nil {
 			// Initialize our state type and add it to our available args
-			r.initState()
+			r.initState(true)
 			args = append(args, argmapper.Typed(r.stateValue))
 
 			// Ensure our output value for our state type is set
@@ -193,10 +205,76 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 	})
 }
 
+// mapperForDestroy returns an argmapper func that will call the destroy
+// function. The deps given will be created as input dependencies to ensure
+// that they are destroyed first. The value of deps should be the name of
+// the resource.
+func (r *Resource) mapperForDestroy(deps []string) (*argmapper.Func, error) {
+	// Create the func for the destroyFunc as-is. We need to get the input/output sets.
+	original, err := argmapper.NewFunc(r.destroyFunc)
+	if err != nil {
+		return nil, err
+	}
+
+	// For our output, we will always output our unique marker type.
+	// This unique marker type will allow our resource manager to create
+	// a function chain that calls all the resources necessary.
+	markerVal := markerValue(r.name)
+	outputs, err := argmapper.NewValueSet([]argmapper.Value{markerVal})
+	if err != nil {
+		return nil, err
+	}
+
+	// We have to modify our inputs to add the set of dependencies to this.
+	inputVals := original.Input().Values()
+	for _, d := range deps {
+		if d != r.name {
+			// This shouldn't happen, this would be an infinite loop. If this
+			// happened it means there is a bug or corruption somewhere. We
+			// panic so that we can track this bug down.
+			panic("resource dependent on itself for destroy")
+		}
+
+		inputVals = append(inputVals, markerValue(d))
+	}
+	inputs, err := argmapper.NewValueSet(inputVals)
+	if err != nil {
+		return nil, err
+	}
+
+	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
+		// Our available arguments are what was given to us and required
+		// by our function plus our newly allocated state.
+		args := in.Args()
+
+		// Ensure our output marker type is set
+		if v := out.TypedSubtype(markerVal.Type, markerVal.Subtype); v != nil {
+			v.Value = markerVal.Value
+		}
+
+		// Call our function. We throw away any result types except for the error.
+		result := original.Call(args...)
+		err := result.Err()
+
+		// If the destroy was successful, we clear our state.
+		if err == nil {
+			r.initState(false)
+		}
+
+		return err
+	})
+}
+
 // initState sets the r.stateValue to a new, empty state value.
-func (r *Resource) initState() {
+// If zero is true, this will get set to a non-nil value. If zero is
+// false, the state will be a nil pointer type to the state type.
+func (r *Resource) initState(zero bool) {
 	if r.stateType != nil {
-		r.stateValue = reflect.New(r.stateType.Elem()).Interface()
+		if zero {
+			r.stateValue = reflect.New(r.stateType.Elem()).Interface()
+		} else {
+			r.stateValue = reflect.New(r.stateType).Elem().Interface()
+		}
 	}
 }
 
@@ -210,7 +288,7 @@ func (r *Resource) loadState(s *pb.Framework_ResourceState) error {
 	}
 
 	// We try to unmarshal directly into a state value
-	r.initState()
+	r.initState(true)
 	if r.stateValue == nil {
 		return fmt.Errorf(
 			"resource %q: can't unserialize state because the resource "+
@@ -313,4 +391,23 @@ func WithDestroy(f interface{}) ResourceOption {
 // for initialization.
 func WithState(v interface{}) ResourceOption {
 	return func(r *Resource) { r.stateType = reflect.TypeOf(v) }
+}
+
+// markerValue returns a argmapper.Value that is unique to this resource.
+// This is used by the resource manager to ensure that all resource
+// lifecycle functions are called.
+//
+// Details on how this works: argmapper only calls the functions in its
+// chain that are necessary to call the final function in the chain. In order
+// to ensure a function is called, you must depend on a unique value that
+// it outputs. The resource manager works by adding these unique marker values
+// as dependencies on the final function in the chain, thus ensuring that
+// the intermediate functions are called.
+func markerValue(n string) argmapper.Value {
+	val := markerType(struct{}{})
+	return argmapper.Value{
+		Type:    reflect.TypeOf(val),
+		Subtype: n,
+		Value:   reflect.ValueOf(val),
+	}
 }
