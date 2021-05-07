@@ -19,7 +19,8 @@ import (
 //
 // Create a Manager with NewManager and a set of options.
 type Manager struct {
-	resources map[string]*Resource
+	resources   map[string]*Resource
+	createState *createState
 }
 
 // NewManager creates a new resource manager.
@@ -86,6 +87,12 @@ func (m *Manager) proto() *pb.Framework_ResourceManagerState {
 		result.Resources = append(result.Resources, r.proto())
 	}
 
+	// If we have creation station, then track the order. We will use
+	// this to construct the destroy order later.
+	if cs := m.createState; cs != nil {
+		result.CreateOrder = cs.Order
+	}
+
 	return &result
 }
 
@@ -125,13 +132,16 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 		return err
 	}
 
+	// Reset our creation state if we're creating
+	m.createState = &createState{}
+
 	// Start building our arguments
 	var mapperArgs []argmapper.Arg
 	for _, arg := range args {
 		mapperArgs = append(mapperArgs, argmapper.Typed(arg))
 	}
 	for _, r := range m.resources {
-		createFunc, err := r.mapperForCreate()
+		createFunc, err := r.mapperForCreate(m.createState)
 		if err != nil {
 			return err
 		}

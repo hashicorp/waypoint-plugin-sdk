@@ -15,6 +15,15 @@ import (
 // markerType is used for markerValue on Resource.
 type markerType struct{}
 
+// createState is made available internally to all our creation functions
+// to track state from the creation process.
+type createState struct {
+	// Order is the order that creation is called by resource name.
+	// This is serialized in the state and used to determine the destruction
+	// order later.
+	Order []string
+}
+
 // Resource is a single resource type with an associated lifecycle and state.
 // A "resource" is any external thing a plugin creates such as a load balancer,
 // networking primitives, files, etc. Representing these things as "resources"
@@ -63,7 +72,7 @@ func (r *Resource) State() interface{} {
 // After Create is called, any state can be accessed via the State function.
 // This may be populated even during failure with partial state.
 func (r *Resource) Create(args ...interface{}) error {
-	f, err := r.mapperForCreate()
+	f, err := r.mapperForCreate(nil)
 	if err != nil {
 		return err
 	}
@@ -99,7 +108,7 @@ func (r *Resource) markerValue() argmapper.Value {
 // mapperForCreate returns an argmapper func that takes as input the
 // requirements for the createFunc and returns the state type plus an error.
 // This creates a valid "mapper" we can use with Manager.
-func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
+func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 	// Create the func for the createFunc as-is. We need to get the input/output sets.
 	original, err := argmapper.NewFunc(r.createFunc)
 	if err != nil {
@@ -171,6 +180,11 @@ func (r *Resource) mapperForCreate() (*argmapper.Func, error) {
 		// Ensure our output marker type is set
 		if v := out.TypedSubtype(markerVal.Type, markerVal.Subtype); v != nil {
 			v.Value = markerVal.Value
+		}
+
+		// If we have creation state, append our resource to the order.
+		if cs != nil {
+			cs.Order = append(cs.Order, r.name)
 		}
 
 		// Call our function. We throw away any result types except for the error.

@@ -287,6 +287,10 @@ message Framework {
   // structure. This should not be used directly by plugin authors.
   message ResourceManagerState {
     repeated ResourceState resources = 1;
+
+    // The order that resources were created. This is used internally
+    // to construct the destruction order which is just this order reversed.
+    repeated string create_order = 2;
   }
 
   // ResourceState is the state of a single resource managed by the framework.
