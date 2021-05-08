@@ -77,12 +77,13 @@ func TestManagerCreateAll(t *testing.T) {
 	})
 }
 
-func TestManagerLoadState(t *testing.T) {
+func TestManagerDestroyAll(t *testing.T) {
 	var calledB int32
 	require := require.New(t)
 
 	// init is a function so that we can reinitialize an empty manager
 	// for this test to test loading state
+	var destroyOrder []string
 	init := func() *Manager {
 		return NewManager(
 			WithResource(NewResource(
@@ -92,12 +93,20 @@ func TestManagerLoadState(t *testing.T) {
 					s.Number = v
 					return nil
 				}),
+				WithDestroy(func() error {
+					destroyOrder = append(destroyOrder, "A")
+					return nil
+				}),
 			)),
 
 			WithResource(NewResource(
 				WithName("B"),
 				WithCreate(func(s *testproto.Data) error {
 					calledB = s.Number
+					return nil
+				}),
+				WithDestroy(func() error {
+					destroyOrder = append(destroyOrder, "B")
 					return nil
 				}),
 			)),
@@ -119,4 +128,10 @@ func TestManagerLoadState(t *testing.T) {
 	actual := m2.Resource("A").State().(*testproto.Data)
 	require.NotNil(actual)
 	require.Equal(actual.Number, int32(42))
+
+	// Destroy
+	require.NoError(m2.DestroyAll())
+
+	// Ensure we destroyed
+	require.Equal([]string{"B", "A"}, destroyOrder)
 }

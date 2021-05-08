@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/go-hclog"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -21,6 +22,7 @@ import (
 type Manager struct {
 	resources   map[string]*Resource
 	createState *createState
+	logger      hclog.Logger
 }
 
 // NewManager creates a new resource manager.
@@ -29,6 +31,7 @@ type Manager struct {
 func NewManager(opts ...ManagerOption) *Manager {
 	var m Manager
 	m.resources = map[string]*Resource{}
+	m.logger = hclog.L()
 	for _, opt := range opts {
 		opt(&m)
 	}
@@ -48,6 +51,10 @@ func (m *Manager) LoadState(v *any.Any) error {
 		return err
 	}
 
+	// Initialize our creation state from the serialized state
+	m.createState = &createState{Order: s.CreateOrder}
+
+	// Go through each resource and populate their state
 	for _, sr := range s.Resources {
 		r, ok := m.resources[sr.Name]
 		if !ok {
@@ -149,7 +156,93 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 		mapperArgs = append(mapperArgs, argmapper.ConverterFunc(createFunc))
 	}
 
+	// Setup additional options
+	mapperArgs = append(mapperArgs, argmapper.Logger(m.logger))
+
 	result := finalFunc.Call(mapperArgs...)
+	return result.Err()
+}
+
+// DestroyAll destroys all the resources under management. This will call
+// Destroy in the reverse order of Create. All the state that was created
+// via Create will be available to the Destroy callbacks. Note that after
+// a resource is destroyed, their state is also set to nil.
+//
+// Only resources that have been created will be destroyed. This means
+// that if Create partially failed, then only the resources that attempted
+// creation will have Destroy called. Resources that were never called to
+// Create will do nothing.
+func (m *Manager) DestroyAll(args ...interface{}) error {
+	cs := m.createState
+	if cs == nil || len(cs.Order) == 0 {
+		// We have no creation that was ever done so we have nothing to destroy.
+		return nil
+	}
+
+	var finalInputs []argmapper.Value
+	mapperArgs := []argmapper.Arg{
+		argmapper.Logger(m.logger),
+	}
+
+	// Go through our creation order and create all our destroyers.
+	for i := 0; i < len(cs.Order); i++ {
+		r := m.Resource(cs.Order[i])
+		if r == nil {
+			// We are missing a resource that we should be destroying.
+			return fmt.Errorf(
+				"destroy failed: missing resource definition %q",
+				cs.Order[i],
+			)
+		}
+
+		// The dependencies are the resources that were created after
+		// this resource.
+		var deps []string
+		if next := i + 1; next < len(cs.Order) {
+			deps = cs.Order[next:]
+		}
+
+		// Create the mapper for destroy. The dependencies are the set of
+		// created resources in the creation order that were ahead of this one.
+		f, err := r.mapperForDestroy(deps)
+		if err != nil {
+			return err
+		}
+		mapperArgs = append(mapperArgs, argmapper.ConverterFunc(f))
+
+		// Ensure that our final func is dependent on the marker for
+		// this resource so that it definitely gets called.
+		finalInputs = append(finalInputs, markerValue(r.name))
+	}
+
+	// Create our final target function. This has as dependencies all the
+	// markers for the resources that should be destroyed.
+	finalInputSet, err := argmapper.NewValueSet(finalInputs)
+	if err != nil {
+		return err
+	}
+
+	finalFunc, err := argmapper.BuildFunc(
+		finalInputSet, nil,
+		func(in, out *argmapper.ValueSet) error {
+			// no-op on purpose. This function only exists to set the
+			// required inputs for argmapper to create the correct call
+			// graph.
+			return nil
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	// Call it
+	result := finalFunc.Call(mapperArgs...)
+
+	// If this was successful, then we clear out our creation state.
+	if result.Err() == nil {
+		m.createState = nil
+	}
+
 	return result.Err()
 }
 

@@ -104,15 +104,6 @@ func (r *Resource) Destroy(args ...interface{}) error {
 		mapperArgs[i] = argmapper.Typed(v)
 	}
 
-	// Ensure we have the state available as an argument. If it is
-	// nil then we initialize it.
-	if r.stateType != nil {
-		if r.stateValue == nil {
-			r.initState(true)
-		}
-		mapperArgs = append(mapperArgs, argmapper.Typed(r.stateValue))
-	}
-
 	result := f.Call(mapperArgs...)
 	return result.Err()
 }
@@ -151,6 +142,9 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 			return nil, err
 		}
 
+		// Zero our state now
+		r.initState(true)
+
 		// For input, we have to remove the state type
 		inputVals := inputs.Values()
 		for i := 0; i < len(inputVals); i++ {
@@ -180,7 +174,6 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 
 		if r.stateType != nil {
 			// Initialize our state type and add it to our available args
-			r.initState(true)
 			args = append(args, argmapper.Typed(r.stateValue))
 
 			// Ensure our output value for our state type is set
@@ -202,7 +195,7 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 		// Call our function. We throw away any result types except for the error.
 		result := original.Call(args...)
 		return result.Err()
-	})
+	}, argmapper.FuncOnce())
 }
 
 // mapperForDestroy returns an argmapper func that will call the destroy
@@ -228,7 +221,7 @@ func (r *Resource) mapperForDestroy(deps []string) (*argmapper.Func, error) {
 	// We have to modify our inputs to add the set of dependencies to this.
 	inputVals := original.Input().Values()
 	for _, d := range deps {
-		if d != r.name {
+		if d == r.name {
 			// This shouldn't happen, this would be an infinite loop. If this
 			// happened it means there is a bug or corruption somewhere. We
 			// panic so that we can track this bug down.
@@ -241,6 +234,19 @@ func (r *Resource) mapperForDestroy(deps []string) (*argmapper.Func, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Ensure we have the state available as an argument. If it is
+	// nil then we initialize it.
+	var buildArgs []argmapper.Arg
+	if r.stateType != nil {
+		if r.stateValue == nil {
+			r.initState(true)
+		}
+		buildArgs = append(buildArgs, argmapper.Typed(r.stateValue))
+	}
+
+	// We want to ensure that the destroy function is called at most once.
+	buildArgs = append(buildArgs, argmapper.FuncOnce())
 
 	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
 		// Our available arguments are what was given to us and required
@@ -262,7 +268,7 @@ func (r *Resource) mapperForDestroy(deps []string) (*argmapper.Func, error) {
 		}
 
 		return err
-	})
+	}, buildArgs...)
 }
 
 // initState sets the r.stateValue to a new, empty state value.
