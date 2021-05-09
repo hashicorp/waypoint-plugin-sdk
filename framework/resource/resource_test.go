@@ -69,3 +69,5 @@ func TestResourceCreate_noState(t *testing.T) {
 type testState struct {
 	Value int
 }
+
+type testState2 testState

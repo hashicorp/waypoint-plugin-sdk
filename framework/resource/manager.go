@@ -6,6 +6,7 @@ import (
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
+	"github.com/hashicorp/go-multierror"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -160,7 +161,21 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 	mapperArgs = append(mapperArgs, argmapper.Logger(m.logger))
 
 	result := finalFunc.Call(mapperArgs...)
-	return result.Err()
+
+	// If we got an error, perform an automatic rollback.
+	resultErr := result.Err()
+	if resultErr != nil {
+		m.logger.Info("error during creation, starting rollback", "err", resultErr)
+		if err := m.DestroyAll(args...); err != nil {
+			m.logger.Warn("error during rollback", "err", err)
+			resultErr = multierror.Append(resultErr, fmt.Errorf(
+				"Error during rollback: %w", err))
+		} else {
+			m.logger.Info("rollback successful")
+		}
+	}
+
+	return resultErr
 }
 
 // DestroyAll destroys all the resources under management. This will call

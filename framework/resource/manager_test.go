@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
@@ -73,6 +74,60 @@ func TestManagerCreateAll(t *testing.T) {
 		require.Equal(calledB, 42)
 
 		// Ensure we have state
+		require.NotNil(m.State())
+	})
+
+	t.Run("rollback on error", func(t *testing.T) {
+		require := require.New(t)
+
+		var destroyOrder []string
+		m := NewManager(
+			WithResource(NewResource(
+				WithName("A"),
+				WithState(&testState{}),
+				WithCreate(func(s *testState, v int) error {
+					s.Value = v
+					return nil
+				}),
+				WithDestroy(func() error {
+					destroyOrder = append(destroyOrder, "A")
+					return nil
+				}),
+			)),
+
+			WithResource(NewResource(
+				WithName("B"),
+				WithState(&testState2{}),
+				WithCreate(func(s *testState) error {
+					return errors.New("whelp")
+				}),
+				WithDestroy(func() error {
+					destroyOrder = append(destroyOrder, "B")
+					return nil
+				}),
+			)),
+
+			WithResource(NewResource(
+				WithName("C"),
+				WithCreate(func(s *testState2) error {
+					return nil
+				}),
+				WithDestroy(func() error {
+					destroyOrder = append(destroyOrder, "C")
+					return nil
+				}),
+			)),
+		)
+
+		// Create
+		err := m.CreateAll(int(42))
+		require.Error(err)
+		require.Equal("whelp", err.Error())
+
+		// Ensure we called destroy
+		require.Equal([]string{"B", "A"}, destroyOrder)
+
+		// Ensure we have no state
 		require.NotNil(m.State())
 	})
 }
