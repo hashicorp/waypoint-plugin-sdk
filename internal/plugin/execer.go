@@ -37,7 +37,7 @@ func (c *execerClient) Implements(ctx context.Context) (bool, error) {
 		// If the plugin doesn't implement IsExecer the RPC, then it definitely doesn't
 		// implement it. If we return err here, it will blow up the whole usage of this
 		// type so just say "sorry, not implemented" so the core can continue to run.
-		if st, ok := status.FromError(err); ok && st.Code() == codes.Unavailable {
+		if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
 			return false, nil
 		}
 		return false, err
