@@ -226,6 +226,15 @@ type Release interface {
 	URL() string
 }
 
+// StatusReport can be implemented by Platform and PlatformReleaser to query
+// the target platform and build a report of the current deployments health. If
+// this isn't implemented, no status report will be built for the deployments.
+type Status interface {
+	// StatusReportFunc should return a proto.StatusReport that details the
+	// result of the most recent health check for a deployment.
+	StatusFunc() interface{}
+}
+
 // Template can be implemented by Artifact, Deployment, and Release. This
 // will expose this information as available variables in the HCL configuration
 // as well as functions in the `template`-prefixed family, such as `templatefile`.
