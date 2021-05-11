@@ -43,7 +43,8 @@ func Proto(m interface{}) (proto.Message, error) {
 	return pm.Proto(), nil
 }
 
-// ProtoAny returns an *any.Any for the given ProtoMarshaler object.
+// ProtoAny returns an *any.Any for the given ProtoMarshaler object. This
+// will return nil if the given message is nil.
 func ProtoAny(m interface{}) (*any.Any, error) {
 	msg, err := Proto(m)
 	if err != nil {
@@ -53,6 +54,11 @@ func ProtoAny(m interface{}) (*any.Any, error) {
 	// If the message is already an Any, then we're done
 	if result, ok := msg.(*any.Any); ok {
 		return result, nil
+	}
+
+	// If we have a nil message, we don't marshal anything.
+	if msg == nil {
+		return nil, nil
 	}
 
 	// Marshal it
