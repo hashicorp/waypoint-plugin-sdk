@@ -200,6 +200,9 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	if err != nil {
 		return err
 	}
+	for _, arg := range args {
+		mapperArgs = append(mapperArgs, argmapper.Typed(arg))
+	}
 
 	// Go through our creation order and create all our destroyers.
 	for i := 0; i < len(cs.Order); i++ {
@@ -283,6 +286,12 @@ func (m *Manager) mapperArgs() ([]argmapper.Arg, error) {
 
 // ManagerOption is used to configure NewManager.
 type ManagerOption func(*Manager)
+
+// WithLogger specifies the logger to use. If this is not set then this
+// will use the default hclog logger.
+func WithLogger(l hclog.Logger) ManagerOption {
+	return func(m *Manager) { m.logger = l }
+}
 
 // WithResource specifies a resource for the manager. This can be called
 // multiple times and the resources will be appended to the manager.
