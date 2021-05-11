@@ -21,9 +21,10 @@ import (
 //
 // Create a Manager with NewManager and a set of options.
 type Manager struct {
-	resources   map[string]*Resource
-	createState *createState
-	logger      hclog.Logger
+	resources      map[string]*Resource
+	createState    *createState
+	logger         hclog.Logger
+	valueProviders []interface{}
 }
 
 // NewManager creates a new resource manager.
@@ -144,7 +145,10 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 	m.createState = &createState{}
 
 	// Start building our arguments
-	var mapperArgs []argmapper.Arg
+	mapperArgs, err := m.mapperArgs()
+	if err != nil {
+		return err
+	}
 	for _, arg := range args {
 		mapperArgs = append(mapperArgs, argmapper.Typed(arg))
 	}
@@ -156,9 +160,6 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 
 		mapperArgs = append(mapperArgs, argmapper.ConverterFunc(createFunc))
 	}
-
-	// Setup additional options
-	mapperArgs = append(mapperArgs, argmapper.Logger(m.logger))
 
 	result := finalFunc.Call(mapperArgs...)
 
@@ -195,8 +196,9 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	}
 
 	var finalInputs []argmapper.Value
-	mapperArgs := []argmapper.Arg{
-		argmapper.Logger(m.logger),
+	mapperArgs, err := m.mapperArgs()
+	if err != nil {
+		return err
 	}
 
 	// Go through our creation order and create all our destroyers.
@@ -261,6 +263,24 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	return result.Err()
 }
 
+func (m *Manager) mapperArgs() ([]argmapper.Arg, error) {
+	result := []argmapper.Arg{
+		argmapper.Logger(m.logger),
+	}
+
+	// Add our value providers which are always available
+	for _, raw := range m.valueProviders {
+		f, err := argmapper.NewFunc(raw, argmapper.FuncOnce())
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, argmapper.ConverterFunc(f))
+	}
+
+	return result, nil
+}
+
 // ManagerOption is used to configure NewManager.
 type ManagerOption func(*Manager)
 
@@ -269,5 +289,23 @@ type ManagerOption func(*Manager)
 func WithResource(r *Resource) ManagerOption {
 	return func(m *Manager) {
 		m.resources[r.name] = r
+	}
+}
+
+// WithValueProvider specifies a function that can provide values for
+// the arguments for resource lifecycle functions. This is useful for example
+// to setup an API client. The value provider will be called AT MOST once
+// for a set of resources (but may be called zero times if no resources
+// depend on the value it returns).
+//
+// The argument f should be a function. The function may accept arguments
+// from any other value providers as well.
+func WithValueProvider(f interface{}) ManagerOption {
+	// NOTE(mitchellh): In the future, we can probably do something fancier
+	// here so that if any values returned by this implement io.Closer we will
+	// call it or something so we can automatically do resource cleanup. We
+	// don't need this today but I can see that being useful.
+	return func(m *Manager) {
+		m.valueProviders = append(m.valueProviders, f)
 	}
 }
