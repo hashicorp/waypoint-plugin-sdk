@@ -139,6 +139,7 @@ func TestManagerDestroyAll(t *testing.T) {
 	// init is a function so that we can reinitialize an empty manager
 	// for this test to test loading state
 	var destroyOrder []string
+	var destroyState int32
 	init := func() *Manager {
 		return NewManager(
 			WithResource(NewResource(
@@ -148,8 +149,9 @@ func TestManagerDestroyAll(t *testing.T) {
 					s.Number = v
 					return nil
 				}),
-				WithDestroy(func() error {
+				WithDestroy(func(s *testproto.Data) error {
 					destroyOrder = append(destroyOrder, "A")
+					destroyState = s.Number
 					return nil
 				}),
 			)),
@@ -189,6 +191,7 @@ func TestManagerDestroyAll(t *testing.T) {
 
 	// Ensure we destroyed
 	require.Equal([]string{"B", "A"}, destroyOrder)
+	require.Equal(destroyState, int32(42))
 }
 
 func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
