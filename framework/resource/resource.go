@@ -203,8 +203,16 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 // that they are destroyed first. The value of deps should be the name of
 // the resource.
 func (r *Resource) mapperForDestroy(deps []string) (*argmapper.Func, error) {
+	// The destroy function is optional (some resources aren't destroyed
+	// or are destroyed via some other functions). If so, just set it to
+	// a no-op since we still want to execute and do our state logic and so on.
+	destroyFunc := r.destroyFunc
+	if destroyFunc == nil {
+		destroyFunc = func() {}
+	}
+
 	// Create the func for the destroyFunc as-is. We need to get the input/output sets.
-	original, err := argmapper.NewFunc(r.destroyFunc)
+	original, err := argmapper.NewFunc(destroyFunc)
 	if err != nil {
 		return nil, err
 	}

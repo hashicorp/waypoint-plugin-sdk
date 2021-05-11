@@ -38,6 +38,50 @@ func TestResourceCreate_state(t *testing.T) {
 	require.Nil(r.State().(*testState))
 }
 
+func TestResourceCreate_stateNoDestroy(t *testing.T) {
+	require := require.New(t)
+
+	r := NewResource(
+		WithName("test"),
+		WithState(&testState{}),
+		WithCreate(func(state *testState, v int) error {
+			state.Value = v
+			return nil
+		}),
+	)
+
+	// Create
+	require.NoError(r.Create(int(42)))
+
+	// Ensure we were called with the proper value
+	state := r.State().(*testState)
+	require.NotNil(state)
+	require.Equal(state.Value, 42)
+
+	// Destroy
+	require.NoError(r.Destroy())
+	require.Nil(r.State())
+	require.Nil(r.State().(*testState))
+}
+
+func TestResourceCreate_noStateNoDestroy(t *testing.T) {
+	require := require.New(t)
+
+	r := NewResource(
+		WithName("test"),
+		WithCreate(func(v int) error {
+			return nil
+		}),
+	)
+
+	// Create
+	require.NoError(r.Create(int(42)))
+
+	// Destroy
+	require.NoError(r.Destroy())
+	require.Nil(r.State())
+}
+
 func TestResourceCreate_noState(t *testing.T) {
 	require := require.New(t)
 
