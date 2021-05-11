@@ -65,6 +65,22 @@ func (r *Resource) State() interface{} {
 	return r.stateValue
 }
 
+// SetState manually sets the state for this resource. This is not recommended;
+// typically state should only be modified through the lifecycle functions.
+// However, this function is particularly useful to transition to using the
+// resource manager from a previous version that didn't use the resource manager.
+//
+// The value v must be the same type as the type given for WithState.
+func (r *Resource) SetState(v interface{}) error {
+	if reflect.TypeOf(v) != r.stateType {
+		return fmt.Errorf("state value type %T does not match expected type %s",
+			v, r.stateType.String())
+	}
+
+	r.stateValue = v
+	return nil
+}
+
 // Create creates this resource. args is a list of arguments to make
 // available to the creation function via dependency injection (matching
 // types in the arguments).
