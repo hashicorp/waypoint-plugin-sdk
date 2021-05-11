@@ -10,7 +10,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fatih/color v1.9.0
 	github.com/golang/protobuf v1.4.2
-	github.com/hashicorp/go-argmapper v0.1.2-0.20210508153343-70a107a61ee6
+	github.com/hashicorp/go-argmapper v0.1.2-0.20210508160108-c2cf57b8b186
 	github.com/hashicorp/go-hclog v0.14.1
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-plugin v1.3.0
