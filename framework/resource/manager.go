@@ -228,7 +228,10 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 		if err != nil {
 			return err
 		}
-		mapperArgs = append(mapperArgs, argmapper.ConverterFunc(f))
+		mapperArgs = append(mapperArgs,
+			argmapper.ConverterFunc(f),
+			argmapper.Typed(r.State()),
+		)
 
 		// Ensure that our final func is dependent on the marker for
 		// this resource so that it definitely gets called.
