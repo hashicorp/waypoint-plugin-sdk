@@ -40,6 +40,34 @@ func NewManager(opts ...ManagerOption) *Manager {
 	return &m
 }
 
+// Validate checks that the manager and all the resources that are part
+// of this manager are configured correctly. This will always be called
+// prior to any lifecycle operation, but users may call this earlier to
+// better control when this happens.
+func (m *Manager) Validate() error {
+	var result error
+
+	// Validate each resource
+	for _, r := range m.resources {
+		err := r.Validate()
+		if err == nil {
+			continue
+		}
+
+		// We prefix all the error messages with the resource name so
+		// that users can better identify them.
+		prefix := r.name
+		if prefix == "" {
+			prefix = "unnamed resource"
+		}
+		err = multierror.Prefix(err, prefix+": ")
+
+		result = multierror.Append(result, err)
+	}
+
+	return result
+}
+
 // Resource returns the resource with the given name. This will return nil
 // if the resource is not known.
 func (m *Manager) Resource(n string) *Resource {
@@ -114,6 +142,10 @@ func (m *Manager) proto() *pb.Framework_ResourceManagerState {
 // If there is any existing state loaded, this will return an error immediately
 // because it risks that state being lost.
 func (m *Manager) CreateAll(args ...interface{}) error {
+	if err := m.Validate(); err != nil {
+		return err
+	}
+
 	// We need to build up the final function in our argmapper chain. This
 	// function will do nothing, but will take as an input all the marker
 	// values for the resources we want to create. This will force argmapper
@@ -189,6 +221,10 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 // creation will have Destroy called. Resources that were never called to
 // Create will do nothing.
 func (m *Manager) DestroyAll(args ...interface{}) error {
+	if err := m.Validate(); err != nil {
+		return err
+	}
+
 	cs := m.createState
 	if cs == nil || len(cs.Order) == 0 {
 		// We have no creation that was ever done so we have nothing to destroy.
@@ -300,7 +336,16 @@ func WithLogger(l hclog.Logger) ManagerOption {
 // multiple times and the resources will be appended to the manager.
 func WithResource(r *Resource) ManagerOption {
 	return func(m *Manager) {
-		m.resources[r.name] = r
+		name := r.name
+
+		// If we have no name set, this is an error that will be caught
+		// during validation. For now, we generate a ULID so that we can
+		// store the resource.
+		if name == "" {
+			name, _ = component.Id()
+		}
+
+		m.resources[name] = r
 	}
 }
 

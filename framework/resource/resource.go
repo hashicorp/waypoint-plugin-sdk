@@ -1,12 +1,14 @@
 package resource
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/go-multierror"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -30,7 +32,6 @@ type createState struct {
 // assists in lifecycle management, such as preventing dangling resources
 // in the case of an error and properly cleaning them up.
 type Resource struct {
-	seq         uint64
 	name        string
 	stateType   reflect.Type
 	stateValue  interface{}
@@ -50,6 +51,22 @@ func NewResource(opts ...ResourceOption) *Resource {
 	}
 
 	return &r
+}
+
+// Validate checks that the resource structure is configured correctly.
+// This is always called prior to any operation. Users may want to call
+// this during unit tests or earlier in order to provide a better user
+// experience.
+func (r *Resource) Validate() error {
+	var result error
+	if r.name == "" {
+		result = multierror.Append(result, errors.New("name must be set"))
+	}
+	if r.createFunc == nil {
+		result = multierror.Append(result, errors.New("creation function must be set"))
+	}
+
+	return result
 }
 
 // State returns the current state for this resource. This will be nil if
@@ -88,6 +105,10 @@ func (r *Resource) SetState(v interface{}) error {
 // After Create is called, any state can be accessed via the State function.
 // This may be populated even during failure with partial state.
 func (r *Resource) Create(args ...interface{}) error {
+	if err := r.Validate(); err != nil {
+		return err
+	}
+
 	f, err := r.mapperForCreate(nil)
 	if err != nil {
 		return err
@@ -110,6 +131,10 @@ func (r *Resource) Create(args ...interface{}) error {
 // After Destroy is called successfully (without an error result), the
 // state will always be nil.
 func (r *Resource) Destroy(args ...interface{}) error {
+	if err := r.Validate(); err != nil {
+		return err
+	}
+
 	f, err := r.mapperForDestroy(nil)
 	if err != nil {
 		return err
