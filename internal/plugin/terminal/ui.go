@@ -99,13 +99,17 @@ func (s *uiServer) Events(stream pb.TerminalUIService_EventsServer) error {
 		out io.Writer
 	}
 
+	type stepGroup struct {
+		sg    terminal.StepGroup
+		steps map[int32]*stepData
+	}
+
 	var (
 		status terminal.Status
 		stdout io.Writer
 		stderr io.Writer
 
-		sg    terminal.StepGroup
-		steps = map[int32]*stepData{}
+		sgs = map[int32]*stepGroup{}
 	)
 
 	for {
@@ -178,24 +182,29 @@ func (s *uiServer) Events(stream pb.TerminalUIService_EventsServer) error {
 
 			s.Impl.Table(tbl)
 		case *pb.TerminalUI_Event_StepGroup_:
-			if sg != nil {
-				sg.Wait()
+			sgd, ok := sgs[ev.StepGroup.Id]
+			if ok {
+				sgd.sg.Wait()
 			}
 
 			if !ev.StepGroup.Close {
-				sg = s.Impl.StepGroup()
+				sgs[ev.StepGroup.Id] = &stepGroup{
+					sg:    s.Impl.StepGroup(),
+					steps: make(map[int32]*stepData),
+				}
 			}
 		case *pb.TerminalUI_Event_Step_:
-			if sg == nil {
+			sgd, ok := sgs[ev.Step.StepGroup]
+			if !ok {
 				continue
 			}
 
-			step, ok := steps[ev.Step.Id]
+			step, ok := sgd.steps[ev.Step.Id]
 			if !ok {
 				step = &stepData{
-					Step: sg.Add(ev.Step.Msg),
+					Step: sgd.sg.Add(ev.Step.Msg),
 				}
-				steps[ev.Step.Id] = step
+				sgd.steps[ev.Step.Id] = step
 			} else {
 				if ev.Step.Msg != "" {
 					step.Update(ev.Step.Msg)
@@ -257,6 +266,7 @@ type uiBridge struct {
 	mu          sync.Mutex
 	evc         pb.TerminalUIService_EventsClient
 	interactive bool
+	sgIdx       int32
 
 	evcRecvLock    sync.Mutex
 	stdSetup       sync.Once
@@ -484,8 +494,9 @@ func (u *uiBridge) Table(tbl *terminal.Table, opts ...terminal.Option) {
 
 type uiBridgeSGStep struct {
 	sg   *uiBridgeSG
-	id   int32
 	done bool
+	sgid int32
+	id   int32
 
 	stdSetup sync.Once
 	stdout   io.Writer
@@ -529,8 +540,9 @@ func (u *uiBridgeSGStep) sendData(r io.ReadCloser, stderr bool) {
 		ev := &pb.TerminalUI_Event{
 			Event: &pb.TerminalUI_Event_Step_{
 				Step: &pb.TerminalUI_Event_Step{
-					Id:     u.id,
-					Output: data,
+					StepGroup: u.sgid,
+					Id:        u.id,
+					Output:    data,
 				},
 			},
 		}
@@ -556,8 +568,9 @@ func (u *uiBridgeSGStep) Update(str string, args ...interface{}) {
 		u.sg.ui.evc.Send(&pb.TerminalUI_Event{
 			Event: &pb.TerminalUI_Event_Step_{
 				Step: &pb.TerminalUI_Event_Step{
-					Id:  u.id,
-					Msg: msg,
+					StepGroup: u.sgid,
+					Id:        u.id,
+					Msg:       msg,
 				},
 			},
 		})
@@ -572,8 +585,9 @@ func (u *uiBridgeSGStep) Status(status string) {
 		u.sg.ui.evc.Send(&pb.TerminalUI_Event{
 			Event: &pb.TerminalUI_Event_Step_{
 				Step: &pb.TerminalUI_Event_Step{
-					Id:     u.id,
-					Status: status,
+					StepGroup: u.sgid,
+					Id:        u.id,
+					Status:    status,
 				},
 			},
 		})
@@ -594,8 +608,9 @@ func (u *uiBridgeSGStep) Done() {
 		u.sg.ui.evc.Send(&pb.TerminalUI_Event{
 			Event: &pb.TerminalUI_Event_Step_{
 				Step: &pb.TerminalUI_Event_Step{
-					Id:    u.id,
-					Close: true,
+					StepGroup: u.sgid,
+					Id:        u.id,
+					Close:     true,
 				},
 			},
 		})
@@ -618,9 +633,10 @@ func (u *uiBridgeSGStep) Abort() {
 		u.sg.ui.evc.Send(&pb.TerminalUI_Event{
 			Event: &pb.TerminalUI_Event_Step_{
 				Step: &pb.TerminalUI_Event_Step{
-					Id:     u.id,
-					Close:  true,
-					Status: terminal.StatusAbort,
+					StepGroup: u.sgid,
+					Id:        u.id,
+					Close:     true,
+					Status:    terminal.StatusAbort,
 				},
 			},
 		})
@@ -633,10 +649,10 @@ type uiBridgeSG struct {
 	ctx    context.Context
 	cancel func()
 
-	ui *uiBridge
-	wg sync.WaitGroup
-
-	steps []*uiBridgeSGStep
+	id    int32
+	steps int32
+	ui    *uiBridge
+	wg    sync.WaitGroup
 }
 
 // Start a step in the output
@@ -648,18 +664,21 @@ func (u *uiBridgeSG) Add(str string, args ...interface{}) terminal.Step {
 
 	u.wg.Add(1)
 
-	step := &uiBridgeSGStep{
-		sg: u,
-		id: int32(len(u.steps)),
-	}
+	id := int32(u.steps)
+	u.steps++
 
-	u.steps = append(u.steps, step)
+	step := &uiBridgeSGStep{
+		sg:   u,
+		sgid: u.id,
+		id:   id,
+	}
 
 	u.ui.evc.Send(&pb.TerminalUI_Event{
 		Event: &pb.TerminalUI_Event_Step_{
 			Step: &pb.TerminalUI_Event_Step{
-				Id:  step.id,
-				Msg: msg,
+				StepGroup: step.sgid,
+				Id:        step.id,
+				Msg:       msg,
 			},
 		},
 	})
@@ -674,6 +693,7 @@ func (u *uiBridgeSG) Wait() {
 	u.ui.evc.Send(&pb.TerminalUI_Event{
 		Event: &pb.TerminalUI_Event_StepGroup_{
 			StepGroup: &pb.TerminalUI_Event_StepGroup{
+				Id:    u.id,
 				Close: true,
 			},
 		},
@@ -684,15 +704,24 @@ func (u *uiBridgeSG) Wait() {
 func (u *uiBridge) StepGroup() terminal.StepGroup {
 	ctx, cancel := context.WithCancel(u.ctx)
 
+	u.mu.Lock()
+	defer u.mu.Unlock()
+
+	sgid := u.sgIdx
+	u.sgIdx++
+
 	sg := &uiBridgeSG{
 		ui:     u,
+		id:     sgid,
 		ctx:    ctx,
 		cancel: cancel,
 	}
 
 	u.evc.Send(&pb.TerminalUI_Event{
 		Event: &pb.TerminalUI_Event_StepGroup_{
-			StepGroup: &pb.TerminalUI_Event_StepGroup{},
+			StepGroup: &pb.TerminalUI_Event_StepGroup{
+				Id: sgid,
+			},
 		},
 	})
 
