@@ -269,7 +269,10 @@ func (u *uiBridge) Close() error {
 
 	err := u.evc.CloseSend()
 
-	// So see an EOF on the other side
+	// The remote side never sends anything back to us, so this will just wait
+	// until the remote side has seen our closure and the stream has been
+	// closed. We don't actually care if there is an error here, just that
+	// we did wait.
 	u.evc.Recv()
 
 	u.evc = nil
