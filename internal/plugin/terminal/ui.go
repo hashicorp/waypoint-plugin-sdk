@@ -268,6 +268,10 @@ func (u *uiBridge) Close() error {
 	defer u.mu.Unlock()
 
 	err := u.evc.CloseSend()
+
+	// So see an EOF on the other side
+	u.evc.Recv()
+
 	u.evc = nil
 	u.cancel()
 
