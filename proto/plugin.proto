@@ -520,6 +520,7 @@ message TerminalUI {
 
     message StepGroup {
       bool close = 1;
+      int32 id = 2;
     }
 
     message Step {
@@ -528,6 +529,7 @@ message TerminalUI {
       string msg = 3;
       string status = 4;
       bytes output = 5;
+      int32 step_group = 6;
     }
   }
 }

@@ -16,6 +16,7 @@ require (
 	github.com/hashicorp/go-plugin v1.3.0
 	github.com/hashicorp/hcl/v2 v2.6.0
 	github.com/iancoleman/strcase v0.1.2
+	github.com/kr/pretty v0.2.1 // indirect
 	github.com/lab47/vterm v0.0.0-20201001232628-a9dd795f94c2
 	github.com/mattn/go-colorable v0.1.8
 	github.com/mattn/go-isatty v0.0.12
