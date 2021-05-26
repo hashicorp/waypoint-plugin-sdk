@@ -11,4 +11,5 @@ type mix_ReleaseManager_Authenticator struct {
 	component.Destroyer
 	component.WorkspaceDestroyer
 	component.Documented
+	component.Status
 }
