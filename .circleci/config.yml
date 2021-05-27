@@ -1,5 +1,7 @@
 ---
 version: 2.1
+orbs:
+  protobuf: izumin5210/protobuf@0.1.0
 
 references:
   images:
@@ -65,6 +67,40 @@ jobs:
           fi
       - notify_main_failure
 
+  go-generate-test:
+    docker:
+      - image: *GOLANG_IMAGE
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "c6:96:98:82:dc:04:6c:39:dd:ac:83:05:e3:15:1c:98"
+      - protobuf/install:
+          version: 3.0.0
+      - checkout
+      - attach_workspace:
+          at: /go/bin
+      - setup_remote_docker:
+          docker_layer_cache: true
+      - run:
+          name: setup go env
+          command: |
+            go mod download
+            git submodule update --init --recursive
+            go get github.com/golang/protobuf/proto@v1.4.2
+            go get github.com/golang/protobuf/protoc-gen-go@v1.4.2
+      - run:
+          name: go generate
+          command: |
+            echo "Checking that go generate has no errors ..."
+            sudo chmod 755 -R /usr/local/bin/protoc
+            sudo chmod 755 -R /usr/local/include/google
+            protoc --version
+            go generate .
+      - notify_main_failure
+
+
   go-test:
     docker:
       - image: *GOLANG_IMAGE
@@ -123,6 +159,10 @@ workflows:
       - go-test:
           requires:
             - lint
+      - go-generate-test:
+          requires:
+            - lint
+            - go-test
 
 commands:
   notify_main_failure:
