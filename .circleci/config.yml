@@ -88,7 +88,8 @@ jobs:
           command: |
             go mod download
             git submodule update --init --recursive
-            go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+            go get github.com/golang/protobuf/proto@v1.4.2
+            go get github.com/golang/protobuf/protoc-gen-go@v1.4.2
       - run:
           name: go generate
           command: |
