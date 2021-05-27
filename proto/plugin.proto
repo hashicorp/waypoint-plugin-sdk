@@ -733,6 +733,11 @@ service ReleaseManager {
 
   rpc ReleaseSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc Release(FuncSpec.Args) returns (Release.Resp);
+
+  // component.Status optional implementation
+  rpc IsStatus(google.protobuf.Empty) returns (ImplementsResp);
+  rpc StatusSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Status(FuncSpec.Args) returns (StatusReport);
 }
 
 message Release {

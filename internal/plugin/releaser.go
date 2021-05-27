@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	"github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // ReleaseManagerPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -52,6 +52,11 @@ func (p *ReleaseManagerPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Ser
 		},
 
 		workspaceDestroyerServer: &workspaceDestroyerServer{
+			base: base,
+			Impl: p.Impl,
+		},
+
+		statusServer: &statusServer{
 			base: base,
 			Impl: p.Impl,
 		},
@@ -115,6 +120,20 @@ func (p *ReleaseManagerPlugin) GRPCClient(
 		wsDestroyer = nil
 	}
 
+	status := &statusClient{
+		Client:  client.client,
+		Logger:  client.logger,
+		Broker:  client.broker,
+		Mappers: client.mappers,
+	}
+	if ok, err := status.Implements(ctx); err != nil {
+		return nil, err
+	} else if ok {
+		p.Logger.Info("platform plugin capable of status")
+	} else {
+		status = nil
+	}
+
 	result := &mix_ReleaseManager_Authenticator{
 		ConfigurableNotify: client,
 		ReleaseManager:     client,
@@ -122,6 +141,7 @@ func (p *ReleaseManagerPlugin) GRPCClient(
 		Destroyer:          destroyer,
 		WorkspaceDestroyer: wsDestroyer,
 		Documented:         client,
+		Status:             status,
 	}
 
 	return result, nil
@@ -203,6 +223,7 @@ type releaseManagerServer struct {
 	*authenticatorServer
 	*destroyerServer
 	*workspaceDestroyerServer
+	*statusServer
 
 	Impl component.ReleaseManager
 }
