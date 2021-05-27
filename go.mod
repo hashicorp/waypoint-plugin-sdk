@@ -10,11 +10,13 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fatih/color v1.9.0
 	github.com/golang/protobuf v1.4.2
-	github.com/hashicorp/go-argmapper v0.0.0-20200721221215-04ae500ede3b
+	github.com/hashicorp/go-argmapper v0.2.0
 	github.com/hashicorp/go-hclog v0.14.1
+	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-plugin v1.3.0
 	github.com/hashicorp/hcl/v2 v2.6.0
 	github.com/iancoleman/strcase v0.1.2
+	github.com/kr/pretty v0.2.1 // indirect
 	github.com/lab47/vterm v0.0.0-20201001232628-a9dd795f94c2
 	github.com/mattn/go-colorable v0.1.8
 	github.com/mattn/go-isatty v0.0.12

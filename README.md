@@ -40,7 +40,7 @@ package builder
 
 import (
   "context"
-	"fmt"
+  "fmt"
 
   "github.com/hashicorp/waypoint-plugin-sdk/terminal"
 )
