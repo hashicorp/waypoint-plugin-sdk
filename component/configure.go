@@ -107,7 +107,7 @@ func Documentation(c interface{}) (*docs.Documentation, error) {
 		}
 	}
 
-	// Determine if we have a funciton type to populate
+	// Determine if we have a function type to populate
 	switch typ := c.(type) {
 	case Builder:
 		opts = append(opts, docs.FromFunc(typ.BuildFunc()))
