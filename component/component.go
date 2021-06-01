@@ -221,7 +221,6 @@ type Artifact interface {
 
 type Deployment interface{}
 
-
 // A DeploymentWithUrl is a Deployment that can be referenced
 // with an URL without using any external URL service (like
 // Hashicorp Horizon). This means that the platform that
@@ -232,7 +231,7 @@ type Deployment interface{}
 // Example: automatic routing of Kubernetes pods with
 // an operator, Cloud Foundry's URLs, ...
 type DeploymentWithUrl interface {
-	 URL() string
+	URL() string
 }
 
 type Release interface {
