@@ -15,8 +15,8 @@ type Deployment struct {
 	TemplateVal map[string]interface{}
 }
 
-func (c *Deployment) Proto() proto.Message                 { return c.Any }
-func (c *Deployment) URL() string                          {
+func (c *Deployment) Proto() proto.Message { return c.Any }
+func (c *Deployment) URL() string {
 	if c.Deployment == nil {
 		return ""
 	}
