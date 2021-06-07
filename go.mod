@@ -9,7 +9,7 @@ require (
 	github.com/creack/pty v1.1.11
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fatih/color v1.9.0
-	github.com/golang/protobuf v1.4.2
+	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-argmapper v0.2.0
 	github.com/hashicorp/go-hclog v0.14.1
 	github.com/hashicorp/go-multierror v1.1.0
@@ -30,7 +30,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
 	golang.org/x/sys v0.0.0-20200916030750-2334cc1a136f
-	google.golang.org/genproto v0.0.0-20201002142447-3860012362da
-	google.golang.org/grpc v1.32.0
-	google.golang.org/protobuf v1.25.0
+	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5
+	google.golang.org/grpc v1.33.1
+	google.golang.org/protobuf v1.26.0
 )
