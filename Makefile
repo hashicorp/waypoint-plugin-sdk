@@ -10,3 +10,11 @@ format: # format go code
 .PHONY: test
 test: # run tests
 	go test ./...
+
+.PHONY: tools
+tools: # install dependencies and tools required to build
+	@echo "Fetching tools..."
+	go generate -tags tools tools/tools.go
+	@echo
+	@echo "Done!"
+

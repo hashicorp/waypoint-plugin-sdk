@@ -115,3 +115,7 @@ Please see the following Plugins for examples of real world implementations of t
 ## Contributing
 
 Thank you for your interest in contributing! Please refer to [CONTRIBUTING.md](https://github.com/hashicorp/waypoint-plugin-sdk/blob/master/.github/CONTRIBUTING.md) for guidance.
+
+### Installing Dependencies
+
+To automate installing the required Golang packages needed to build Waypoint locally, run `make tools`.
