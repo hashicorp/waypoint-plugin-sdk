@@ -142,7 +142,7 @@ func TestPlatform_status(t *testing.T) {
 			Resources:     resources,
 			External:      true,
 			HealthMessage: "ready to go",
-			TimeGenerated: ptypes.TimestampNow(),
+			GeneratedTime: ptypes.TimestampNow(),
 			Health:        pb.StatusReport_READY,
 		}, nil
 	}

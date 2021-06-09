@@ -329,7 +329,7 @@ message StatusReport {
   string health_message = 3;
 
   // the time when this report was generated
-  google.protobuf.Timestamp time_generated = 4;
+  google.protobuf.Timestamp generated_time = 4;
 
   // where the health check was performed. External means not executed by Waypoint,
   // but by the platform deployed to.
