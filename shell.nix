@@ -1,29 +1,22 @@
-{ pkgsPath ? <nixpkgs> }:
-
 let
   # First we setup our overlays. These are overrides of the official nix packages.
   # We do this to pin the versions we want to use of the software that is in
   # the official nixpkgs repo.
-  pkgs = import pkgsPath {
-    overlays = [(self: super: {
-      go = super.go_1_16;
-      buildGoModule = super.buildGo116Module;
-    })];
-  };
+  pkgs = import ./nix;
 in with pkgs; let
   go-protobuf = buildGoModule rec {
     pname = "go-protobuf";
-    version = "v1.4.2";
+    version = "v1.5.2";
 
     src = fetchFromGitHub {
       owner = "golang";
       repo = "protobuf";
-      rev = "v1.4.2";
-      sha256 = "0m5z81im4nsyfgarjhppayk4hqnrwswr3nix9mj8pff8x9jvcjqw";
+      rev = "v1.5.2";
+      sha256 = "1mh5fyim42dn821nsd3afnmgscrzzhn3h8rag635d2jnr23r1zhk";
     };
 
-    modSha256 = "0lnk1zpl6y9vnq6h3l42ssghq6iqvmixd86g2drpa4z8xxk116wf";
-    vendorSha256 = "04w9vhkrwb2zfqk73xmhignjyvjqmz1j93slkqp7v8jj2dhyla54";
+    modSha256 = "0lnk2zpl6y9vnq6h3l42ssghq6iqvmixd86g2drpa4z8xxk116wf";
+    vendorSha256 = "1qbndn7k0qqwxqk4ynkjrih7f7h56z1jq2yd62clhj95rca67hh9";
 
     subPackages = [ "protoc-gen-go" ];
   };
@@ -64,7 +57,6 @@ in with pkgs; let
     allowGoReference = true;
   };
 
-
   go-mockery = buildGoModule rec {
     pname = "go-mockery";
     version = "1.1.2";
@@ -86,21 +78,54 @@ in with pkgs; let
 
     subPackages = [ "cmd/mockery" ];
   };
+
+  go-changelog = buildGoModule rec {
+    pname = "go-changelog";
+    version = "56335215ce3a8676ba7153be7c444daadcb132c7";
+
+    src = fetchFromGitHub {
+      owner = "hashicorp";
+      repo = "go-changelog";
+      rev = "56335215ce3a8676ba7153be7c444daadcb132c7";
+      sha256 = "0z6ysz4x1rim09g9knbc5x5mrasfk6mzsi0h7jn8q4i035y1gg2j";
+    };
+
+    vendorSha256 = "1pahh64ayr885kv9rd5i4vh4a6hi1w583wch9n1ncvnckznzsdbg";
+
+    subPackages = [ "cmd/changelog-build" ];
+  };
 in pkgs.mkShell rec {
   name = "waypoint";
 
   # The packages in the `buildInputs` list will be added to the PATH in our shell
   buildInputs = [
+    pkgs.docker-compose
     pkgs.go
     pkgs.go-bindata
+    pkgs.grpcurl
+    pkgs.niv
     pkgs.nodejs-12_x
-    pkgs.protobuf3_11
+    pkgs.protobufPin
     pkgs.postgresql_12
+    pkgs.protoc-gen-doc
     go-protobuf
     go-protobuf-json
     go-tools
     go-mockery
-  ];
+    go-changelog
+  ] ++ (with pkgs; [
+    # Needed for website/
+    pkgconfig autoconf automake libtool nasm autogen zlib libpng
+  ]) ++ (if stdenv.isLinux then [
+    # On Linux we use minikube as the primary k8s testing platform
+    pkgs.minikube
+  ] else []);
+
+  # workaround for npm/gulp dep compilation
+  # https://github.com/imagemin/optipng-bin/issues/108
+  shellHook = ''
+    LD=$CC
+  '';
 
   # Extra env vars
   PGHOST = "localhost";

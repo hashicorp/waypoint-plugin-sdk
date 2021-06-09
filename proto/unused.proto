@@ -2,4 +2,4 @@ syntax = "proto3";
 
 package hashicorp.waypoint.sdk;
 
-option go_package = ".;proto";
+option go_package = "./;proto";

@@ -71,6 +71,12 @@ TODO
 
 ## Making Changes to Waypoint Plugin SDK
 
+## Making Changes to Waypoint
+
+Run `make tools` to install the list of tools in ./tools/tools.go.
+>Note: If notice you have a large set of diffs due to upgrading the version of
+>a tool, it is best to separate out the upgrade into its own PR.
+
 The first step to making changes is to fork Waypoint. Afterwards, the easiest way
 to work on the fork is to set it as a remote of the Waypoint project:
 

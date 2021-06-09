@@ -88,8 +88,7 @@ jobs:
           command: |
             go mod download
             git submodule update --init --recursive
-            go get github.com/golang/protobuf/proto@v1.4.2
-            go get github.com/golang/protobuf/protoc-gen-go@v1.4.2
+            make tools
       - run:
           name: go generate
           command: |
@@ -97,7 +96,7 @@ jobs:
             sudo chmod 755 -R /usr/local/bin/protoc
             sudo chmod 755 -R /usr/local/include/google
             protoc --version
-            go generate .
+            make gen
       - notify_main_failure
 
 
