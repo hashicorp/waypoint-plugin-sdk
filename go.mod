@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/go-argmapper v0.2.0
 	github.com/hashicorp/go-hclog v0.14.1
 	github.com/hashicorp/go-multierror v1.1.0
-	github.com/hashicorp/go-plugin v1.3.0
+	github.com/hashicorp/go-plugin v1.4.2
 	github.com/hashicorp/hcl/v2 v2.6.0
 	github.com/iancoleman/strcase v0.1.2
 	github.com/kr/pretty v0.2.1 // indirect

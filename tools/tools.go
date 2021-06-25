@@ -12,4 +12,3 @@ import _ "github.com/golang/protobuf/proto"
 
 //go:generate go install github.com/golang/protobuf/protoc-gen-go
 import _ "github.com/golang/protobuf/protoc-gen-go"
-
