@@ -4,17 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/color"
+	"github.com/mattn/go-colorable"
 	"os"
 	"os/signal"
 	"runtime"
 	"strings"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
-	"github.com/mattn/go-colorable"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal-shared/protomappers"
 	sdkplugin "github.com/hashicorp/waypoint-plugin-sdk/internal/plugin"
@@ -87,112 +87,9 @@ func Main(opts ...Option) {
 		),
 		GRPCServer: plugin.DefaultGRPCServer,
 		Logger:     log,
-		Test: c.TestConfig,
+		Test:       c.TestConfig,
 	})
 }
-
-// DebugServe starts a plugin server in debug mode; this should only be used
-// when the provider will manage its own lifecycle. It is not recommended for
-// normal usage; Serve is the correct function for that.
-func DebugServe(ctx context.Context, opts ...Option) (ReattachConfig, <-chan struct{}, error) {
-	reattachCh := make(chan *plugin.ReattachConfig)
-	closeCh := make(chan struct{})
-
-	opts = append(opts, func(c *config) {
-		c.TestConfig = &plugin.ServeTestConfig{
-		Context:          ctx,
-		ReattachConfigCh: reattachCh,
-		CloseCh:          closeCh,
-	}})
-
-	go Main(opts...)
-
-	var config *plugin.ReattachConfig
-	select {
-	case config = <-reattachCh:
-	case <-time.After(10 * time.Second): // TODO: evaluate this time
-		return ReattachConfig{}, closeCh, fmt.Errorf("timeout waiting on reattach config")
-	}
-
-	if config == nil {
-		return ReattachConfig{}, closeCh, fmt.Errorf("nil reattach config received")
-	}
-
-	return ReattachConfig{
-		Protocol: string(config.Protocol),
-		Pid:      config.Pid,
-		Test:     config.Test,
-		Addr: ReattachConfigAddr{
-			Network: config.Addr.Network(),
-			String:  config.Addr.String(),
-		},
-	}, closeCh, nil
-}
-
-// ReattachConfig holds the information Waypoint needs to be able to attach
-// itself to a provider process, so it can drive the process.
-type ReattachConfig struct {
-	Protocol string
-	Pid      int
-	Test     bool
-	Addr     ReattachConfigAddr
-}
-
-// ReattachConfigAddr is a JSON-encoding friendly version of net.Addr.
-type ReattachConfigAddr struct {
-	Network string
-	String  string
-}
-
-// Debug starts a debug server and controls its lifecycle, printing the
-// information needed for Waypoint to connect to the provider to stdout.
-// os.Interrupt will be captured and used to stop the server.
-func Debug(ctx context.Context, providerAddr string, opts ...Option) error {
-	ctx, cancel := context.WithCancel(ctx)
-	// Ctrl-C will stop the server
-	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, os.Interrupt)
-	defer func() {
-		signal.Stop(sigCh)
-		cancel()
-	}()
-	config, closeCh, err := DebugServe(ctx, opts...)
-	if err != nil {
-		return fmt.Errorf("Error launching debug server: %w", err)
-	}
-	go func() {
-		select {
-		case <-sigCh:
-			cancel()
-		case <-ctx.Done():
-		}
-	}()
-	reattachBytes, err := json.Marshal(map[string]ReattachConfig{
-		providerAddr: config,
-	})
-	if err != nil {
-		return fmt.Errorf("Error building reattach string: %w", err)
-	}
-
-	reattachStr := string(reattachBytes)
-
-	fmt.Printf("Provider started, to attach Waypoint set the WP_REATTACH_PROVIDERS env var:\n\n")
-	switch runtime.GOOS {
-	case "windows":
-		fmt.Printf("\tCommand Prompt:\tset \"WP_REATTACH_PROVIDERS=%s\"\n", reattachStr)
-		fmt.Printf("\tPowerShell:\t$env:WP_REATTACH_PROVIDERS='%s'\n", strings.ReplaceAll(reattachStr, `'`, `''`))
-	case "linux", "darwin":
-		fmt.Printf("\tWP_REATTACH_PROVIDERS='%s'\n", strings.ReplaceAll(reattachStr, `'`, `'"'"'`))
-	default:
-		fmt.Println(reattachStr)
-	}
-	fmt.Println("")
-
-	// wait for the server to be done
-	<-closeCh
-	return nil
-}
-
 
 // config is the configuration for Main. This can only be modified using
 // Option implementations.
@@ -203,7 +100,7 @@ type config struct {
 	// Mappers is the list of mapper functions.
 	Mappers []interface{}
 
-	// TestConfig should only be set when the provider is being tested; it
+	// TestConfig should only be set when the plugin is being tested; it
 	// will opt out of go-plugin's lifecycle management and other features,
 	// and will use the supplied configuration options to control the
 	// plugin's lifecycle and communicate connection information. See the
@@ -240,4 +137,109 @@ func WithComponents(cs ...interface{}) Option {
 // richer Go structs.
 func WithMappers(ms ...interface{}) Option {
 	return func(c *config) { c.Mappers = append(c.Mappers, ms...) }
+}
+
+// DebugServe starts a plugin server in debug mode; this should only be used
+// when the plugin will manage its own lifecycle. It is not recommended for
+// normal usage; Serve is the correct function for that.
+func DebugServe(ctx context.Context, opts ...Option) (ReattachConfig, <-chan struct{}, error) {
+	reattachCh := make(chan *plugin.ReattachConfig)
+	closeCh := make(chan struct{})
+
+	opts = append(opts, func(c *config) {
+		c.TestConfig = &plugin.ServeTestConfig{
+			Context:          ctx,
+			ReattachConfigCh: reattachCh,
+			CloseCh:          closeCh,
+		}
+	})
+
+	go Main(opts...)
+
+	var config *plugin.ReattachConfig
+	select {
+	case config = <-reattachCh:
+	case <-time.After(2 * time.Second):
+		return ReattachConfig{}, closeCh, fmt.Errorf("timeout waiting on reattach config")
+	}
+
+	if config == nil {
+		return ReattachConfig{}, closeCh, fmt.Errorf("nil reattach config received")
+	}
+
+	return ReattachConfig{
+		Protocol:        string(config.Protocol),
+		ProtocolVersion: config.ProtocolVersion,
+		Pid:             config.Pid,
+		Test:            config.Test,
+		Addr: ReattachConfigAddr{
+			Network: config.Addr.Network(),
+			String:  config.Addr.String(),
+		},
+	}, closeCh, nil
+}
+
+// Debug starts a debug server and controls its lifecycle, printing the
+// information needed for Waypoint to connect to the plugin to stdout.
+// os.Interrupt will be captured and used to stop the server.
+func Debug(ctx context.Context, pluginAddr string, opts ...Option) error {
+	ctx, cancel := context.WithCancel(ctx)
+	// Ctrl-C will stop the server
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+	defer func() {
+		signal.Stop(sigCh)
+		cancel()
+	}()
+	config, closeCh, err := DebugServe(ctx, opts...)
+	if err != nil {
+		return fmt.Errorf("Error launching debug server: %w", err)
+	}
+	go func() {
+		select {
+		case <-sigCh:
+			cancel()
+		case <-ctx.Done():
+		}
+	}()
+	reattachBytes, err := json.Marshal(map[string]ReattachConfig{
+		pluginAddr: config,
+	})
+	if err != nil {
+		return fmt.Errorf("Error building reattach string: %w", err)
+	}
+
+	reattachStr := string(reattachBytes)
+
+	fmt.Printf("Plugin started, to attach Waypoint set the WP_REATTACH_PLUGINS env var:\n\n")
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Printf("\tCommand Prompt:\tset \"WP_REATTACH_PLUGINS=%s\"\n", reattachStr)
+		fmt.Printf("\tPowerShell:\t$env:WP_REATTACH_PLUGINS='%s'\n", strings.ReplaceAll(reattachStr, `'`, `''`))
+	case "linux", "darwin":
+		fmt.Printf("\tWP_REATTACH_PLUGINS='%s'\n", strings.ReplaceAll(reattachStr, `'`, `'"'"'`))
+	default:
+		fmt.Println(reattachStr)
+	}
+	fmt.Println("")
+
+	// wait for the server to be done
+	<-closeCh
+	return nil
+}
+
+// ReattachConfig holds the information Waypoint needs to be able to attach
+// itself to a plugin process, so it can drive the process.
+type ReattachConfig struct {
+	Protocol        string
+	ProtocolVersion int
+	Pid             int
+	Test            bool
+	Addr            ReattachConfigAddr
+}
+
+// ReattachConfigAddr is a JSON-encoding friendly version of net.Addr.
+type ReattachConfigAddr struct {
+	Network string
+	String  string
 }
