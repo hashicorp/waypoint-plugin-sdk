@@ -94,6 +94,8 @@ func testDynamicFunc(
 		argmapper.Typed(hclog.L()),
 
 		argmapper.Typed(&pb.Args_Source{App: "foo"}),
+
+		argmapper.Typed(&component.DeclaredResourcesResp{}),
 	)
 	require.NoError(result.Err())
 

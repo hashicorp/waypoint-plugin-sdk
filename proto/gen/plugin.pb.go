@@ -4862,7 +4862,7 @@ type Deploy_Resp struct {
 	Deployment *Deploy `protobuf:"bytes,3,opt,name=deployment,proto3" json:"deployment,omitempty"`
 	// template data for the deployment
 	TemplateData []byte `protobuf:"bytes,2,opt,name=template_data,json=templateData,proto3" json:"template_data,omitempty"`
-	// Izaak: testing
+	// an array of declared resources that make up the deployment
 	DeclaredResources *DeclaredResources `protobuf:"bytes,4,opt,name=declared_resources,json=declaredResources,proto3" json:"declared_resources,omitempty"`
 }
 

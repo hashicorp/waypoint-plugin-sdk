@@ -732,7 +732,7 @@ message Deploy {
     // template data for the deployment
     bytes template_data = 2;
 
-    // Izaak: testing
+    // an array of declared resources that make up the deployment
     DeclaredResources declared_resources = 4;
   }
 }
@@ -754,7 +754,6 @@ message DeclaredResource {
 
   // high level type of the resource, used for display purposes.
   ResourceCategoryDisplayHint category_display_hint = 5;
-
 }
 
 message DeclaredResources {

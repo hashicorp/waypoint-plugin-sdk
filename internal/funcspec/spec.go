@@ -2,6 +2,7 @@ package funcspec
 
 import (
 	"context"
+	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"reflect"
 
 	"github.com/golang/protobuf/proto"
@@ -22,6 +23,11 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 
 	filterProto := argmapper.FilterType(protoMessageType)
 
+	// Outparameters do not need to be supplied by core, and should
+	// be omitted from the advertised function spec.
+	// TODO(izaak): If and when we have more outparameter inputs, we should make this more generic.
+	filterDeclaredResourcesOutParam := argmapper.FilterType(reflect.TypeOf(&component.DeclaredResourcesResp{}))
+
 	// Copy our args cause we're going to use append() and we don't
 	// want to modify our caller.
 	args = append([]argmapper.Arg{
@@ -38,6 +44,7 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 		argmapper.FilterType(contextType),
 		filterPrimitive,
 		filterProto,
+		filterDeclaredResourcesOutParam,
 	)
 
 	// Redefine the function in terms of protobuf messages. "Redefine" changes

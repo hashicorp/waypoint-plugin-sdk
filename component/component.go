@@ -10,6 +10,8 @@
 // framework (see internal/mapper) to call these functions.
 package component
 
+import proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+
 //go:generate stringer -type=Type -linecomment
 //go:generate mockery -all -case underscore
 
@@ -307,6 +309,17 @@ type Generation interface {
 	GenerationFunc() interface{}
 }
 
+
 // RunningTask is returned from StartTask. It contains the state the plugin can
 // use later to stop the task.
 type RunningTask interface{}
+
+// DeclaredResourcesResp is a component used as a vehicle for plugins to communicate
+// the resources that they declare back to core - an "outparameter". It can be
+// accepted as an argument to a Platform's Deploy function, and any DeclaredResources
+// added to it will be displayed on the Deployment api.
+type DeclaredResourcesResp struct {
+	// Resources that a plugin declares have been created and are under its management.
+	DeclaredResources []*proto.DeclaredResource
+}
+
