@@ -167,7 +167,7 @@ func TestResourceStatus(t *testing.T) {
 
 	// call status manually
 	require.Nil(r.status)
-	require.NoError(r.Status(state, &pb.StatusReport_Resource{}))
+	require.NoError(r.GetStatus(state, &pb.StatusReport_Resource{}))
 	require.NotNil(r.status)
 
 	require.Equal(state.Name, r.status.Name)

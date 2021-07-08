@@ -9,6 +9,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-multierror"
+	"github.com/ryboe/q"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -152,8 +153,22 @@ func (r *Resource) Destroy(args ...interface{}) error {
 	return result.Err()
 }
 
+func (r *Resource) Status() pb.StatusReport_Resource {
+	q.Q("=> status called")
+	if r.status == nil {
+		q.Q("status is nil in Status() method")
+	} else {
+		q.Q("status is not nil in Status() method")
+	}
+	return pb.StatusReport_Resource{
+		Name:          r.status.Name,
+		Health:        r.status.Health,
+		HealthMessage: r.status.HealthMessage,
+	}
+}
+
 // Status
-func (r *Resource) Status(args ...interface{}) error {
+func (r *Resource) GetStatus(args ...interface{}) error {
 	if err := r.Validate(); err != nil {
 		return err
 	}
@@ -275,18 +290,60 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 		return nil, err
 	}
 
-	if r.status == nil {
-		r.status = &pb.StatusReport_Resource{}
+	// For our output, we will always output our unique marker type.
+	// This unique marker type will allow our resource manager to create
+	// a function chain that calls all the resources necessary.
+	markerVal := markerValue(r.name)
+	outputs, err := argmapper.NewValueSet([]argmapper.Value{markerVal})
+	if err != nil {
+		return nil, err
 	}
 
-	return argmapper.BuildFunc(original.Input(), nil, func(in, _ *argmapper.ValueSet) error {
+	// We have to modify our inputs to add the set of dependencies to this.
+	inputVals := original.Input().Values()
+	for _, d := range deps {
+		if d == r.name {
+			// This shouldn't happen, this would be an infinite loop. If this
+			// happened it means there is a bug or corruption somewhere. We
+			// panic so that we can track this bug down.
+			panic("resource dependent on itself for destroy")
+		}
+
+		inputVals = append(inputVals, markerValue(d))
+	}
+	inputs, err := argmapper.NewValueSet(inputVals)
+	if err != nil {
+		return nil, err
+	}
+	// Ensure we have the state available as an argument. If it is
+	// nil then we initialize it.
+	var buildArgs []argmapper.Arg
+	if r.stateType != nil {
+		if r.stateValue == nil {
+			r.initState(true)
+		}
+		buildArgs = append(buildArgs, argmapper.Typed(r.stateValue))
+		buildArgs = append(buildArgs, argmapper.Typed(r.status))
+	}
+	// We want to ensure that the destroy function is called at most once.
+	buildArgs = append(buildArgs, argmapper.FuncOnce())
+
+	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
 		args := in.Args()
+		// if r.statusFunc != nil {
+		r.status = &pb.StatusReport_Resource{}
 		args = append(args, argmapper.Typed(r.status))
+		// }
+		// Ensure our output marker type is set
+		if v := out.TypedSubtype(markerVal.Type, markerVal.Subtype); v != nil {
+			v.Value = markerVal.Value
+		}
 		// Call our function. We throw away any result types except for the
 		// error.
 		result := original.Call(args...)
 		return result.Err()
-	}, argmapper.FuncOnce())
+		// }, argmapper.FuncOnce())
+	}, buildArgs...)
 }
 
 // mapperForDestroy returns an argmapper func that will call the destroy

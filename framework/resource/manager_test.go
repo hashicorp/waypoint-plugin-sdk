@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 	"github.com/stretchr/testify/require"
 )
 
@@ -247,4 +248,67 @@ func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
 
 	// Ensure we destroyed
 	require.Equal([]string{"B"}, destroyOrder)
+}
+
+func TestManagerStatusAll(t *testing.T) {
+	// var calledB int32
+	require := require.New(t)
+
+	// init is a function so that we can reinitialize an empty manager
+	// for this test to test loading state
+	var destroyOrder []string
+	var destroyState int32
+	init := func() *Manager {
+		return NewManager(
+			WithResource(NewResource(
+				WithName("A"),
+				WithState(&testproto.Data{}),
+				WithCreate(func(s *testproto.Data, v int32) error {
+					s.Value = "resource A"
+					s.Number = v
+					return nil
+				}),
+				WithStatus(func(s *testproto.Data, sr *pb.StatusReport_Resource) error {
+					sr.Name = s.Value
+					return nil
+				}),
+				WithDestroy(func(s *testproto.Data) error {
+					destroyOrder = append(destroyOrder, "A")
+					destroyState = s.Number
+					return nil
+				}),
+			)),
+
+			// WithResource(NewResource(
+			// 	WithName("B"),
+			// 	WithCreate(func(s *testproto.Data) error {
+			// 		s.Value = "resource B"
+			// 		calledB = s.Number
+			// 		return nil
+			// 	}),
+			// 	WithDestroy(func() error {
+			// 		destroyOrder = append(destroyOrder, "B")
+			// 		return nil
+			// 	}),
+			// )),
+		)
+	}
+
+	// Create
+	m := init()
+	require.NoError(m.CreateAll(int32(42)))
+
+	// Ensure we called all
+	// require.Equal(calledB, int32(42))
+
+	require.NoError(m.StatusAll())
+	reports := m.Status()
+	require.Len(reports, 2)
+
+	// Destroy
+	require.NoError(m.DestroyAll())
+
+	// Ensure we destroyed
+	require.Equal([]string{"B", "A"}, destroyOrder)
+	require.Equal(destroyState, int32(42))
 }
