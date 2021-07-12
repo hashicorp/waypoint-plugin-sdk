@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/go-plugin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/protobuf/types/known/anypb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/component/mocks"
@@ -38,7 +37,7 @@ func TestTaskLauncherStart(t *testing.T) {
 	defer client.Close()
 	defer server.Stop()
 
-	raw, err := client.Dispense("tasktauncher")
+	raw, err := client.Dispense("tasklauncher")
 	require.NoError(err)
 	fmt.Printf("=> %T\n", raw)
 	bt := raw.(component.TaskLauncher)
@@ -54,36 +53,15 @@ func TestTaskLauncherStart(t *testing.T) {
 	raw = result.Out(0)
 	require.NotNil(raw)
 
-	_, ok := raw.(*anypb.Any)
+	_, ok := raw.(component.RunningTask)
 	require.True(ok)
 
 	require.True(called)
 }
 
-func TestTaskLauncherDynamicFunc_auth(t *testing.T) {
-	testDynamicFunc(t, "tasktauncher", &mockTaskLaunchererAuthenticator{}, func(v, f interface{}) {
-		v.(*mockTaskLaunchererAuthenticator).Authenticator.On("AuthFunc").Return(f)
-	}, func(raw interface{}) interface{} {
-		return raw.(component.Authenticator).AuthFunc()
-	})
-}
-
-func TestTaskLauncherDynamicFunc_validateAuth(t *testing.T) {
-	testDynamicFunc(t, "tasktauncher", &mockTaskLaunchererAuthenticator{}, func(v, f interface{}) {
-		v.(*mockTaskLaunchererAuthenticator).Authenticator.On("ValidateAuthFunc").Return(f)
-	}, func(raw interface{}) interface{} {
-		return raw.(component.Authenticator).ValidateAuthFunc()
-	})
-}
-
 func TestTaskLauncherConfig(t *testing.T) {
 	mockV := &mockTaskLauncherConfigurable{}
-	testConfigurable(t, "tasktauncher", mockV, &mockV.Configurable)
-}
-
-type mockTaskLaunchererAuthenticator struct {
-	mocks.TaskLauncher
-	mocks.Authenticator
+	testConfigurable(t, "tasklauncher", mockV, &mockV.Configurable)
 }
 
 type mockTaskLauncherConfigurable struct {
