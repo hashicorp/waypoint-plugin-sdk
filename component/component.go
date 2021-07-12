@@ -310,12 +310,21 @@ type Generation interface {
 }
 
 
+
 // RunningTask is returned from StartTask. It contains the state the plugin can
 // use later to stop the task.
 type RunningTask interface{}
 
+// OutParameter is an argument type that is used by plugins as a vehicle for returning
+// data to core. A struct implementing this interface that indicates to the plugin system
+// that the struct should not be included in a grpc advertised dynamic function spec, because
+// it will be injected on the plugin side, not supplied from core over GRPC.
+type OutParameter interface {
+	IsOutParameter()
+}
+
 // DeclaredResourcesResp is a component used as a vehicle for plugins to communicate
-// the resources that they declare back to core - an "outparameter". It can be
+// the resources that they declare back to core - an "OutParameter". It can be
 // accepted as an argument to a Platform's Deploy function, and any DeclaredResources
 // added to it will be displayed on the Deployment api.
 type DeclaredResourcesResp struct {
@@ -323,3 +332,6 @@ type DeclaredResourcesResp struct {
 	DeclaredResources []*proto.DeclaredResource
 }
 
+// IsOutParameter causes DeclaredResourcesResp to implement the OutParameter interface, which
+// will prevent it from being added as an arg to any plugin advertised dynamic function spec.
+func (d *DeclaredResourcesResp) IsOutParameter() {}
