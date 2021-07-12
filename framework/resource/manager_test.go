@@ -2,11 +2,12 @@ package resource
 
 import (
 	"errors"
+	"fmt"
+	"sort"
 	"testing"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
-	"github.com/ryboe/q"
 	"github.com/stretchr/testify/require"
 )
 
@@ -252,72 +253,87 @@ func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
 }
 
 func TestManagerStatusAll(t *testing.T) {
-	// var calledB int32
 	require := require.New(t)
 
 	// init is a function so that we can reinitialize an empty manager
 	// for this test to test loading state
-	var destroyOrder []string
-	var destroyState int32
 	init := func() *Manager {
 		return NewManager(
 			WithResource(NewResource(
 				WithName("A"),
-				WithState(&testproto.Data{}),
-				WithCreate(func(s *testproto.Data, v int32) error {
-					s.Value = "resource A"
-					s.Number = v
+				WithState(&testState{}),
+				WithCreate(func(s *testState, v int) error {
+					s.Value = v
 					return nil
 				}),
-				WithStatus(func(s *testproto.Data, sr *pb.StatusReport_Resource) error {
-					sr.Name = s.Value
-					return nil
-				}),
-				WithDestroy(func(s *testproto.Data) error {
-					destroyOrder = append(destroyOrder, "A")
-					destroyState = s.Number
+				WithStatus(func(s *testState, sr *pb.StatusReport_Resource) error {
+					sr.Name = fmt.Sprintf(statusNameTpl, s.Value)
 					return nil
 				}),
 			)),
 
 			WithResource(NewResource(
 				WithName("B"),
-				WithCreate(func(s *testproto.Data) error {
-					s.Value = "resource B"
-					// calledB = s.Number
+				WithCreate(func(s *testState) error {
+					// no-op
 					return nil
 				}),
-				WithStatus(func(s *testproto.Data, sr *pb.StatusReport_Resource) error {
-					sr.Name = s.Value
+				WithStatus(func(sr *pb.StatusReport_Resource) error {
+					sr.Name = "no state here"
 					return nil
 				}),
-				WithDestroy(func() error {
-					destroyOrder = append(destroyOrder, "B")
+			)),
+			WithResource(NewResource(
+				WithName("C"),
+				WithState(&testState2{}),
+				WithCreate(func(s *testState2) error {
+					s.Value = 13
 					return nil
 				}),
+				WithStatus(func(s *testState2, sr *pb.StatusReport_Resource) error {
+					sr.Name = fmt.Sprintf(statusNameTpl, s.Value)
+					return nil
+				}),
+			)),
+			WithResource(NewResource(
+				WithName("D"),
+				WithState(&testState3{}),
+				WithCreate(func(s *testState3) error {
+					s.Value = 0
+					return nil
+				}),
+				// WithStatus(func(s *testState2, sr *pb.StatusReport_Resource) error {
+				// 	sAddr := fmt.Sprintf("%p", s)
+				// 	srAddr := fmt.Sprintf("%p", sr)
+				// 	sr.Name = s.Name
+				// 	return nil
+				// }),
 			)),
 		)
 	}
 
 	// Create
 	m := init()
-	require.NoError(m.CreateAll(int32(42)))
-
-	// // Ensure we called all
-	// require.Equal(calledB, int32(42))
+	require.NoError(m.CreateAll(42))
 
 	require.NoError(m.StatusAll())
 	reports := m.Status()
-	// require.Len(reports, 1)
-	require.Len(reports, 2)
-	for _, r := range reports {
-		q.Q("report Name:", r.Name)
-	}
+
+	require.Len(reports, 3)
+	sort.Sort(byName(reports))
+
+	require.Equal("no state here", reports[0].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl,13), reports[1].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl,42), reports[2].Name)
 
 	// Destroy
 	require.NoError(m.DestroyAll())
-
-	// Ensure we destroyed
-	// require.Equal([]string{"B", "A"}, destroyOrder)
-	require.Equal(destroyState, int32(42))
 }
+
+// byName implements sort.Interface for sorting the results from calling
+// Status(), to ensure ordering when validating the tests
+type byName []pb.StatusReport_Resource
+
+func (a byName) Len() int           { return len(a) }
+func (a byName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a byName) Less(i, j int) bool { return a[i].Name < a[j].Name }

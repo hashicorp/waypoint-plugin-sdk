@@ -116,42 +116,35 @@ type testState struct {
 	Value int
 }
 
-type testState2 testState
+type (
+	testState2 testState
+	testState3 testState
+)
 
-type testState3 struct {
-	Name  string
-	Value int
-}
+var (
+	statusNameTpl    = "status-%d"
+	healthMessageTpl = "alive-%d"
+)
 
 func TestResourceStatus(t *testing.T) {
-	// q.Q("---------")
-	// q.Q("starting")
-	// q.Q("---------")
-	// defer func() {
-	// 	q.Q("---------")
-	// 	q.Q("end")
-	// 	q.Q("---------")
-	// 	q.Q("")
-	// }()
 	require := require.New(t)
 
 	r := NewResource(
 		WithName("test"),
-		WithState(&testState3{}),
-		WithCreate(func(state *testState3, v int) error {
-			state.Name = "some other name"
+		WithState(&testState{}),
+		WithCreate(func(state *testState, v int) error {
 			state.Value = v
 			return nil
 		}),
 
-		WithStatus(func(state *testState3, sr *pb.StatusReport_Resource) error {
-			sr.Name = state.Name
+		WithStatus(func(state *testState, sr *pb.StatusReport_Resource) error {
+			sr.Name = fmt.Sprintf(statusNameTpl, state.Value)
 			sr.Health = pb.StatusReport_ALIVE
-			sr.HealthMessage = fmt.Sprintf("good - %d", state.Value)
+			sr.HealthMessage = fmt.Sprintf(healthMessageTpl, state.Value)
 			return nil
 		}),
 
-		WithDestroy(func(state *testState3) error {
+		WithDestroy(func(state *testState) error {
 			return nil
 		}),
 	)
@@ -160,24 +153,23 @@ func TestResourceStatus(t *testing.T) {
 	require.NoError(r.Create(int(42)))
 
 	// Ensure we were called with the proper value
-	state := r.State().(*testState3)
+	state := r.State().(*testState)
 	require.NotNil(state)
 	require.Equal(state.Value, 42)
-	require.Equal(state.Name, "some other name")
 
 	// call status manually
 	require.Nil(r.status)
 	require.NoError(r.GetStatus(state, &pb.StatusReport_Resource{}))
 	require.NotNil(r.status)
 
-	require.Equal(state.Name, r.status.Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.status.Name)
 	require.Equal(pb.StatusReport_ALIVE, r.status.Health)
-	require.Equal("good - 42", r.status.HealthMessage)
+	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.status.HealthMessage)
 
 	// Destroy
 	require.NoError(r.Destroy())
 	require.Nil(r.State())
-	require.Nil(r.State().(*testState3))
+	require.Nil(r.State().(*testState))
 	// make sure status is cleared
 	require.Nil(r.status)
 }

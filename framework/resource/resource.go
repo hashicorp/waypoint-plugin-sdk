@@ -9,7 +9,6 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-multierror"
-	"github.com/ryboe/q"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -154,12 +153,8 @@ func (r *Resource) Destroy(args ...interface{}) error {
 }
 
 func (r *Resource) Status() pb.StatusReport_Resource {
-	q.Q("=> status called")
 	if r.status == nil {
-		q.Q("status is nil in Status() method")
 		r.status = &pb.StatusReport_Resource{}
-	} else {
-		q.Q("status is not nil in Status() method")
 	}
 	return pb.StatusReport_Resource{
 		Name:          r.status.Name,
@@ -170,11 +165,9 @@ func (r *Resource) Status() pb.StatusReport_Resource {
 
 // Status
 func (r *Resource) GetStatus(args ...interface{}) error {
-	q.Q("-> GetSTatus")
 	if err := r.Validate(); err != nil {
 		return err
 	}
-	q.Q("-> post validate")
 
 	f, err := r.mapperForStatus(nil)
 	if err != nil {
@@ -283,7 +276,6 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 // mapperForStatus returns an argmapper func that will call the status
 // function
 func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
-	q.Q("-> mapperForStatus")
 	statusFunc := r.statusFunc
 	if statusFunc == nil {
 		statusFunc = func() {}
@@ -303,27 +295,6 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 		return nil, err
 	}
 
-	// We have to modify our inputs to add the set of dependencies to this.
-	inputVals := original.Input().Values()
-	q.Q("input vals:")
-	for _, iv := range inputVals {
-		q.Q(iv.Type.String())
-	}
-	// for _, d := range deps {
-	// 	if d == r.name {
-	// 		// This shouldn't happen, this would be an infinite loop. If this
-	// 		// happened it means there is a bug or corruption somewhere. We
-	// 		// panic so that we can track this bug down.
-	// 		panic("resource dependent on itself for destroy")
-	// 	}
-
-	// 	inputVals = append(inputVals, markerValue(d))
-	// }
-	// inputs, err := argmapper.NewValueSet(inputVals)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	// Our inputs default to whatever the function requires and our
 	// output defaults to nothing (only the error type). We will proceed to
 	// modify these so that the output contains our state type and the input
@@ -334,7 +305,11 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 		// For outputs, we will only return the state type.
 		outputs, err = argmapper.NewValueSet(append(outputs.Values(), argmapper.Value{
 			Type: reflect.TypeOf(r.status),
-		}))
+		},
+			argmapper.Value{
+				Type: r.stateType,
+			},
+		))
 		if err != nil {
 			return nil, err
 		}
@@ -347,6 +322,7 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 		for i := 0; i < len(inputVals); i++ {
 			v := inputVals[i]
 			if v.Type != reflect.TypeOf(r.status) {
+				// if v.Type != r.stateType {
 				// easy case, the type is not our state type
 				continue
 			}
@@ -378,7 +354,6 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 	buildArgs = append(buildArgs, argmapper.FuncOnce())
 
 	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
-		q.Q("--> calling")
 		args := in.Args()
 		if r.statusFunc != nil {
 			r.status = &pb.StatusReport_Resource{}
@@ -388,7 +363,6 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 		// Ensure our output value for our state type is set
 		// if v := out.Typed(reflect.TypeOf(&pb.StatusReport_Resource{})); v != nil {
 		if v := out.Typed(reflect.TypeOf(r.status)); v != nil {
-			q.Q("--> found type of status")
 			v.Value = reflect.ValueOf(r.status)
 		}
 		// Ensure our output marker type is set
