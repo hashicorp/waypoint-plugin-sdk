@@ -824,12 +824,6 @@ message ConfigSource {
 // oci images that run until completion and are not restarted) that take
 // some set of arguments and returns it's identification state.
 service TaskLauncher {
-  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
-  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
-  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
-  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
-  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
-
   rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
   rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
   rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);

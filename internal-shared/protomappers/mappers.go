@@ -72,13 +72,13 @@ func JobInfoProto(input *component.JobInfo) (*pb.Args_JobInfo, error) {
 	return &result, mapstructure.Decode(input, &result)
 }
 
-// Source maps Args.Source to component.Source.
+// TaskLaunchInfo maps Args.Args_TaskLaunchInfo to component.TaskLaunchInfo.
 func TaskLaunchInfo(input *pb.Args_TaskLaunchInfo) (*component.TaskLaunchInfo, error) {
 	var result component.TaskLaunchInfo
 	return &result, mapstructure.Decode(input, &result)
 }
 
-// SourceProto
+// TaskLaunchInfoProto
 func TaskLaunchInfoProto(input *component.TaskLaunchInfo) (*pb.Args_TaskLaunchInfo, error) {
 	var result pb.Args_TaskLaunchInfo
 	return &result, mapstructure.Decode(input, &result)

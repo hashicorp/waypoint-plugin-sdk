@@ -5,7 +5,6 @@ import (
 )
 
 type mix_TaskLauncher_Authenticator struct {
-	component.Authenticator
 	component.ConfigurableNotify
 	component.TaskLauncher
 	component.Documented

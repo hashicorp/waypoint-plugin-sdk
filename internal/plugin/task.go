@@ -60,24 +60,9 @@ func (p *TaskLauncherPlugin) GRPCClient(
 		mappers: p.Mappers,
 	}
 
-	authenticator := &authenticatorClient{
-		Client:  client.client,
-		Logger:  client.logger,
-		Broker:  client.broker,
-		Mappers: client.mappers,
-	}
-	if ok, err := authenticator.Implements(ctx); err != nil {
-		return nil, err
-	} else if ok {
-		p.Logger.Info("taskLauncher plugin capable of auth")
-	} else {
-		authenticator = nil
-	}
-
 	result := &mix_TaskLauncher_Authenticator{
 		ConfigurableNotify: client,
 		TaskLauncher:       client,
-		Authenticator:      authenticator,
 		Documented:         client,
 	}
 
