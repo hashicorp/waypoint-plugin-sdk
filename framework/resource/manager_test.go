@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	"github.com/ryboe/q"
 	"github.com/stretchr/testify/require"
 )
 
@@ -279,18 +280,22 @@ func TestManagerStatusAll(t *testing.T) {
 				}),
 			)),
 
-			// WithResource(NewResource(
-			// 	WithName("B"),
-			// 	WithCreate(func(s *testproto.Data) error {
-			// 		s.Value = "resource B"
-			// 		calledB = s.Number
-			// 		return nil
-			// 	}),
-			// 	WithDestroy(func() error {
-			// 		destroyOrder = append(destroyOrder, "B")
-			// 		return nil
-			// 	}),
-			// )),
+			WithResource(NewResource(
+				WithName("B"),
+				WithCreate(func(s *testproto.Data) error {
+					s.Value = "resource B"
+					// calledB = s.Number
+					return nil
+				}),
+				WithStatus(func(s *testproto.Data, sr *pb.StatusReport_Resource) error {
+					sr.Name = s.Value
+					return nil
+				}),
+				WithDestroy(func() error {
+					destroyOrder = append(destroyOrder, "B")
+					return nil
+				}),
+			)),
 		)
 	}
 
@@ -298,17 +303,21 @@ func TestManagerStatusAll(t *testing.T) {
 	m := init()
 	require.NoError(m.CreateAll(int32(42)))
 
-	// Ensure we called all
+	// // Ensure we called all
 	// require.Equal(calledB, int32(42))
 
 	require.NoError(m.StatusAll())
 	reports := m.Status()
+	// require.Len(reports, 1)
 	require.Len(reports, 2)
+	for _, r := range reports {
+		q.Q("report Name:", r.Name)
+	}
 
 	// Destroy
 	require.NoError(m.DestroyAll())
 
 	// Ensure we destroyed
-	require.Equal([]string{"B", "A"}, destroyOrder)
+	// require.Equal([]string{"B", "A"}, destroyOrder)
 	require.Equal(destroyState, int32(42))
 }

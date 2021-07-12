@@ -393,6 +393,7 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 	}
 
 	// Call it
+	q.Q("=> trying to call")
 	result := finalFunc.Call(mapperArgs...)
 
 	return result.Err()
@@ -405,6 +406,7 @@ func (m *Manager) Status() []pb.StatusReport_Resource {
 			reports = append(reports, r.Status())
 		}
 	}
+	q.Q("returning reports:", len(reports))
 	return reports
 }
 
