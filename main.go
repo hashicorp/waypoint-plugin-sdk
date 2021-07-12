@@ -43,7 +43,7 @@ func Main(opts ...Option) {
 	// chain it along.
 	log := hclog.New(&hclog.LoggerOptions{
 		Name:   "plugin",
-		Level:  hclog.Trace,
+		Level:  hclog.Debug,
 		Output: os.Stderr,
 		Color:  hclog.AutoColor,
 

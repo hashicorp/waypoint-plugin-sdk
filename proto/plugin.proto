@@ -127,6 +127,17 @@ message Args {
 
     uint32 limit = 3;
   }
+
+  message TaskLaunchInfo {
+    // The OCI image to launch for the batch task.
+    string oci_url = 1;
+
+    // The environment variablet that will be exposed to the task.
+    map<string, string> environment_variables = 2;
+
+    // The arguments that will be bassed to the new container on boot.
+    repeated string arguments = 3;
+  }
 }
 
 // FuncSpec describes a function and is used by the dependency-injection
@@ -804,3 +815,34 @@ message ConfigSource {
     }
   }
 }
+
+/********************************************************************
+* TaskLauncher Plugin Service
+********************************************************************/
+
+// TaskLauncher service to start and stop task (activities spawned from
+// oci images that run until completion and are not restarted) that take
+// some set of arguments and returns it's identification state.
+service TaskLauncher {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc StartSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc StopSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc StartTask(FuncSpec.Args) returns (TaskLaunch.Resp);
+  rpc StopTask(FuncSpec.Args) returns (TaskLaunch.Resp);
+}
+
+message TaskLaunch {
+  message Resp {
+    google.protobuf.Any result = 1;
+  }
+}
+
