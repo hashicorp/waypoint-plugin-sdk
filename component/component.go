@@ -28,6 +28,7 @@ const (
 	AuthenticatorType              // Authenticator
 	MapperType                     // Mapper
 	ConfigSourcerType              // ConfigSourcer
+	TaskLauncherType               // TaskLauncher
 	maxType
 )
 
@@ -41,6 +42,20 @@ var TypeMap = map[Type]interface{}{
 	LogPlatformType:    (*LogPlatform)(nil),
 	AuthenticatorType:  (*Authenticator)(nil),
 	ConfigSourcerType:  (*ConfigSourcer)(nil),
+	TaskLauncherType:   (*TaskLauncher)(nil),
+}
+
+// TaskLauncher launches a batch task, ie a task that runs to completion and does
+// not restart.
+type TaskLauncher interface {
+	// StartTaskFunc should return a method for the "start task" operation.
+	// This will have TaskLaunchInfo available to it to understand what the task
+	// should do.
+	StartTaskFunc() interface{}
+
+	// StopTaskFunc is called to force a previously started task to stop. It will
+	// be passed the state value returned by StartTaskFunc for identification.
+	StopTaskFunc() interface{}
 }
 
 // Builder is responsible for building an artifact from source.
@@ -291,3 +306,7 @@ type Generation interface {
 	// as the operation function itself such as Deploy or Release.
 	GenerationFunc() interface{}
 }
+
+// RunningTask is returned from StartTask. It contains the state the plugin can
+// use later to stop the task.
+type RunningTask interface{}

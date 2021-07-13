@@ -9,7 +9,7 @@ type Status struct {
 	mock.Mock
 }
 
-// DeployFunc provides a mock function with given fields:
+// StatusFunc provides a mock function with given fields:
 func (_m *Status) StatusFunc() interface{} {
 	ret := _m.Called()
 

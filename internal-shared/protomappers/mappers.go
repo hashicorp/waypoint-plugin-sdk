@@ -44,6 +44,8 @@ var All = []interface{}{
 	ExecSessionInfoProto,
 	LogViewer,
 	LogViewerProto,
+	TaskLaunchInfo,
+	TaskLaunchInfoProto,
 }
 
 // Source maps Args.Source to component.Source.
@@ -67,6 +69,18 @@ func JobInfo(input *pb.Args_JobInfo) (*component.JobInfo, error) {
 // JobInfoProto
 func JobInfoProto(input *component.JobInfo) (*pb.Args_JobInfo, error) {
 	var result pb.Args_JobInfo
+	return &result, mapstructure.Decode(input, &result)
+}
+
+// TaskLaunchInfo maps Args.Args_TaskLaunchInfo to component.TaskLaunchInfo.
+func TaskLaunchInfo(input *pb.Args_TaskLaunchInfo) (*component.TaskLaunchInfo, error) {
+	var result component.TaskLaunchInfo
+	return &result, mapstructure.Decode(input, &result)
+}
+
+// TaskLaunchInfoProto
+func TaskLaunchInfoProto(input *component.TaskLaunchInfo) (*pb.Args_TaskLaunchInfo, error) {
+	var result pb.Args_TaskLaunchInfo
 	return &result, mapstructure.Decode(input, &result)
 }
 

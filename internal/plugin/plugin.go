@@ -40,6 +40,7 @@ func Plugins(opts ...Option) map[int]plugin.PluginSet {
 			"registry":       &RegistryPlugin{},
 			"releasemanager": &ReleaseManagerPlugin{},
 			"configsourcer":  &ConfigSourcerPlugin{},
+			"tasklauncher":   &TaskLauncherPlugin{},
 		},
 	}
 
