@@ -2,7 +2,6 @@ package funcspec
 
 import (
 	"context"
-	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"reflect"
 
 	"github.com/golang/protobuf/proto"
@@ -10,6 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
