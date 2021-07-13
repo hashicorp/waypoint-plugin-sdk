@@ -132,10 +132,10 @@ message Args {
     // The OCI image to launch for the batch task.
     string oci_url = 1;
 
-    // The environment variablet that will be exposed to the task.
+    // The environment variable that will be exposed to the task.
     map<string, string> environment_variables = 2;
 
-    // The arguments that will be bassed to the new container on boot.
+    // The arguments that will be passed to the new container on boot.
     repeated string arguments = 3;
   }
 }
@@ -820,9 +820,9 @@ message ConfigSource {
 * TaskLauncher Plugin Service
 ********************************************************************/
 
-// TaskLauncher service to start and stop task (activities spawned from
+// TaskLauncher service to start and stop tasks (activities spawned from
 // oci images that run until completion and are not restarted) that take
-// some set of arguments and returns it's identification state.
+// some set of arguments and returns its identification state.
 service TaskLauncher {
   rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
   rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
@@ -839,4 +839,3 @@ message TaskLaunch {
     google.protobuf.Any result = 1;
   }
 }
-

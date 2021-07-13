@@ -5,7 +5,7 @@ package component
 type TaskLaunchInfo struct {
 	// OciUrl is a docker-run compatible specifier for an OCI image. For instance,
 	// it supports the bare types like `ubuntu`, as well as toplevel versioned
-	// types like `ubuntu:latest`, and any values that contain full qualified
+	// types like `ubuntu:latest`, and any values that contain fully qualified
 	// hostnames like `docker.io/library/ubuntu:latest`.
 	OciUrl string
 

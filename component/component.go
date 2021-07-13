@@ -54,7 +54,7 @@ type TaskLauncher interface {
 	StartTaskFunc() interface{}
 
 	// StopTaskFunc is called to force a previously started task to stop. It will
-	// passed the state value returned by StartTaskFunc for identification.
+	// be passed the state value returned by StartTaskFunc for identification.
 	StopTaskFunc() interface{}
 }
 
