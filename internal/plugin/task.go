@@ -152,14 +152,14 @@ func (c *taskLauncherClient) start(
 func (c *taskLauncherClient) stop(
 	ctx context.Context,
 	args funcspec.Args,
-) (interface{}, error) {
+) error {
 	// Call our function
-	resp, err := c.client.StopTask(ctx, &proto.FuncSpec_Args{Args: args})
+	_, err := c.client.StopTask(ctx, &proto.FuncSpec_Args{Args: args})
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return resp.Result, nil
+	return nil
 }
 
 // taskLauncherServer is a gRPC server that the client talks to and calls a
@@ -246,11 +246,11 @@ func (s *taskLauncherServer) StopSpec(
 func (s *taskLauncherServer) StopTask(
 	ctx context.Context,
 	args *proto.FuncSpec_Args,
-) (*proto.TaskLaunch_Resp, error) {
+) (*empty.Empty, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, _, err := callDynamicFuncAny2(s.Impl.StopTaskFunc(), args.Args,
+	_, err := callDynamicFunc2(s.Impl.StopTaskFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -260,8 +260,7 @@ func (s *taskLauncherServer) StopTask(
 		return nil, err
 	}
 
-	result := &proto.TaskLaunch_Resp{Result: encoded}
-	return result, nil
+	return &empty.Empty{}, nil
 }
 
 var (

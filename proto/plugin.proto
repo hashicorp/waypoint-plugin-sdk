@@ -831,7 +831,7 @@ service TaskLauncher {
   rpc StartSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc StopSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc StartTask(FuncSpec.Args) returns (TaskLaunch.Resp);
-  rpc StopTask(FuncSpec.Args) returns (TaskLaunch.Resp);
+  rpc StopTask(FuncSpec.Args) returns (google.protobuf.Empty);
 }
 
 message TaskLaunch {
