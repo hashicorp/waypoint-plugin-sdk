@@ -292,21 +292,17 @@ func (r *Resource) mapperForStatus(_ []string) (*argmapper.Func, error) {
 		return nil, err
 	}
 
-	// For our output, we will always output our unique marker type.
-	// This unique marker type will allow our resource manager to create
-	// a function chain that calls all the resources necessary.
+	// For our output, we will always output our unique marker type and our
+	// status type. This unique marker type will allow our resource manager to
+	// create a function chain that calls all the resources necessary. The
+	// status type ensures we output the status to be saved to the resource.
 	markerVal := markerValue(r.name)
-	outputs, err := argmapper.NewValueSet([]argmapper.Value{markerVal})
-	if err != nil {
-		return nil, err
-	}
-
-	// For outputs, we will only return the status type.
-	outputs, err = argmapper.NewValueSet(append(outputs.Values(),
-		argmapper.Value{
+	outputs, err := argmapper.NewValueSet([]argmapper.Value{
+		markerVal,
+		{
 			Type: reflect.TypeOf(r.status),
 		},
-	))
+	})
 	if err != nil {
 		return nil, err
 	}
