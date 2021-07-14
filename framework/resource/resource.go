@@ -277,7 +277,7 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 
 // mapperForStatus returns an argmapper func that will call the status
 // function
-func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
+func (r *Resource) mapperForStatus(_ []string) (*argmapper.Func, error) {
 	statusFunc := r.statusFunc
 	if statusFunc == nil {
 		statusFunc = func() {}
@@ -335,6 +335,7 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 			inputVals = inputVals[:len(inputVals)-1]
 			i--
 		}
+
 		inputs, err = argmapper.NewValueSet(inputVals)
 		if err != nil {
 			return nil, err
