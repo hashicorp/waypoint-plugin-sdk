@@ -373,7 +373,6 @@ func (m *Manager) ResourceStatus() []*pb.StatusReport_Resource {
 	var reports []*pb.StatusReport_Resource
 	for _, r := range m.resources {
 		if st := r.Status(); st != nil {
-			// TODO allow status to be nil - this change happens in Resource
 			reports = append(reports, st)
 		}
 	}
