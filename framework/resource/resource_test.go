@@ -116,11 +116,6 @@ type testState struct {
 	Value int
 }
 
-type (
-	testState2 testState
-	testState3 testState
-)
-
 var (
 	statusNameTpl    = "status-%d"
 	healthMessageTpl = "alive-%d"

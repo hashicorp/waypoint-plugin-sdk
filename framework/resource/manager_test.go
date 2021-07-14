@@ -11,6 +11,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// types used for multiple resources
+type (
+	testState2 testState
+	testState3 testState
+)
+
 func TestManagerCreateAll(t *testing.T) {
 	t.Run("with no resources", func(t *testing.T) {
 		m := NewManager()
