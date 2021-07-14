@@ -309,8 +309,6 @@ type Generation interface {
 	GenerationFunc() interface{}
 }
 
-
-
 // RunningTask is returned from StartTask. It contains the state the plugin can
 // use later to stop the task.
 type RunningTask interface{}
