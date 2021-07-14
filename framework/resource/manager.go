@@ -305,21 +305,17 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	return result.Err()
 }
 
-// StatusAll destroys all the resources under management. This will call
-// Destroy in the reverse order of Create. All the state that was created
-// via Create will be available to the Destroy callbacks. Note that after
-// a resource is destroyed, their state is also set to nil.
-//
-// Only resources that have been created will be destroyed. This means
-// that if Create partially failed, then only the resources that attempted
-// creation will have Destroy called. Resources that were never called to
-// Create will do nothing.
+// StatusAll invokes the GetStatus method on all the resources under management.
+// The order in which the status of each resource is queried is
+// non-deterministic, and does rely on any creation order or state of the
+// resource. All the state that was created via Create will be available to the
+// Status callbacks, if any. Resources are not required to have a state to have
+// a status.
 func (m *Manager) StatusAll(args ...interface{}) error {
 	if err := m.Validate(); err != nil {
 		return err
 	}
 
-	var finalInputs []argmapper.Value
 	mapperArgs, err := m.mapperArgs()
 	if err != nil {
 		return err
@@ -328,17 +324,18 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 		mapperArgs = append(mapperArgs, argmapper.Typed(arg))
 	}
 
+	var finalInputs []argmapper.Value
 	// Go through available resources.
 	for _, r := range m.resources {
-
-		// Create the mapper for destroy. The dependencies are the set of
-		// created resources in the creation order that were ahead of this one.
+		// Create the mapper for status
 		f, err := r.mapperForStatus(nil)
 		if err != nil {
 			return err
 		}
 		mapperArgs = append(mapperArgs,
 			argmapper.ConverterFunc(f),
+			// the status methods should receive the resource state, if any
+			// exists
 			argmapper.Typed(r.State()),
 		)
 
@@ -347,8 +344,7 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 		finalInputs = append(finalInputs, markerValue(r.name))
 	}
 
-	// Create our final target function. This has as dependencies all the
-	// markers for the resources that should be destroyed.
+	// Create our final target function.
 	finalInputSet, err := argmapper.NewValueSet(finalInputs)
 	if err != nil {
 		return err
@@ -373,13 +369,12 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 	return result.Err()
 }
 
-func (m *Manager) Status() []*pb.StatusReport_Resource {
+func (m *Manager) ResourceStatus() []*pb.StatusReport_Resource {
 	var reports []*pb.StatusReport_Resource
 	for _, r := range m.resources {
-		st:=r.Status()
-		if st != nil {
+		if st := r.Status(); st != nil {
 			// TODO allow status to be nil - this change happens in Resource
-				reports = append(reports, st)
+			reports = append(reports, st)
 		}
 	}
 	return reports

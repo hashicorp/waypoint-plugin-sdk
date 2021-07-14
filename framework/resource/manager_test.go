@@ -252,13 +252,14 @@ func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
 	require.Equal([]string{"B"}, destroyOrder)
 }
 
+// TestStatus_Manager tests the Manager's ability to call resource status
+// methods and present them for creating a report
 func TestStatus_Manager(t *testing.T) {
 	require := require.New(t)
 
-	// init is a function so that we can reinitialize an empty manager
-	// for this test to test loading state
 	init := func() *Manager {
 		return NewManager(
+			// state with status
 			WithResource(NewResource(
 				WithName("A"),
 				WithState(&testState{}),
@@ -272,6 +273,7 @@ func TestStatus_Manager(t *testing.T) {
 				}),
 			)),
 
+			// no state, with status
 			WithResource(NewResource(
 				WithName("B"),
 				WithCreate(func(s *testState) error {
@@ -295,6 +297,7 @@ func TestStatus_Manager(t *testing.T) {
 					return nil
 				}),
 			)),
+			// state, no status
 			WithResource(NewResource(
 				WithName("D"),
 				WithState(&testState3{}),
@@ -302,12 +305,6 @@ func TestStatus_Manager(t *testing.T) {
 					s.Value = 0
 					return nil
 				}),
-				// WithStatus(func(s *testState2, sr *pb.StatusReport_Resource) error {
-				// 	sAddr := fmt.Sprintf("%p", s)
-				// 	srAddr := fmt.Sprintf("%p", sr)
-				// 	sr.Name = s.Name
-				// 	return nil
-				// }),
 			)),
 		)
 	}
@@ -317,14 +314,14 @@ func TestStatus_Manager(t *testing.T) {
 	require.NoError(m.CreateAll(42))
 
 	require.NoError(m.StatusAll())
-	reports := m.Status()
+	reports := m.ResourceStatus()
 
 	require.Len(reports, 3)
 	sort.Sort(byName(reports))
 
 	require.Equal("no state here", reports[0].Name)
-	require.Equal(fmt.Sprintf(statusNameTpl,13), reports[1].Name)
-	require.Equal(fmt.Sprintf(statusNameTpl,42), reports[2].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 13), reports[1].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 42), reports[2].Name)
 
 	// Destroy
 	require.NoError(m.DestroyAll())
