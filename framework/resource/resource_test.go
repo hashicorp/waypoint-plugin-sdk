@@ -126,7 +126,7 @@ var (
 	healthMessageTpl = "alive-%d"
 )
 
-func TestResourceStatus(t *testing.T) {
+func TestStatus_Resource(t *testing.T) {
 	require := require.New(t)
 
 	r := NewResource(

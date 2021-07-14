@@ -152,11 +152,13 @@ func (r *Resource) Destroy(args ...interface{}) error {
 	return result.Err()
 }
 
-func (r *Resource) Status() pb.StatusReport_Resource {
+// Status returns a copy of this resources' status.
+func (r *Resource) Status() *pb.StatusReport_Resource {
 	if r.status == nil {
-		r.status = &pb.StatusReport_Resource{}
+		return nil
 	}
-	return pb.StatusReport_Resource{
+	// return a copy to avoid mutating status
+	return &pb.StatusReport_Resource{
 		Name:          r.status.Name,
 		Health:        r.status.Health,
 		HealthMessage: r.status.HealthMessage,
@@ -322,7 +324,6 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 		for i := 0; i < len(inputVals); i++ {
 			v := inputVals[i]
 			if v.Type != reflect.TypeOf(r.status) {
-				// if v.Type != r.stateType {
 				// easy case, the type is not our state type
 				continue
 			}
@@ -340,41 +341,23 @@ func (r *Resource) mapperForStatus(deps []string) (*argmapper.Func, error) {
 		}
 	}
 
-	// Ensure we have the state available as an argument. If it is
-	// nil then we initialize it.
-	var buildArgs []argmapper.Arg
-	if r.stateType != nil {
-		if r.stateValue == nil {
-			r.initState(true)
-		}
-		buildArgs = append(buildArgs, argmapper.Typed(r.stateValue))
-		buildArgs = append(buildArgs, argmapper.Typed(r.status))
-	}
-	// We want to ensure that the destroy function is called at most once.
-	buildArgs = append(buildArgs, argmapper.FuncOnce())
-
 	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
 		args := in.Args()
 		if r.statusFunc != nil {
 			r.status = &pb.StatusReport_Resource{}
 		}
-		// args = append(args, argmapper.Typed(r.status))
 		args = append(args, argmapper.Typed(r.status))
-		// Ensure our output value for our state type is set
-		// if v := out.Typed(reflect.TypeOf(&pb.StatusReport_Resource{})); v != nil {
-		if v := out.Typed(reflect.TypeOf(r.status)); v != nil {
-			v.Value = reflect.ValueOf(r.status)
-		}
+
 		// Ensure our output marker type is set
 		if v := out.TypedSubtype(markerVal.Type, markerVal.Subtype); v != nil {
 			v.Value = markerVal.Value
 		}
+
 		// Call our function. We throw away any result types except for the
 		// error.
 		result := original.Call(args...)
 		return result.Err()
-		// }, argmapper.FuncOnce())
-	}, buildArgs...)
+	}, argmapper.FuncOnce())
 }
 
 // mapperForDestroy returns an argmapper func that will call the destroy

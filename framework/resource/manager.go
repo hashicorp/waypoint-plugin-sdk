@@ -340,7 +340,6 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 		mapperArgs = append(mapperArgs,
 			argmapper.ConverterFunc(f),
 			argmapper.Typed(r.State()),
-			// argmapper.Typed(r.Status()),
 		)
 
 		// Ensure that our final func is dependent on the marker for
@@ -374,14 +373,13 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 	return result.Err()
 }
 
-func (m *Manager) Status() []pb.StatusReport_Resource {
-	var reports []pb.StatusReport_Resource
+func (m *Manager) Status() []*pb.StatusReport_Resource {
+	var reports []*pb.StatusReport_Resource
 	for _, r := range m.resources {
-		if r.status != nil {
+		st:=r.Status()
+		if st != nil {
 			// TODO allow status to be nil - this change happens in Resource
-			if r.status.Name != "" {
-				reports = append(reports, r.Status())
-			}
+				reports = append(reports, st)
 		}
 	}
 	return reports

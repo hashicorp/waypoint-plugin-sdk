@@ -252,7 +252,7 @@ func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
 	require.Equal([]string{"B"}, destroyOrder)
 }
 
-func TestManagerStatusAll(t *testing.T) {
+func TestStatus_Manager(t *testing.T) {
 	require := require.New(t)
 
 	// init is a function so that we can reinitialize an empty manager
@@ -332,7 +332,7 @@ func TestManagerStatusAll(t *testing.T) {
 
 // byName implements sort.Interface for sorting the results from calling
 // Status(), to ensure ordering when validating the tests
-type byName []pb.StatusReport_Resource
+type byName []*pb.StatusReport_Resource
 
 func (a byName) Len() int           { return len(a) }
 func (a byName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
