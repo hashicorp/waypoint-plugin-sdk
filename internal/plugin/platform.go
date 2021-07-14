@@ -280,6 +280,7 @@ func (c *platformClient) deploy(
 	ctx context.Context,
 	args funcspec.Args,
 	internal *pluginargs.Internal,
+	declaredResourcesResp *component.DeclaredResourcesResp,
 ) (component.Deployment, error) {
 	// Run the cleanup
 	defer internal.Cleanup.Close()
@@ -296,6 +297,9 @@ func (c *platformClient) deploy(
 			return nil, err
 		}
 	}
+
+	// Add declared resources to our outparameter so the caller can access them
+	declaredResourcesResp.DeclaredResources = resp.DeclaredResources.Resources
 
 	return &plugincomponent.Deployment{
 		Any:         resp.Result,
@@ -428,16 +432,26 @@ func (s *platformServer) Deploy(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
+	// Inject our outparameter, so we can capture the response after invocation
+	declaredResourcesResp := &component.DeclaredResourcesResp{}
+
 	encoded, raw, err := callDynamicFuncAny2(s.Impl.DeployFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Typed(internal),
 		argmapper.Typed(ctx),
+		argmapper.Typed(declaredResourcesResp),
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	result := &proto.Deploy_Resp{Result: encoded, Deployment: &proto.Deploy{}}
+	result := &proto.Deploy_Resp{
+		Result:     encoded,
+		Deployment: &proto.Deploy{},
+		DeclaredResources: &proto.DeclaredResources{
+			Resources: declaredResourcesResp.DeclaredResources,
+		},
+	}
 
 	deploymentWithUrl, ok := raw.(component.DeploymentWithUrl)
 	if ok {

@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
@@ -21,6 +22,10 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 	}
 
 	filterProto := argmapper.FilterType(protoMessageType)
+
+	// Outparameters do not need to be supplied by core, and should
+	// be omitted from the advertised function spec.
+	filterOutParameter := argmapper.FilterType(outParameterType)
 
 	// Copy our args cause we're going to use append() and we don't
 	// want to modify our caller.
@@ -38,6 +43,7 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 		argmapper.FilterType(contextType),
 		filterPrimitive,
 		filterProto,
+		filterOutParameter,
 	)
 
 	// Redefine the function in terms of protobuf messages. "Redefine" changes
@@ -98,6 +104,7 @@ func filterPrimitive(v argmapper.Value) bool {
 var (
 	contextType      = reflect.TypeOf((*context.Context)(nil)).Elem()
 	protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
+	outParameterType = reflect.TypeOf((*component.OutParameter)(nil)).Elem()
 
 	// validPrimitive is the map of primitive types we support coming
 	// over the plugin boundary. To add a new type to this, you must
