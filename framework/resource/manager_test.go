@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strconv"
 	"testing"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
@@ -294,8 +295,9 @@ func TestStatus_Manager(t *testing.T) {
 			WithResource(NewResource(
 				WithName("C"),
 				WithState(&testState2{}),
-				WithCreate(func(s *testState2) error {
-					s.Value = 13
+				WithCreate(func(s *testState2, vs string) error {
+					v, _ := strconv.Atoi(vs)
+					s.Value = v
 					return nil
 				}),
 				WithStatus(func(s *testState2, sr *pb.StatusReport_Resource) error {
@@ -317,7 +319,7 @@ func TestStatus_Manager(t *testing.T) {
 
 	// Create
 	m := init()
-	require.NoError(m.CreateAll(42))
+	require.NoError(m.CreateAll(42, "13"))
 
 	require.NoError(m.StatusAll())
 	reports := m.ResourceStatus()
