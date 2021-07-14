@@ -152,7 +152,7 @@ func (r *Resource) Destroy(args ...interface{}) error {
 	return result.Err()
 }
 
-// Status returns a copy of this resources' status.
+// Status returns a copy of this resources' status, or nil if no status exists.
 func (r *Resource) Status() *pb.StatusReport_Resource {
 	if r.status == nil {
 		return nil
@@ -165,7 +165,10 @@ func (r *Resource) Status() *pb.StatusReport_Resource {
 	}
 }
 
-// Status
+// GetStatus creates an individual status report for this resource.
+//
+// After GetStatus has been called, any status can be accessed via the Status
+// function.
 func (r *Resource) GetStatus(args ...interface{}) error {
 	if err := r.Validate(); err != nil {
 		return err
@@ -275,14 +278,15 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 	}, argmapper.FuncOnce())
 }
 
-// mapperForStatus returns an argmapper func that will call the status
-// function
+// mapperForStatus returns an argmapper func that will call the resources'
+// defined status function.
 func (r *Resource) mapperForStatus(_ []string) (*argmapper.Func, error) {
 	statusFunc := r.statusFunc
 	if statusFunc == nil {
 		statusFunc = func() {}
 	}
-	// Create the func for the createFunc as-is. We need to get the input/output sets.
+
+	// Create the func for the statusFunc as-is. We need to get the input/output sets.
 	original, err := argmapper.NewFunc(statusFunc)
 	if err != nil {
 		return nil, err
@@ -297,49 +301,20 @@ func (r *Resource) mapperForStatus(_ []string) (*argmapper.Func, error) {
 		return nil, err
 	}
 
-	// Our inputs default to whatever the function requires and our
-	// output defaults to nothing (only the error type). We will proceed to
-	// modify these so that the output contains our state type and the input
-	// does NOT contain our state type (since it'll be allocated and provided
-	// by us). If we have no state type, we do nothing!
-	inputs := original.Input()
-	if r.stateType != nil {
-		// For outputs, we will only return the state type.
-		outputs, err = argmapper.NewValueSet(append(outputs.Values(), argmapper.Value{
+	// For outputs, we will only return the status type.
+	outputs, err = argmapper.NewValueSet(append(outputs.Values(),
+		argmapper.Value{
 			Type: reflect.TypeOf(r.status),
 		},
-			argmapper.Value{
-				Type: r.stateType,
-			},
-		))
-		if err != nil {
-			return nil, err
-		}
+	))
+	if err != nil {
+		return nil, err
+	}
 
-		// Zero our state now
-		// r.initState(true)
-
-		// For input, we have to remove the state type
-		inputVals := inputs.Values()
-		for i := 0; i < len(inputVals); i++ {
-			v := inputVals[i]
-			if v.Type != reflect.TypeOf(r.status) {
-				// easy case, the type is not our state type
-				continue
-			}
-
-			// the type IS our state type, we need to remove it. We do
-			// this by swapping with the last element (order doesn't matter)
-			// and decrementing i so we reloop over this value.
-			inputVals[len(inputVals)-1], inputVals[i] = inputVals[i], inputVals[len(inputVals)-1]
-			inputVals = inputVals[:len(inputVals)-1]
-			i--
-		}
-
-		inputs, err = argmapper.NewValueSet(inputVals)
-		if err != nil {
-			return nil, err
-		}
+	// Our inputs default to whatever the function requires
+	inputs, err := argmapper.NewValueSet(original.Input().Values())
+	if err != nil {
+		return nil, err
 	}
 
 	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
