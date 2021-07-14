@@ -131,14 +131,12 @@ func TestStatus_Resource(t *testing.T) {
 			state.Value = v
 			return nil
 		}),
-
 		WithStatus(func(state *testState, sr *pb.StatusReport_Resource) error {
 			sr.Name = fmt.Sprintf(statusNameTpl, state.Value)
 			sr.Health = pb.StatusReport_ALIVE
 			sr.HealthMessage = fmt.Sprintf(healthMessageTpl, state.Value)
 			return nil
 		}),
-
 		WithDestroy(func(state *testState) error {
 			return nil
 		}),
@@ -149,10 +147,8 @@ func TestStatus_Resource(t *testing.T) {
 
 	// Ensure we were called with the proper value
 	state := r.State().(*testState)
-	require.NotNil(state)
-	require.Equal(state.Value, 42)
 
-	// call status manually
+	// Call status manually
 	require.Nil(r.status)
 	require.NoError(r.GetStatus(state, &pb.StatusReport_Resource{}))
 	require.NotNil(r.status)
@@ -165,6 +161,7 @@ func TestStatus_Resource(t *testing.T) {
 	require.NoError(r.Destroy())
 	require.Nil(r.State())
 	require.Nil(r.State().(*testState))
-	// make sure status is cleared
+
+	// make sure status is cleared after destroy
 	require.Nil(r.status)
 }
