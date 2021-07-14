@@ -369,7 +369,10 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 	return result.Err()
 }
 
-func (m *Manager) ResourceStatus() []*pb.StatusReport_Resource {
+// StatusReports returns a slice of the current status of all known resource.
+// Returns a nil slice if no resources are known, or if those resources have no
+// status yet.
+func (m *Manager) StatusReports() []*pb.StatusReport_Resource {
 	var reports []*pb.StatusReport_Resource
 	for _, r := range m.resources {
 		if st := r.Status(); st != nil {
