@@ -23,6 +23,12 @@ type basicUI struct {
 	status *spinnerStatus
 }
 
+func NewBasicUI(ctx context.Context) *basicUI {
+	return &basicUI{
+		ctx: ctx,
+	}
+}
+
 // Returns a UI which will write to the current processes
 // stdout/stderr.
 func ConsoleUI(ctx context.Context) UI {
