@@ -248,3 +248,38 @@ func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
 	// Ensure we destroyed
 	require.Equal([]string{"B"}, destroyOrder)
 }
+
+func TestManagerDestroyAll_noCreateAll(t *testing.T) {
+	require := require.New(t)
+
+	// init is a function so that we can reinitialize an empty manager
+	var destroyOrder []string
+	init := func() *Manager {
+		return NewManager(
+			WithResource(NewResource(
+				WithName("A"),
+				WithState(&testproto.Data{}),
+				WithCreate(func(s *testproto.Data, v int32) error {
+					s.Number = v
+					return nil
+				}),
+				WithDestroy(func(s *testproto.Data) error {
+					destroyOrder = append(destroyOrder, "A")
+					return nil
+				}),
+			)),
+		)
+	}
+
+	// Create
+	m := init()
+	m.Resource("A").SetState(&testproto.Data{
+		Number: 42,
+	})
+
+	// Destroy
+	require.NoError(m.DestroyAll())
+
+	// Ensure we destroyed
+	require.Equal([]string{"A"}, destroyOrder)
+}
