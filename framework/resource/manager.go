@@ -328,7 +328,7 @@ func (m *Manager) StatusAll(args ...interface{}) ([]*pb.StatusReport_Resource, e
 	// Go through available resources.
 	for _, r := range m.resources {
 		// Create the mapper for status
-		f, err := r.mapperForStatus(nil)
+		f, err := r.mapperForStatus()
 		if err != nil {
 			return nil, err
 		}

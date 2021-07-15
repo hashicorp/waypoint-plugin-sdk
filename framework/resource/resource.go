@@ -174,7 +174,7 @@ func (r *Resource) GetStatus(args ...interface{}) error {
 		return err
 	}
 
-	f, err := r.mapperForStatus(nil)
+	f, err := r.mapperForStatus()
 	if err != nil {
 		return err
 	}
@@ -280,7 +280,7 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 
 // mapperForStatus returns an argmapper func that will call the resources'
 // defined status function.
-func (r *Resource) mapperForStatus(_ []string) (*argmapper.Func, error) {
+func (r *Resource) mapperForStatus() (*argmapper.Func, error) {
 	statusFunc := r.statusFunc
 	if statusFunc == nil {
 		statusFunc = func() {}
