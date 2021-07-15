@@ -305,20 +305,20 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	return result.Err()
 }
 
-// StatusAll invokes the GetStatus method on all the resources under management.
+// StatusAll invokes the statusFunc method of all the resources under management.
 // The order in which the status of each resource is queried is
 // non-deterministic, and does rely on any creation order or state of the
 // resource. All the state that was created via Create will be available to the
 // Status callbacks, if any. Resources are not required to have a state to have
-// a status.
-func (m *Manager) StatusAll(args ...interface{}) error {
+// a status. Returns a slice of reports or an error.
+func (m *Manager) StatusAll(args ...interface{}) ([]*pb.StatusReport_Resource, error) {
 	if err := m.Validate(); err != nil {
-		return err
+		return nil, err
 	}
 
 	mapperArgs, err := m.mapperArgs()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	for _, arg := range args {
 		mapperArgs = append(mapperArgs, argmapper.Typed(arg))
@@ -330,7 +330,7 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 		// Create the mapper for status
 		f, err := r.mapperForStatus(nil)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		mapperArgs = append(mapperArgs,
 			argmapper.ConverterFunc(f),
@@ -347,7 +347,7 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 	// Create our final target function.
 	finalInputSet, err := argmapper.NewValueSet(finalInputs)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	finalFunc, err := argmapper.BuildFunc(
@@ -360,26 +360,21 @@ func (m *Manager) StatusAll(args ...interface{}) error {
 		},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Call it
 	result := finalFunc.Call(mapperArgs...)
-
-	return result.Err()
-}
-
-// StatusReports returns a slice of the current status of all known resource.
-// Returns a nil slice if no resources are known, or if those resources have no
-// status yet.
-func (m *Manager) StatusReports() []*pb.StatusReport_Resource {
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
 	var reports []*pb.StatusReport_Resource
 	for _, r := range m.resources {
 		if st := r.Status(); st != nil {
 			reports = append(reports, st)
 		}
 	}
-	return reports
+	return reports, nil
 }
 
 func (m *Manager) mapperArgs() ([]argmapper.Arg, error) {

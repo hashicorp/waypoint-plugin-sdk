@@ -321,8 +321,8 @@ func TestStatus_Manager(t *testing.T) {
 	m := init()
 	require.NoError(m.CreateAll(42, "13"))
 
-	require.NoError(m.StatusAll())
-	reports := m.StatusReports()
+	reports, err := m.StatusAll()
+	require.NoError(err)
 
 	require.Len(reports, 3)
 	sort.Sort(byName(reports))
