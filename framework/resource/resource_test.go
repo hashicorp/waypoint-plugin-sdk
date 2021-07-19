@@ -149,13 +149,13 @@ func TestStatus_Resource(t *testing.T) {
 	state := r.State().(*testState)
 
 	// Call status manually
-	require.Nil(r.status)
-	require.NoError(r.GetStatus(state, &pb.StatusReport_Resource{}))
-	require.NotNil(r.status)
+	require.Nil(r.statusReport)
+	require.NoError(r.status(state, &pb.StatusReport_Resource{}))
+	require.NotNil(r.statusReport)
 
-	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.status.Name)
-	require.Equal(pb.StatusReport_ALIVE, r.status.Health)
-	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.status.HealthMessage)
+	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.statusReport.Name)
+	require.Equal(pb.StatusReport_ALIVE, r.statusReport.Health)
+	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.statusReport.HealthMessage)
 
 	// Destroy
 	require.NoError(r.Destroy())
@@ -163,5 +163,5 @@ func TestStatus_Resource(t *testing.T) {
 	require.Nil(r.State().(*testState))
 
 	// make sure status is cleared after destroy
-	require.Nil(r.status)
+	require.Nil(r.statusReport)
 }
