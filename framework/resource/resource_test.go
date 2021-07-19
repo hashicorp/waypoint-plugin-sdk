@@ -1,8 +1,10 @@
 package resource
 
 import (
+	"fmt"
 	"testing"
 
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 	"github.com/stretchr/testify/require"
 )
 
@@ -114,4 +116,52 @@ type testState struct {
 	Value int
 }
 
-type testState2 testState
+var (
+	statusNameTpl    = "status-%d"
+	healthMessageTpl = "alive-%d"
+)
+
+func TestStatus_Resource(t *testing.T) {
+	require := require.New(t)
+
+	r := NewResource(
+		WithName("test"),
+		WithState(&testState{}),
+		WithCreate(func(state *testState, v int) error {
+			state.Value = v
+			return nil
+		}),
+		WithStatus(func(state *testState, sr *pb.StatusReport_Resource) error {
+			sr.Name = fmt.Sprintf(statusNameTpl, state.Value)
+			sr.Health = pb.StatusReport_ALIVE
+			sr.HealthMessage = fmt.Sprintf(healthMessageTpl, state.Value)
+			return nil
+		}),
+		WithDestroy(func(state *testState) error {
+			return nil
+		}),
+	)
+
+	// Create
+	require.NoError(r.Create(int(42)))
+
+	// Ensure we were called with the proper value
+	state := r.State().(*testState)
+
+	// Call status manually
+	require.Nil(r.statusReport)
+	require.NoError(r.status(state, &pb.StatusReport_Resource{}))
+	require.NotNil(r.statusReport)
+
+	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.statusReport.Name)
+	require.Equal(pb.StatusReport_ALIVE, r.statusReport.Health)
+	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.statusReport.HealthMessage)
+
+	// Destroy
+	require.NoError(r.Destroy())
+	require.Nil(r.State())
+	require.Nil(r.State().(*testState))
+
+	// make sure status is cleared after destroy
+	require.Nil(r.statusReport)
+}
