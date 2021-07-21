@@ -1,11 +1,15 @@
 package resource
 
 import (
+	"encoding/json"
 	"errors"
 	"testing"
 
-	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 	"github.com/stretchr/testify/require"
+
+	"github.com/hashicorp/waypoint-plugin-sdk/component"
+	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func TestManagerCreateAll(t *testing.T) {
@@ -75,6 +79,53 @@ func TestManagerCreateAll(t *testing.T) {
 
 		// Ensure we have state
 		require.NotNil(m.State())
+	})
+
+	t.Run("With one resource and a declared resource response to populate", func(t *testing.T) {
+		require := require.New(t)
+
+		type State struct {
+			InternalId string `json:"internalId"`
+		}
+
+		// Declare our expected results
+		expectedState := State{InternalId: "a_id"}
+		expectedStateJson, _ := json.Marshal(expectedState)
+		expectedDr := pb.DeclaredResource{
+			Name:                "A",
+			Platform:            "test",
+			CategoryDisplayHint: pb.ResourceCategoryDisplayHint_OTHER,
+			StateJson:           string(expectedStateJson),
+		}
+
+		var dcr component.DeclaredResourcesResp
+		m := NewManager(
+			WithDeclaredResourcesResp(&dcr),
+			WithResource(NewResource(
+				WithName(expectedDr.Name),
+				WithCreate(func(state *State) error {
+					state.InternalId = expectedState.InternalId
+					return nil
+				}),
+				WithState(&State{}),
+				WithPlatform(expectedDr.Platform),
+				WithCategoryDisplayHint(expectedDr.CategoryDisplayHint),
+			)),
+		)
+
+		// Create
+		var state State
+		require.NoError(m.CreateAll(&state))
+
+		// Ensure we populated the declared resource
+		require.NotEmpty(dcr.DeclaredResources)
+		declaredResource := dcr.DeclaredResources[0]
+
+		require.NotEmpty(declaredResource.Id)
+		require.Equal(declaredResource.Name, expectedDr.Name)
+		require.Equal(declaredResource.StateJson, expectedDr.StateJson)
+		require.Equal(declaredResource.CategoryDisplayHint, expectedDr.CategoryDisplayHint)
+
 	})
 
 	t.Run("rollback on error", func(t *testing.T) {

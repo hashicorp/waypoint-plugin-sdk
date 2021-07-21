@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	sdk "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // markerType is used for markerValue on Resource.
@@ -32,11 +34,13 @@ type createState struct {
 // assists in lifecycle management, such as preventing dangling resources
 // in the case of an error and properly cleaning them up.
 type Resource struct {
-	name        string
-	stateType   reflect.Type
-	stateValue  interface{}
-	createFunc  interface{}
-	destroyFunc interface{}
+	name                string
+	stateType           reflect.Type
+	stateValue          interface{}
+	createFunc          interface{}
+	destroyFunc         interface{}
+	platform            string
+	categoryDisplayHint pb.ResourceCategoryDisplayHint
 }
 
 // NewResource creates a new resource.
@@ -147,6 +151,34 @@ func (r *Resource) Destroy(args ...interface{}) error {
 
 	result := f.Call(mapperArgs...)
 	return result.Err()
+}
+
+// DeclaredResource converts a resource to a DeclaredResource protobuf, which
+// can be used in a component.DeclaredResourcesResp.
+func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
+	stateJson, err := json.Marshal(r.State())
+	if err != nil {
+		return nil, fmt.Errorf("state for resource is not serializable to json: %w", err)
+	}
+
+	stateProtoAny, err := component.ProtoAny(r.State())
+	if err != nil {
+		return nil, fmt.Errorf("state for resource is not serializable to json: %w", err)
+	}
+
+	id, err := component.Id()
+	if err != nil {
+		return nil, err
+	}
+
+	return &sdk.DeclaredResource{
+		Id:                  id,
+		Name:                r.name,
+		Platform:            r.platform,
+		CategoryDisplayHint: r.categoryDisplayHint,
+		State:               stateProtoAny,
+		StateJson:           string(stateJson),
+	}, nil
 }
 
 // mapperForCreate returns an argmapper func that takes as input the
@@ -446,6 +478,22 @@ func WithDestroy(f interface{}) ResourceOption {
 // for initialization.
 func WithState(v interface{}) ResourceOption {
 	return func(r *Resource) { r.stateType = reflect.TypeOf(v) }
+}
+
+// WithPlatform specifies the name of the platform this resource is being created on
+// (i.e. kubernetes, docker, etc).
+//
+// Corresponds to the protobuf DeclaredResource.Platform field
+func WithPlatform(platform string) ResourceOption {
+	return func(r *Resource) { r.platform = platform }
+}
+
+// WithCategoryDisplayHint specifies the category this resource belongs to.
+// Used for display purposes only.
+//
+// Corresponds to the protobuf DeclaredResource.CategoryDisplayHint field
+func WithCategoryDisplayHint(categoryDisplayHint pb.ResourceCategoryDisplayHint) ResourceOption {
+	return func(r *Resource) { r.categoryDisplayHint = categoryDisplayHint }
 }
 
 // markerValue returns a argmapper.Value that is unique to this resource.
