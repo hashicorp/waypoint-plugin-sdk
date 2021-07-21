@@ -13,7 +13,6 @@ import (
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
-	sdk "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // markerType is used for markerValue on Resource.
@@ -171,7 +170,7 @@ func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
 		return nil, err
 	}
 
-	return &sdk.DeclaredResource{
+	return &pb.DeclaredResource{
 		Id:                  id,
 		Name:                r.name,
 		Platform:            r.platform,
