@@ -125,7 +125,6 @@ func TestManagerCreateAll(t *testing.T) {
 		require.Equal(declaredResource.Name, expectedDr.Name)
 		require.Equal(declaredResource.StateJson, expectedDr.StateJson)
 		require.Equal(declaredResource.CategoryDisplayHint, expectedDr.CategoryDisplayHint)
-
 	})
 
 	t.Run("rollback on error", func(t *testing.T) {

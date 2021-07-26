@@ -1,9 +1,14 @@
 package resource
 
 import (
+	"reflect"
 	"testing"
 
+	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
+
+	sdkpb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 func TestResourceCreate_state(t *testing.T) {
@@ -115,3 +120,29 @@ type testState struct {
 }
 
 type testState2 testState
+
+func TestResource_DeclaredResource(t *testing.T) {
+	require := require.New(t)
+
+	testResource := &Resource{
+		name:      "test resource",
+		stateType: reflect.TypeOf(&testproto.Data{}),
+		stateValue: &testproto.Data{
+			Value:  "val",
+			Number: 1,
+		},
+		createFunc:          func() {},
+		destroyFunc:         func() {},
+		platform:            "test-platform",
+		categoryDisplayHint: sdkpb.ResourceCategoryDisplayHint_OTHER,
+	}
+
+	dr, err := testResource.DeclaredResource()
+	require.Nil(err)
+
+	require.Equal(dr.Name, testResource.name)
+	require.Equal(dr.Platform, testResource.platform)
+	require.Equal(dr.CategoryDisplayHint, testResource.categoryDisplayHint)
+	require.NotEmpty(dr.StateJson)
+	require.True(dr.State.MessageIs(testResource.State().(proto.Message)))
+}
