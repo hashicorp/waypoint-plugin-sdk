@@ -165,11 +165,31 @@ func (ui *glintUI) StepGroup() StepGroup {
 
 // Table implements UI
 func (ui *glintUI) Table(tbl *Table, opts ...Option) {
+	// Build our config and set our options
+	cfg := &config{}
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
 	var buf bytes.Buffer
 	table := tablewriter.NewWriter(&buf)
 	table.SetHeader(tbl.Headers)
 	table.SetBorder(false)
 	table.SetAutoWrapText(false)
+
+	if cfg.Style == "Simple" {
+		// Format the table without borders, simple output
+
+		table.SetAutoFormatHeaders(true)
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+		table.SetAlignment(tablewriter.ALIGN_LEFT)
+		table.SetCenterSeparator("")
+		table.SetColumnSeparator("")
+		table.SetRowSeparator("")
+		table.SetHeaderLine(false)
+		table.SetTablePadding("\t") // pad with tabs
+		table.SetNoWhiteSpace(true)
+	}
 
 	for _, row := range tbl.Rows {
 		colors := make([]tablewriter.Colors, len(row))
