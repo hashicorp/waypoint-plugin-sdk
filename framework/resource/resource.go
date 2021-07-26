@@ -162,7 +162,7 @@ func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
 
 	stateProtoAny, err := component.ProtoAny(r.State())
 	if err != nil {
-		return nil, fmt.Errorf("state for resource is not serializable to json: %w", err)
+		return nil, fmt.Errorf("state for resource is not serializable to protobuf: %w", err)
 	}
 
 	id, err := component.Id()
