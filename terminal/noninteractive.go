@@ -146,6 +146,20 @@ func (ui *nonInteractiveUI) Table(tbl *Table, opts ...Option) {
 		table.SetHeaderLine(false)
 		table.SetTablePadding("\t") // pad with tabs
 		table.SetNoWhiteSpace(true)
+	} else if cfg.Style == "List" {
+		// Format the table without borders, simple output
+
+		table.SetColumnSeparator("=") // equals separator
+		table.SetBorder(false)        // Set Border to false
+
+		table.SetAutoFormatHeaders(true)
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+		table.SetAlignment(tablewriter.ALIGN_LEFT)
+		table.SetCenterSeparator("")
+		table.SetRowSeparator("")
+		table.SetHeaderLine(false)
+		table.SetTablePadding("\t") // pad with tabs
+		table.SetNoWhiteSpace(true)
 	}
 
 	for _, row := range tbl.Rows {
