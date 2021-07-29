@@ -34,6 +34,8 @@ var All = []interface{}{
 	DatadirProjectProto,
 	DatadirAppProto,
 	DatadirComponentProto,
+	DeclaredResourcesComponent,
+	DeclaredResourcesComponentProto,
 	Logger,
 	LoggerProto,
 	TerminalUI,
@@ -132,6 +134,17 @@ func DatadirComponentProto(input *datadir.Component) *pb.Args_DataDir_Component 
 		CacheDir: input.CacheDir(),
 		DataDir:  input.DataDir(),
 	}
+}
+
+// DeclaredResourcesComponent maps *pb.DeclaredResources to *component.DeclaredResources
+func DeclaredResourcesComponent(input *pb.DeclaredResources) (*component.DeclaredResources, error) {
+	var result component.DeclaredResources
+	return &result, mapstructure.Decode(input, &result)
+}
+
+func DeclaredResourcesComponentProto(input *component.DeclaredResources) (*pb.DeclaredResources, error) {
+	var result pb.DeclaredResources
+	return &result, mapstructure.Decode(input, &result)
 }
 
 // Logger maps *pb.Args_Logger to an hclog.Logger

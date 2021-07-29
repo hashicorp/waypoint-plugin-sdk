@@ -313,6 +313,12 @@ type Generation interface {
 // use later to stop the task.
 type RunningTask interface{}
 
+// DeclaredResources is a group of resources that a plugin had declared to be under
+// it's direct management.
+type DeclaredResources struct {
+	Resources []*proto.DeclaredResource
+}
+
 // OutParameter is an argument type that is used by plugins as a vehicle for returning
 // data to core. A struct implementing this interface that indicates to the plugin system
 // that the struct should not be included in a grpc advertised dynamic function spec, because
