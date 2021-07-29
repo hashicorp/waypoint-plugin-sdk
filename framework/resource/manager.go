@@ -25,6 +25,7 @@ type Manager struct {
 	createState    *createState
 	logger         hclog.Logger
 	valueProviders []interface{}
+	dcr            *component.DeclaredResourcesResp
 }
 
 // NewManager creates a new resource manager.
@@ -208,6 +209,23 @@ func (m *Manager) CreateAll(args ...interface{}) error {
 		}
 	}
 
+	// Now that resource state has been filled, populate the declared resource response if available.
+	if m.dcr != nil {
+		for name, resource := range m.resources {
+			declaredResource, err := resource.DeclaredResource()
+			if err != nil {
+				// Will likely only occur when developing plugins.
+				m.logger.Debug("Failed to generate declared resource",
+					"resource name", name,
+					"platform", resource.platform,
+					"error", err,
+				)
+				continue
+			}
+			m.dcr.DeclaredResources = append(m.dcr.DeclaredResources, declaredResource)
+		}
+	}
+
 	return resultErr
 }
 
@@ -364,5 +382,15 @@ func WithValueProvider(f interface{}) ManagerOption {
 	// don't need this today but I can see that being useful.
 	return func(m *Manager) {
 		m.valueProviders = append(m.valueProviders, f)
+	}
+}
+
+// WithDeclaredResourcesResp specifies a declared resource response that
+// ResourceManager will automatically populate after creating resources. It will
+// add one DeclaredResource per resource under management. For most plugins,
+// this will be their only interaction with the DeclaredResourcesResponse.
+func WithDeclaredResourcesResp(dcr *component.DeclaredResourcesResp) ManagerOption {
+	return func(m *Manager) {
+		m.dcr = dcr
 	}
 }
