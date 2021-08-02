@@ -324,7 +324,6 @@ func TestStatus_Manager(t *testing.T) {
 					return nil
 				}),
 				WithStatus(func(s *testState, sr *StatusResponse) error {
-					// WithStatus(func(s *testState, sr *pb.StatusReport_Resource) error {
 					rr := &pb.StatusReport_Resource{
 						Name: fmt.Sprintf(statusNameTpl, s.Value),
 					}
@@ -360,7 +359,12 @@ func TestStatus_Manager(t *testing.T) {
 					rr := &pb.StatusReport_Resource{
 						Name: fmt.Sprintf(statusNameTpl, s.Value),
 					}
-					sr.Reports = append(sr.Reports, rr)
+					// make sure we can return more than 1 StatusReport_Resource
+					// in a single Resource Status method
+					rr2 := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value+1),
+					}
+					sr.Reports = append(sr.Reports, rr, rr2)
 					return nil
 				}),
 			)),
@@ -383,12 +387,13 @@ func TestStatus_Manager(t *testing.T) {
 	reports, err := m.StatusAll()
 	require.NoError(err)
 
-	require.Len(reports, 3)
+	require.Len(reports, 4)
 	sort.Sort(byName(reports))
 
 	require.Equal("no state here", reports[0].Name)
 	require.Equal(fmt.Sprintf(statusNameTpl, 13), reports[1].Name)
-	require.Equal(fmt.Sprintf(statusNameTpl, 42), reports[2].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 14), reports[2].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 42), reports[3].Name)
 
 	// Destroy
 	require.NoError(m.DestroyAll())
