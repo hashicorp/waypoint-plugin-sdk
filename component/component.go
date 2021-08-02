@@ -10,7 +10,11 @@
 // framework (see internal/mapper) to call these functions.
 package component
 
-import proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+import (
+	"fmt"
+
+	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+)
 
 //go:generate stringer -type=Type -linecomment
 //go:generate mockery -all -case underscore
@@ -312,6 +316,28 @@ type Generation interface {
 // RunningTask is returned from StartTask. It contains the state the plugin can
 // use later to stop the task.
 type RunningTask interface{}
+
+// DeclaredResources is a group of resources that a plugin had declared to be under
+// it's direct management.
+type DeclaredResources struct {
+	Resources []*proto.DeclaredResource
+}
+
+// ByName finds one DeclaredResource with a matching name.
+// Returns an error if multiple resources are found.
+// Returns a nil DeclaredResource if no match is found.
+func (d *DeclaredResources) ByName(name string) (*proto.DeclaredResource, error) {
+	var ret *proto.DeclaredResource
+	for _, dr := range d.Resources {
+		if dr.Name == name {
+			if ret != nil {
+				return nil, fmt.Errorf("multiple declared resources with name %s", name)
+			}
+			ret = dr
+		}
+	}
+	return ret, nil
+}
 
 // OutParameter is an argument type that is used by plugins as a vehicle for returning
 // data to core. A struct implementing this interface that indicates to the plugin system
