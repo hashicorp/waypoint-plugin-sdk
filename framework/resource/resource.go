@@ -192,8 +192,8 @@ func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
 	}, nil
 }
 
-// Status returns a copy of this resources' internal statusReports, or nil if no
-// status exists.
+// Status returns a copy of this resources' internal status response, or nil if
+// no status exists.
 func (r *Resource) Status() *StatusResponse {
 	if r.statusResp == nil {
 		return nil
@@ -205,9 +205,8 @@ func (r *Resource) Status() *StatusResponse {
 	}
 }
 
-// status is a method used to populate a Resources' statusReports. It is used
-// for testing purposes and should otherwise not be called directly at this
-// time.
+// status is a method used to populate a Resources' statusResp. At this time it
+// is used for testing purposes and should otherwise not be called directly.
 func (r *Resource) status(args ...interface{}) error {
 	if err := r.Validate(); err != nil {
 		return err

@@ -165,7 +165,6 @@ func TestStatus_Resource(t *testing.T) {
 			return nil
 		}),
 		WithStatus(func(state *testState, sr *StatusResponse) error {
-			// WithStatus(func(state *testState, sr *pb.StatusReport_Resource) error {
 			rr := &pb.StatusReport_Resource{
 				Name:          fmt.Sprintf(statusNameTpl, state.Value),
 				Health:        pb.StatusReport_ALIVE,
