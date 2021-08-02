@@ -42,7 +42,16 @@ type Resource struct {
 	categoryDisplayHint pb.ResourceCategoryDisplayHint
 	statusFunc          interface{}
 
-	statusReport *pb.StatusReport_Resource
+	statusResp *StatusResponse
+}
+
+// StatusResponse is a container type that holds the resources status reports. A
+// resource can have 1 status response containing zero to many individual status
+// reports, depending on the resource. An example would be a K8s deployment
+// resource returning a single status containing a StatusReport_Resource for
+// each pod it currently tracks
+type StatusResponse struct {
+	Reports []*pb.StatusReport_Resource
 }
 
 // NewResource creates a new resource.
@@ -183,21 +192,22 @@ func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
 	}, nil
 }
 
-// Status returns a copy of this resources' statusReport, or nil if no status exists.
-func (r *Resource) Status() *pb.StatusReport_Resource {
-	if r.statusReport == nil {
+// Status returns a copy of this resources' internal statusReports, or nil if no
+// status exists.
+func (r *Resource) Status() *StatusResponse {
+	if r.statusResp == nil {
 		return nil
 	}
-	// return a copy to avoid mutating status
-	return &pb.StatusReport_Resource{
-		Name:          r.statusReport.Name,
-		Health:        r.statusReport.Health,
-		HealthMessage: r.statusReport.HealthMessage,
+	cp := make([]*pb.StatusReport_Resource, len(r.statusResp.Reports))
+	copy(cp, r.statusResp.Reports)
+	return &StatusResponse{
+		Reports: cp,
 	}
 }
 
-// status is a method used to populate a Resources' statusReport. It is used for
-// testing purposes and should otherwise not be called directly at this time.
+// status is a method used to populate a Resources' statusReports. It is used
+// for testing purposes and should otherwise not be called directly at this
+// time.
 func (r *Resource) status(args ...interface{}) error {
 	if err := r.Validate(); err != nil {
 		return err
@@ -329,7 +339,7 @@ func (r *Resource) mapperForStatus() (*argmapper.Func, error) {
 	outputs, err := argmapper.NewValueSet([]argmapper.Value{
 		markerVal,
 		{
-			Type: reflect.TypeOf(r.statusReport),
+			Type: reflect.TypeOf(r.statusResp),
 		},
 	})
 	if err != nil {
@@ -345,9 +355,9 @@ func (r *Resource) mapperForStatus() (*argmapper.Func, error) {
 	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
 		args := in.Args()
 		if r.statusFunc != nil {
-			r.statusReport = &pb.StatusReport_Resource{}
+			r.statusResp = &StatusResponse{}
 		}
-		args = append(args, argmapper.Typed(r.statusReport))
+		args = append(args, argmapper.Typed(r.statusResp))
 
 		// Ensure our output marker type is set
 		if v := out.TypedSubtype(markerVal.Type, markerVal.Subtype); v != nil {
@@ -436,7 +446,7 @@ func (r *Resource) mapperForDestroy(deps []string) (*argmapper.Func, error) {
 		// If the destroy was successful, we clear our state and status
 		if err == nil {
 			r.initState(false)
-			r.statusReport = nil
+			r.statusResp = nil
 		}
 
 		return err
