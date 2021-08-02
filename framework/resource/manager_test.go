@@ -323,8 +323,12 @@ func TestStatus_Manager(t *testing.T) {
 					s.Value = v
 					return nil
 				}),
-				WithStatus(func(s *testState, sr *pb.StatusReport_Resource) error {
-					sr.Name = fmt.Sprintf(statusNameTpl, s.Value)
+				WithStatus(func(s *testState, sr *StatusResponse) error {
+					// WithStatus(func(s *testState, sr *pb.StatusReport_Resource) error {
+					rr := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value),
+					}
+					sr.Reports = append(sr.Reports, rr)
 					return nil
 				}),
 			)),
@@ -336,8 +340,11 @@ func TestStatus_Manager(t *testing.T) {
 					// no-op
 					return nil
 				}),
-				WithStatus(func(sr *pb.StatusReport_Resource) error {
-					sr.Name = "no state here"
+				WithStatus(func(sr *StatusResponse) error {
+					rr := &pb.StatusReport_Resource{
+						Name: "no state here",
+					}
+					sr.Reports = append(sr.Reports, rr)
 					return nil
 				}),
 			)),
@@ -349,8 +356,11 @@ func TestStatus_Manager(t *testing.T) {
 					s.Value = v
 					return nil
 				}),
-				WithStatus(func(s *testState2, sr *pb.StatusReport_Resource) error {
-					sr.Name = fmt.Sprintf(statusNameTpl, s.Value)
+				WithStatus(func(s *testState2, sr *StatusResponse) error {
+					rr := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value),
+					}
+					sr.Reports = append(sr.Reports, rr)
 					return nil
 				}),
 			)),

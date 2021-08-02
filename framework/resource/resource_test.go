@@ -164,10 +164,14 @@ func TestStatus_Resource(t *testing.T) {
 			state.Value = v
 			return nil
 		}),
-		WithStatus(func(state *testState, sr *pb.StatusReport_Resource) error {
-			sr.Name = fmt.Sprintf(statusNameTpl, state.Value)
-			sr.Health = pb.StatusReport_ALIVE
-			sr.HealthMessage = fmt.Sprintf(healthMessageTpl, state.Value)
+		WithStatus(func(state *testState, sr *StatusResponse) error {
+			// WithStatus(func(state *testState, sr *pb.StatusReport_Resource) error {
+			rr := &pb.StatusReport_Resource{
+				Name:          fmt.Sprintf(statusNameTpl, state.Value),
+				Health:        pb.StatusReport_ALIVE,
+				HealthMessage: fmt.Sprintf(healthMessageTpl, state.Value),
+			}
+			sr.Reports = append(sr.Reports, rr)
 			return nil
 		}),
 		WithDestroy(func(state *testState) error {
@@ -182,13 +186,13 @@ func TestStatus_Resource(t *testing.T) {
 	state := r.State().(*testState)
 
 	// Call status manually
-	require.Nil(r.statusReport)
-	require.NoError(r.status(state, &pb.StatusReport_Resource{}))
-	require.NotNil(r.statusReport)
+	require.Nil(r.statusResp)
+	require.NoError(r.status(state, &StatusResponse{}))
+	require.NotNil(r.statusResp)
 
-	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.statusReport.Name)
-	require.Equal(pb.StatusReport_ALIVE, r.statusReport.Health)
-	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.statusReport.HealthMessage)
+	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.statusResp.Reports[0].Name)
+	require.Equal(pb.StatusReport_ALIVE, r.statusResp.Reports[0].Health)
+	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.statusResp.Reports[0].HealthMessage)
 
 	// Destroy
 	require.NoError(r.Destroy())
@@ -196,5 +200,5 @@ func TestStatus_Resource(t *testing.T) {
 	require.Nil(r.State().(*testState))
 
 	// make sure status is cleared after destroy
-	require.Nil(r.statusReport)
+	require.Nil(r.statusResp)
 }
