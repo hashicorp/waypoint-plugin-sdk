@@ -435,6 +435,9 @@ func WithResource(r *Resource) ManagerOption {
 			name, _ = component.Id()
 		}
 
+		// Note(izaak): If multiple resources have the same name, all but one
+		// will be overwritten. We could enforce uniqueness here, but we'd have
+		// to introduce an error return.
 		m.resources[name] = r
 	}
 }
