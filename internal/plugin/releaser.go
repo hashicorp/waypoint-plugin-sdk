@@ -199,7 +199,6 @@ func (c *releaseManagerClient) release(
 ) (component.Release, error) {
 	// Call our function
 
-	// NOTE(izaak): Do we need `defer internal.Cleanup.Close()` like in plugin/platform.go ?
 	resp, err := c.client.Release(ctx, &proto.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
