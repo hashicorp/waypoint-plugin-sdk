@@ -347,6 +347,7 @@ func TestStatus_Manager(t *testing.T) {
 					return nil
 				}),
 			)),
+			// state and multiple status reports
 			WithResource(NewResource(
 				WithName("C"),
 				WithState(&testState2{}),
@@ -394,6 +395,57 @@ func TestStatus_Manager(t *testing.T) {
 	require.Equal(fmt.Sprintf(statusNameTpl, 13), reports[1].Name)
 	require.Equal(fmt.Sprintf(statusNameTpl, 14), reports[2].Name)
 	require.Equal(fmt.Sprintf(statusNameTpl, 42), reports[3].Name)
+
+	// Destroy
+	require.NoError(m.DestroyAll())
+}
+
+// TestStatus_Manager_LoopRepro is a regression test for a loop discovered while
+// implementing StatusAll involving using Resource Manager with a single
+// Resource that reports a status.
+// See https://github.com/hashicorp/waypoint-plugin-sdk/pull/43 for additional
+// background.
+func TestStatus_Manager_LoopRepro(t *testing.T) {
+	require := require.New(t)
+
+	init := func() *Manager {
+		return NewManager(
+			WithResource(NewResource(
+				WithName("C"),
+				WithState(&testState{}),
+				WithCreate(func(s *testState, vs string) error {
+					v, _ := strconv.Atoi(vs)
+					s.Value = v
+					return nil
+				}),
+				WithStatus(func(s *testState, sr *StatusResponse) error {
+					rr := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value),
+					}
+					// make sure we can return more than 1 StatusReport_Resource
+					// in a single Resource Status method
+					rr2 := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value+1),
+					}
+					sr.Reports = append(sr.Reports, rr, rr2)
+					return nil
+				}),
+			)),
+		)
+	}
+
+	// Create
+	m := init()
+	require.NoError(m.CreateAll(42, "13"))
+
+	reports, err := m.StatusAll()
+	require.NoError(err)
+
+	require.Len(reports, 2)
+	sort.Sort(byName(reports))
+
+	require.Equal(fmt.Sprintf(statusNameTpl, 13), reports[0].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 14), reports[1].Name)
 
 	// Destroy
 	require.NoError(m.DestroyAll())
