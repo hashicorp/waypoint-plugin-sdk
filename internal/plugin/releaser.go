@@ -182,7 +182,7 @@ func (c *releaseManagerClient) ReleaseFunc() interface{} {
 	// We don't want to be a mapper
 	spec.Result = nil
 
-	return funcspec.Func(spec, c.build,
+	return funcspec.Func(spec, c.release,
 		argmapper.Logger(c.logger),
 		argmapper.Typed(&pluginargs.Internal{
 			Broker:  c.broker,
@@ -192,11 +192,14 @@ func (c *releaseManagerClient) ReleaseFunc() interface{} {
 	)
 }
 
-func (c *releaseManagerClient) build(
+func (c *releaseManagerClient) release(
 	ctx context.Context,
 	args funcspec.Args,
+	declaredResourcesResp *component.DeclaredResourcesResp,
 ) (component.Release, error) {
 	// Call our function
+
+	// NOTE(izaak): Do we need `defer internal.Cleanup.Close()` like in plugin/platform.go ?
 	resp, err := c.client.Release(ctx, &proto.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
@@ -208,6 +211,8 @@ func (c *releaseManagerClient) build(
 			return nil, err
 		}
 	}
+
+	declaredResourcesResp.DeclaredResources = resp.DeclaredResources.Resources
 
 	return &plugincomponent.Release{
 		Any:         resp.Result,
@@ -271,11 +276,15 @@ func (s *releaseManagerServer) Release(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
+	// Inject our outparameter, so we can capture the response after invocation
+	declaredResourcesResp := &component.DeclaredResourcesResp{}
+
 	raw, err := callDynamicFunc2(s.Impl.ReleaseFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
 		argmapper.Typed(internal),
+		argmapper.Typed(declaredResourcesResp),
 	)
 	if err != nil {
 		return nil, err
@@ -290,6 +299,9 @@ func (s *releaseManagerServer) Release(
 		Result: encoded,
 		Release: &proto.Release{
 			Url: release.URL(),
+		},
+		DeclaredResources: &proto.DeclaredResources{
+			Resources: declaredResourcesResp.DeclaredResources,
 		},
 	}
 
