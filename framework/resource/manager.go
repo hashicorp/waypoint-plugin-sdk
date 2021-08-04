@@ -389,7 +389,7 @@ func (m *Manager) StatusAll(args ...interface{}) ([]*pb.StatusReport_Resource, e
 	var reports []*pb.StatusReport_Resource
 	for _, r := range m.resources {
 		if st := r.Status(); st != nil {
-			reports = append(reports, st.Reports...)
+			reports = append(reports, st.Resources...)
 		}
 	}
 	return reports, nil

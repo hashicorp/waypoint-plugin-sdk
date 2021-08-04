@@ -170,7 +170,7 @@ func TestStatus_Resource(t *testing.T) {
 				Health:        pb.StatusReport_ALIVE,
 				HealthMessage: fmt.Sprintf(healthMessageTpl, state.Value),
 			}
-			sr.Reports = append(sr.Reports, rr)
+			sr.Resources = append(sr.Resources, rr)
 			return nil
 		}),
 		WithDestroy(func(state *testState) error {
@@ -189,9 +189,9 @@ func TestStatus_Resource(t *testing.T) {
 	require.NoError(r.status(state, &StatusResponse{}))
 	require.NotNil(r.statusResp)
 
-	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.statusResp.Reports[0].Name)
-	require.Equal(pb.StatusReport_ALIVE, r.statusResp.Reports[0].Health)
-	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.statusResp.Reports[0].HealthMessage)
+	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.statusResp.Resources[0].Name)
+	require.Equal(pb.StatusReport_ALIVE, r.statusResp.Resources[0].Health)
+	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.statusResp.Resources[0].HealthMessage)
 
 	// Destroy
 	require.NoError(r.Destroy())

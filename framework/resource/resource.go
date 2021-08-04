@@ -51,7 +51,7 @@ type Resource struct {
 // resource returning a single status containing a StatusReport_Resource for
 // each pod it currently tracks
 type StatusResponse struct {
-	Reports []*pb.StatusReport_Resource
+	Resources []*pb.StatusReport_Resource
 }
 
 // NewResource creates a new resource.
@@ -198,10 +198,10 @@ func (r *Resource) Status() *StatusResponse {
 	if r.statusResp == nil {
 		return nil
 	}
-	cp := make([]*pb.StatusReport_Resource, len(r.statusResp.Reports))
-	copy(cp, r.statusResp.Reports)
+	cp := make([]*pb.StatusReport_Resource, len(r.statusResp.Resources))
+	copy(cp, r.statusResp.Resources)
 	return &StatusResponse{
-		Reports: cp,
+		Resources: cp,
 	}
 }
 

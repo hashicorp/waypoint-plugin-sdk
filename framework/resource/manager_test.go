@@ -327,7 +327,7 @@ func TestStatus_Manager(t *testing.T) {
 					rr := &pb.StatusReport_Resource{
 						Name: fmt.Sprintf(statusNameTpl, s.Value),
 					}
-					sr.Reports = append(sr.Reports, rr)
+					sr.Resources = append(sr.Resources, rr)
 					return nil
 				}),
 			)),
@@ -343,7 +343,7 @@ func TestStatus_Manager(t *testing.T) {
 					rr := &pb.StatusReport_Resource{
 						Name: "no state here",
 					}
-					sr.Reports = append(sr.Reports, rr)
+					sr.Resources = append(sr.Resources, rr)
 					return nil
 				}),
 			)),
@@ -365,7 +365,7 @@ func TestStatus_Manager(t *testing.T) {
 					rr2 := &pb.StatusReport_Resource{
 						Name: fmt.Sprintf(statusNameTpl, s.Value+1),
 					}
-					sr.Reports = append(sr.Reports, rr, rr2)
+					sr.Resources = append(sr.Resources, rr, rr2)
 					return nil
 				}),
 			)),
@@ -427,7 +427,7 @@ func TestStatus_Manager_LoopRepro(t *testing.T) {
 					rr2 := &pb.StatusReport_Resource{
 						Name: fmt.Sprintf(statusNameTpl, s.Value+1),
 					}
-					sr.Reports = append(sr.Reports, rr, rr2)
+					sr.Resources = append(sr.Resources, rr, rr2)
 					return nil
 				}),
 			)),
