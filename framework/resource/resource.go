@@ -631,3 +631,5 @@ func markerValue(n string) argmapper.Value {
 		Value:   reflect.ValueOf(val),
 	}
 }
+
+var statusResponseType = reflect.TypeOf((*StatusResponse)(nil))
