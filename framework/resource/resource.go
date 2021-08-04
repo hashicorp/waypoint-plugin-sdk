@@ -337,9 +337,6 @@ func (r *Resource) mapperForStatus() (*argmapper.Func, error) {
 	markerVal := markerValue(r.name)
 	outputs, err := argmapper.NewValueSet([]argmapper.Value{
 		markerVal,
-		{
-			Type: reflect.TypeOf(r.statusResp),
-		},
 	})
 	if err != nil {
 		return nil, err
