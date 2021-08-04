@@ -342,8 +342,24 @@ func (r *Resource) mapperForStatus() (*argmapper.Func, error) {
 		return nil, err
 	}
 
-	// Our inputs default to whatever the function requires
-	inputs, err := argmapper.NewValueSet(original.Input().Values())
+	// For input, we have to remove the status response type because
+	// we don't need it to call the func we build below because we'll
+	// construct it within the buildfunc call.
+	inputVals := original.Input().Values()
+	for i := 0; i < len(inputVals); i++ {
+		v := inputVals[i]
+		if v.Type != statusResponseType {
+			continue
+		}
+
+		// the type IS our status response type, we need to remove it. We do
+		// this by swapping with the last element (order doesn't matter)
+		// and decrementing i so we reloop over this value.
+		inputVals[len(inputVals)-1], inputVals[i] = inputVals[i], inputVals[len(inputVals)-1]
+		inputVals = inputVals[:len(inputVals)-1]
+		i--
+	}
+	inputs, err := argmapper.NewValueSet(inputVals)
 	if err != nil {
 		return nil, err
 	}
