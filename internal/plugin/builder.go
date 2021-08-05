@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	"github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // BuilderPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -28,6 +28,8 @@ type BuilderPlugin struct {
 	Impl    component.Builder // Impl is the concrete implementation
 	Mappers []*argmapper.Func // Mappers
 	Logger  hclog.Logger      // Logger
+
+	ODR *ODRSetting // Used to switch builder modes based on ondemand-runner in play
 }
 
 func (p *BuilderPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) error {
@@ -61,6 +63,10 @@ func (p *BuilderPlugin) GRPCClient(
 		mappers: p.Mappers,
 	}
 
+	if p.ODR != nil && p.ODR.Enabled {
+		client.odr = true
+	}
+
 	authenticator := &authenticatorClient{
 		Client:  client.client,
 		Logger:  client.logger,
@@ -92,6 +98,9 @@ type builderClient struct {
 	logger  hclog.Logger
 	broker  *plugin.GRPCBroker
 	mappers []*argmapper.Func
+
+	// indicates that the ODR version of the plugin should be used
+	odr bool
 }
 
 func (c *builderClient) Config() (interface{}, error) {
@@ -107,6 +116,40 @@ func (c *builderClient) Documentation() (*docs.Documentation, error) {
 }
 
 func (c *builderClient) BuildFunc() interface{} {
+	if c.odr {
+		c.logger.Debug("Running in ODR mode, attempting to retrieve ODR build spec")
+
+		// Get the build spec
+		spec, err := c.client.BuildSpecODR(context.Background(), &empty.Empty{})
+		if err != nil {
+			if status.Code(err) == codes.Unimplemented {
+				// ok, this is an old plugin that doesn't support ODR mode, so just use
+				// the basic mode.
+				c.logger.Debug("plugin didn't implement BuildSpecODR, using Build")
+				goto basic
+			}
+
+			c.logger.Error("error retrieving ODR build spec", "error", err)
+
+			return funcErr(err)
+		}
+
+		// We don't want to be a mapper
+		spec.Result = nil
+
+		return funcspec.Func(spec, c.buildODR,
+			argmapper.Logger(c.logger),
+			argmapper.Typed(&pluginargs.Internal{
+				Broker:  c.broker,
+				Mappers: c.mappers,
+				Cleanup: &pluginargs.Cleanup{},
+			}),
+		)
+	} else {
+		c.logger.Debug("Running in non-ODR mode, using Build")
+	}
+
+basic:
 	// Get the build spec
 	spec, err := c.client.BuildSpec(context.Background(), &empty.Empty{})
 	if err != nil {
@@ -132,6 +175,30 @@ func (c *builderClient) build(
 ) (component.Artifact, error) {
 	// Call our function
 	resp, err := c.client.Build(ctx, &proto.FuncSpec_Args{Args: args})
+	if err != nil {
+		return nil, err
+	}
+
+	var tplData map[string]interface{}
+	if len(resp.TemplateData) > 0 {
+		if err := json.Unmarshal(resp.TemplateData, &tplData); err != nil {
+			return nil, err
+		}
+	}
+
+	return &plugincomponent.Artifact{
+		Any:         resp.Result,
+		LabelsVal:   resp.Labels,
+		TemplateVal: tplData,
+	}, nil
+}
+
+func (c *builderClient) buildODR(
+	ctx context.Context,
+	args funcspec.Args,
+) (component.Artifact, error) {
+	// Call our function
+	resp, err := c.client.BuildODR(ctx, &proto.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -195,6 +262,26 @@ func (s *builderServer) BuildSpec(
 	)
 }
 
+func (s *builderServer) BuildSpecODR(
+	ctx context.Context,
+	args *empty.Empty,
+) (*proto.FuncSpec, error) {
+	if s.Impl == nil {
+		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: builder")
+	}
+
+	odr, ok := s.Impl.(component.BuilderODR)
+	if !ok {
+		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: builder")
+	}
+
+	return funcspec.Spec(odr.BuildODRFunc(),
+		argmapper.Logger(s.Logger),
+		argmapper.ConverterFunc(s.Mappers...),
+		argmapper.Typed(s.internal()),
+	)
+}
+
 func (s *builderServer) Build(
 	ctx context.Context,
 	args *proto.FuncSpec_Args,
@@ -203,6 +290,41 @@ func (s *builderServer) Build(
 	defer internal.Cleanup.Close()
 
 	encoded, raw, err := callDynamicFuncAny2(s.Impl.BuildFunc(), args.Args,
+		argmapper.ConverterFunc(s.Mappers...),
+		argmapper.Logger(s.Logger),
+		argmapper.Typed(ctx),
+		argmapper.Typed(internal),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	result := &proto.Build_Resp{Result: encoded}
+	if artifact, ok := raw.(component.Artifact); ok {
+		result.Labels = artifact.Labels()
+	}
+
+	result.TemplateData, err = templateData(raw)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s *builderServer) BuildODR(
+	ctx context.Context,
+	args *proto.FuncSpec_Args,
+) (*proto.Build_Resp, error) {
+	odr, ok := s.Impl.(component.BuilderODR)
+	if !ok {
+		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: builder")
+	}
+
+	internal := s.internal()
+	defer internal.Cleanup.Close()
+
+	encoded, raw, err := callDynamicFuncAny2(odr.BuildODRFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),

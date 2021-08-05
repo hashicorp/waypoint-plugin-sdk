@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
+	"github.com/ryboe/q"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -17,7 +19,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	"github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // RegistryPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -80,6 +82,7 @@ func (p *RegistryPlugin) GRPCClient(
 		Registry:           client,
 		Authenticator:      authenticator,
 		Documented:         client,
+		RegistryAccess:     client,
 	}
 
 	return result, nil
@@ -146,6 +149,50 @@ func (c *registryClient) push(
 		Any:         resp.Result,
 		TemplateVal: tplData,
 	}, nil
+}
+
+// AccessInfoFunc implements component.RegistryAccess. It returns nil if the
+// remote plugin function doesn't actually implement the function, similiar
+// to other optional interface functions.
+func (c *registryClient) AccessInfoFunc() interface{} {
+	// Get the spec
+	spec, err := c.client.AccessSpec(context.Background(), &empty.Empty{})
+	if err != nil {
+		// Signal that this is not implemented.
+		if status.Code(err) == codes.Unimplemented {
+			return nil
+		}
+
+		panic(err)
+	}
+
+	// We don't want to be a mapper, WHICH MEANS that we get the real value instead
+	// of an argmapper interval value.
+	spec.Result = nil
+
+	return funcspec.Func(spec, c.access,
+		argmapper.Logger(c.logger),
+		argmapper.Typed(&pluginargs.Internal{
+			Broker:  c.broker,
+			Mappers: c.mappers,
+			Cleanup: &pluginargs.Cleanup{},
+		}),
+	)
+}
+
+func (c *registryClient) access(
+	ctx context.Context,
+	args funcspec.Args,
+) (component.AccessInfo, error) {
+	// Call our function
+	resp, err := c.client.Access(ctx, &proto.FuncSpec_Args{Args: args})
+	if err != nil {
+		return nil, err
+	}
+
+	q.Q(resp.Result)
+
+	return &plugincomponent.AccessInfo{Any: resp.Result}, nil
 }
 
 // registryServer is a gRPC server that the client talks to and calls a
@@ -215,6 +262,64 @@ func (s *registryServer) Push(
 	if err != nil {
 		return nil, err
 	}
+
+	return result, nil
+}
+
+// AccessSpec returns the information about the plugins AccessInfoFunc function.
+// If the plugin does not implement the function (as it is an optional interface)
+// then a codes.Unimplemented is returned as an error.
+func (s *registryServer) AccessSpec(
+	ctx context.Context,
+	args *empty.Empty,
+) (*proto.FuncSpec, error) {
+	if s.Impl == nil {
+		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: registry")
+	}
+
+	ra, ok := s.Impl.(component.RegistryAccess)
+	if !ok {
+		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: registry")
+	}
+
+	return funcspec.Spec(ra.AccessInfoFunc(),
+		argmapper.ConverterFunc(s.Mappers...),
+		argmapper.Logger(s.Logger),
+		argmapper.Typed(s.internal()),
+	)
+}
+
+// Access calls the AccessInfoFunc on the plugin.
+func (s *registryServer) Access(
+	ctx context.Context,
+	args *proto.FuncSpec_Args,
+) (*proto.Access_Resp, error) {
+	ra, ok := s.Impl.(component.RegistryAccess)
+	if !ok {
+		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: registry")
+	}
+
+	fn := ra.AccessInfoFunc()
+
+	s.Logger.Error("CALLING ACCESS", "target", hclog.Fmt("%T", ra), "fn", hclog.Fmt("%#v", fn))
+
+	internal := s.internal()
+	defer internal.Cleanup.Close()
+
+	encoded, raw, err := callDynamicFuncAny2(fn, args.Args,
+		argmapper.ConverterFunc(s.Mappers...),
+		argmapper.Logger(s.Logger),
+		argmapper.Typed(ctx),
+		argmapper.Typed(internal),
+	)
+	if err != nil {
+		s.Logger.Error("error calling access info func", "error", err)
+		return nil, err
+	}
+
+	s.Logger.Error("Access Info", "info", raw, "encoded", spew.Sdump(encoded))
+
+	result := &proto.Access_Resp{Result: encoded}
 
 	return result, nil
 }

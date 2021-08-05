@@ -59,6 +59,10 @@ func Plugins(opts ...Option) map[int]plugin.PluginSet {
 	if err := setFieldValue(result, c.Logger); err != nil {
 		panic(err)
 	}
+	// Set the ODR settings
+	if err := setFieldValue(result, c.ODR); err != nil {
+		panic(err)
+	}
 
 	return result
 }
@@ -68,6 +72,7 @@ type pluginConfig struct {
 	Components []interface{}
 	Mappers    []*argmapper.Func
 	Logger     hclog.Logger
+	ODR        *ODRSetting
 }
 
 // Option configures Plugins
@@ -90,6 +95,17 @@ func WithMappers(ms ...*argmapper.Func) Option {
 // WithLogger sets the logger for the plugins.
 func WithLogger(log hclog.Logger) Option {
 	return func(c *pluginConfig) { c.Logger = log }
+}
+
+// ODRSetting are any specific settings associated with running a plugin
+// in Ondemand Runner (aka ODR) mode.
+type ODRSetting struct {
+	Enabled bool
+}
+
+// WithODR sets the ODRSettings for the plugins that are created.
+func WithODR(odr *ODRSetting) Option {
+	return func(c *pluginConfig) { c.ODR = odr }
 }
 
 // setFieldValue sets the given value c on any exported field of an available
