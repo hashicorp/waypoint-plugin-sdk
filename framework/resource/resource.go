@@ -40,6 +40,18 @@ type Resource struct {
 	destroyFunc         interface{}
 	platform            string
 	categoryDisplayHint pb.ResourceCategoryDisplayHint
+	statusFunc          interface{}
+
+	statusResp *StatusResponse
+}
+
+// StatusResponse is a container type that holds the resources status reports. A
+// resource can have 1 status response containing zero to many individual status
+// reports, depending on the resource. An example would be a K8s deployment
+// resource returning a single status containing a StatusReport_Resource for
+// each pod it currently tracks
+type StatusResponse struct {
+	Resources []*pb.StatusReport_Resource
 }
 
 // NewResource creates a new resource.
@@ -180,6 +192,40 @@ func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
 	}, nil
 }
 
+// Status returns a copy of this resources' internal status response, or nil if
+// no status exists.
+func (r *Resource) Status() *StatusResponse {
+	if r.statusResp == nil {
+		return nil
+	}
+	cp := make([]*pb.StatusReport_Resource, len(r.statusResp.Resources))
+	copy(cp, r.statusResp.Resources)
+	return &StatusResponse{
+		Resources: cp,
+	}
+}
+
+// status is a method used to populate a Resources' statusResp. At this time it
+// is used for testing purposes and should otherwise not be called directly.
+func (r *Resource) status(args ...interface{}) error {
+	if err := r.Validate(); err != nil {
+		return err
+	}
+
+	f, err := r.mapperForStatus()
+	if err != nil {
+		return err
+	}
+
+	mapperArgs := make([]argmapper.Arg, len(args))
+	for i, v := range args {
+		mapperArgs[i] = argmapper.Typed(v)
+	}
+
+	result := f.Call(mapperArgs...)
+	return result.Err()
+}
+
 // mapperForCreate returns an argmapper func that takes as input the
 // requirements for the createFunc and returns the state type plus an error.
 // This creates a valid "mapper" we can use with Manager.
@@ -200,7 +246,7 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 	}
 
 	// Our inputs default to whatever the function requires and our
-	// output defaulst to nothing (only the error type). We will proceed to
+	// output defaults to nothing (only the error type). We will proceed to
 	// modify these so that the output contains our state type and the input
 	// does NOT contain our state type (since it'll be allocated and provided
 	// by us). If we have no state type, we do nothing!
@@ -265,6 +311,73 @@ func (r *Resource) mapperForCreate(cs *createState) (*argmapper.Func, error) {
 		}
 
 		// Call our function. We throw away any result types except for the error.
+		result := original.Call(args...)
+		return result.Err()
+	}, argmapper.FuncOnce())
+}
+
+// mapperForStatus returns an argmapper func that will call the resources'
+// defined status function.
+func (r *Resource) mapperForStatus() (*argmapper.Func, error) {
+	statusFunc := r.statusFunc
+	if statusFunc == nil {
+		statusFunc = func() {}
+	}
+
+	// Create the func for the statusFunc as-is. We need to get the input/output sets.
+	original, err := argmapper.NewFunc(statusFunc)
+	if err != nil {
+		return nil, err
+	}
+
+	// For our output, we will always output our unique marker type and our
+	// statusReport type. This unique marker type will allow our resource manager to
+	// create a function chain that calls all the resources necessary. The
+	// status type ensures we output the status to be saved to the resource.
+	markerVal := markerValue(r.name)
+	outputs, err := argmapper.NewValueSet([]argmapper.Value{
+		markerVal,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// For input, we have to remove the status response type because
+	// we don't need it to call the func we build below because we'll
+	// construct it within the buildfunc call.
+	inputVals := original.Input().Values()
+	for i := 0; i < len(inputVals); i++ {
+		v := inputVals[i]
+		if v.Type != statusResponseType {
+			continue
+		}
+
+		// the type IS our status response type, we need to remove it. We do
+		// this by swapping with the last element (order doesn't matter)
+		// and decrementing i so we reloop over this value.
+		inputVals[len(inputVals)-1], inputVals[i] = inputVals[i], inputVals[len(inputVals)-1]
+		inputVals = inputVals[:len(inputVals)-1]
+		i--
+	}
+	inputs, err := argmapper.NewValueSet(inputVals)
+	if err != nil {
+		return nil, err
+	}
+
+	return argmapper.BuildFunc(inputs, outputs, func(in, out *argmapper.ValueSet) error {
+		args := in.Args()
+		if r.statusFunc != nil {
+			r.statusResp = &StatusResponse{}
+		}
+		args = append(args, argmapper.Typed(r.statusResp))
+
+		// Ensure our output marker type is set
+		if v := out.TypedSubtype(markerVal.Type, markerVal.Subtype); v != nil {
+			v.Value = markerVal.Value
+		}
+
+		// Call our function. We throw away any result types except for the
+		// error.
 		result := original.Call(args...)
 		return result.Err()
 	}, argmapper.FuncOnce())
@@ -342,9 +455,10 @@ func (r *Resource) mapperForDestroy(deps []string) (*argmapper.Func, error) {
 		result := original.Call(args...)
 		err := result.Err()
 
-		// If the destroy was successful, we clear our state.
+		// If the destroy was successful, we clear our state and status
 		if err == nil {
 			r.initState(false)
+			r.statusResp = nil
 		}
 
 		return err
@@ -495,6 +609,10 @@ func WithCategoryDisplayHint(categoryDisplayHint pb.ResourceCategoryDisplayHint)
 	return func(r *Resource) { r.categoryDisplayHint = categoryDisplayHint }
 }
 
+func WithStatus(f interface{}) ResourceOption {
+	return func(r *Resource) { r.statusFunc = f }
+}
+
 // markerValue returns a argmapper.Value that is unique to this resource.
 // This is used by the resource manager to ensure that all resource
 // lifecycle functions are called.
@@ -513,3 +631,5 @@ func markerValue(n string) argmapper.Value {
 		Value:   reflect.ValueOf(val),
 	}
 }
+
+var statusResponseType = reflect.TypeOf((*StatusResponse)(nil))

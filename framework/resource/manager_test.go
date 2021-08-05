@@ -3,13 +3,22 @@ package resource
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"sort"
+	"strconv"
 	"testing"
 
+	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 	"github.com/stretchr/testify/require"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
-	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
-	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+)
+
+// types used for multiple resources
+type (
+	testState2 testState
+	testState3 testState
 )
 
 func TestManagerCreateAll(t *testing.T) {
@@ -298,3 +307,154 @@ func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
 	// Ensure we destroyed
 	require.Equal([]string{"B"}, destroyOrder)
 }
+
+// TestStatus_Manager tests the Manager's ability to call resource status
+// methods and present them for creating a report
+func TestStatus_Manager(t *testing.T) {
+	require := require.New(t)
+
+	init := func() *Manager {
+		return NewManager(
+			// state with status
+			WithResource(NewResource(
+				WithName("A"),
+				WithState(&testState{}),
+				WithCreate(func(s *testState, v int) error {
+					s.Value = v
+					return nil
+				}),
+				WithStatus(func(s *testState, sr *StatusResponse) error {
+					rr := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value),
+					}
+					sr.Resources = append(sr.Resources, rr)
+					return nil
+				}),
+			)),
+
+			// no state, with status
+			WithResource(NewResource(
+				WithName("B"),
+				WithCreate(func(s *testState) error {
+					// no-op
+					return nil
+				}),
+				WithStatus(func(sr *StatusResponse) error {
+					rr := &pb.StatusReport_Resource{
+						Name: "no state here",
+					}
+					sr.Resources = append(sr.Resources, rr)
+					return nil
+				}),
+			)),
+			// state and multiple status reports
+			WithResource(NewResource(
+				WithName("C"),
+				WithState(&testState2{}),
+				WithCreate(func(s *testState2, vs string) error {
+					v, _ := strconv.Atoi(vs)
+					s.Value = v
+					return nil
+				}),
+				WithStatus(func(s *testState2, sr *StatusResponse) error {
+					rr := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value),
+					}
+					// make sure we can return more than 1 StatusReport_Resource
+					// in a single Resource Status method
+					rr2 := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value+1),
+					}
+					sr.Resources = append(sr.Resources, rr, rr2)
+					return nil
+				}),
+			)),
+			// state, no status
+			WithResource(NewResource(
+				WithName("D"),
+				WithState(&testState3{}),
+				WithCreate(func(s *testState3) error {
+					s.Value = 0
+					return nil
+				}),
+			)),
+		)
+	}
+
+	// Create
+	m := init()
+	require.NoError(m.CreateAll(42, "13"))
+
+	reports, err := m.StatusAll()
+	require.NoError(err)
+
+	require.Len(reports, 4)
+	sort.Sort(byName(reports))
+
+	require.Equal("no state here", reports[0].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 13), reports[1].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 14), reports[2].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 42), reports[3].Name)
+
+	// Destroy
+	require.NoError(m.DestroyAll())
+}
+
+// TestStatus_Manager_LoopRepro is a regression test for a loop discovered while
+// implementing StatusAll involving using Resource Manager with a single
+// Resource that reports a status.
+// See https://github.com/hashicorp/waypoint-plugin-sdk/pull/43 for additional
+// background.
+func TestStatus_Manager_LoopRepro(t *testing.T) {
+	require := require.New(t)
+
+	init := func() *Manager {
+		return NewManager(
+			WithResource(NewResource(
+				WithName("C"),
+				WithState(&testState{}),
+				WithCreate(func(s *testState, vs string) error {
+					v, _ := strconv.Atoi(vs)
+					s.Value = v
+					return nil
+				}),
+				WithStatus(func(s *testState, sr *StatusResponse) error {
+					rr := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value),
+					}
+					// make sure we can return more than 1 StatusReport_Resource
+					// in a single Resource Status method
+					rr2 := &pb.StatusReport_Resource{
+						Name: fmt.Sprintf(statusNameTpl, s.Value+1),
+					}
+					sr.Resources = append(sr.Resources, rr, rr2)
+					return nil
+				}),
+			)),
+		)
+	}
+
+	// Create
+	m := init()
+	require.NoError(m.CreateAll(42, "13"))
+
+	reports, err := m.StatusAll()
+	require.NoError(err)
+
+	require.Len(reports, 2)
+	sort.Sort(byName(reports))
+
+	require.Equal(fmt.Sprintf(statusNameTpl, 13), reports[0].Name)
+	require.Equal(fmt.Sprintf(statusNameTpl, 14), reports[1].Name)
+
+	// Destroy
+	require.NoError(m.DestroyAll())
+}
+
+// byName implements sort.Interface for sorting the results from calling
+// Status(), to ensure ordering when validating the tests
+type byName []*pb.StatusReport_Resource
+
+func (a byName) Len() int           { return len(a) }
+func (a byName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a byName) Less(i, j int) bool { return a[i].Name < a[j].Name }

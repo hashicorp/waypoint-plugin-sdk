@@ -1,10 +1,14 @@
 package resource
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/testproto"
+
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 
@@ -119,8 +123,6 @@ type testState struct {
 	Value int
 }
 
-type testState2 testState
-
 func TestResource_DeclaredResource(t *testing.T) {
 	require := require.New(t)
 
@@ -145,4 +147,57 @@ func TestResource_DeclaredResource(t *testing.T) {
 	require.Equal(dr.CategoryDisplayHint, testResource.categoryDisplayHint)
 	require.NotEmpty(dr.StateJson)
 	require.True(dr.State.MessageIs(testResource.State().(proto.Message)))
+}
+
+var (
+	statusNameTpl    = "status-%d"
+	healthMessageTpl = "alive-%d"
+)
+
+func TestStatus_Resource(t *testing.T) {
+	require := require.New(t)
+
+	r := NewResource(
+		WithName("test"),
+		WithState(&testState{}),
+		WithCreate(func(state *testState, v int) error {
+			state.Value = v
+			return nil
+		}),
+		WithStatus(func(state *testState, sr *StatusResponse) error {
+			rr := &pb.StatusReport_Resource{
+				Name:          fmt.Sprintf(statusNameTpl, state.Value),
+				Health:        pb.StatusReport_ALIVE,
+				HealthMessage: fmt.Sprintf(healthMessageTpl, state.Value),
+			}
+			sr.Resources = append(sr.Resources, rr)
+			return nil
+		}),
+		WithDestroy(func(state *testState) error {
+			return nil
+		}),
+	)
+
+	// Create
+	require.NoError(r.Create(int(42)))
+
+	// Ensure we were called with the proper value
+	state := r.State().(*testState)
+
+	// Call status manually
+	require.Nil(r.statusResp)
+	require.NoError(r.status(state, &StatusResponse{}))
+	require.NotNil(r.statusResp)
+
+	require.Equal(fmt.Sprintf(statusNameTpl, state.Value), r.statusResp.Resources[0].Name)
+	require.Equal(pb.StatusReport_ALIVE, r.statusResp.Resources[0].Health)
+	require.Equal(fmt.Sprintf(healthMessageTpl, state.Value), r.statusResp.Resources[0].HealthMessage)
+
+	// Destroy
+	require.NoError(r.Destroy())
+	require.Nil(r.State())
+	require.Nil(r.State().(*testState))
+
+	// make sure status is cleared after destroy
+	require.Nil(r.statusResp)
 }
