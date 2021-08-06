@@ -856,6 +856,9 @@ message Release {
 
     // template data for the release
     bytes template_data = 3;
+
+    // an array of declared resources that make up the release
+    DeclaredResources declared_resources = 4;
   }
 }
 
