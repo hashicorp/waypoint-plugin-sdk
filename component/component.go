@@ -344,7 +344,7 @@ func (d *DeclaredResources) ByName(name string) (*proto.DeclaredResource, error)
 // that the struct should not be included in a grpc advertised dynamic function spec, because
 // it will be injected on the plugin side, not supplied from core over GRPC.
 type OutParameter interface {
-	IsOutParameter()
+	isOutParameter()
 }
 
 // DeclaredResourcesResp is a component used as a vehicle for plugins to communicate
@@ -358,4 +358,4 @@ type DeclaredResourcesResp struct {
 
 // IsOutParameter causes DeclaredResourcesResp to implement the OutParameter interface, which
 // will prevent it from being added as an arg to any plugin advertised dynamic function spec.
-func (d *DeclaredResourcesResp) IsOutParameter() {}
+func (d *DeclaredResourcesResp) isOutParameter() {}
