@@ -66,6 +66,7 @@ func NewResource(opts ...ResourceOption) *Resource {
 		opt(&r)
 	}
 
+	// Default resource type to the name, if not specified
 	if r.resourceType == "" {
 		r.resourceType = r.name
 	}
@@ -543,13 +544,14 @@ type ResourceOption func(*Resource)
 
 // WithName sets the resource name. This name is used in output meant to be
 // consumed by a user so it should be descriptive but short, such as
-// "security group". It must be unique among resources you create.
+// "security group" or "app container". It must be unique among resources you create.
 func WithName(n string) ResourceOption {
 	return func(r *Resource) { r.name = n }
 }
 
-// WithType sets the type of the resource according to the platform.
-// Example types include container, instance, autoscaling group, pod, etc.
+// WithType optionally sets the type of the resource according to the platform.
+// E.g. "container", "instance", "autoscaling group", "pod", etc.
+// If not specified, type will default to the resource's name.
 // Multiple resources may share the same type, and generally one resource
 // will have a type that matches the DeclaredResource corresponding to this resource.
 func WithType(t string) ResourceOption {
