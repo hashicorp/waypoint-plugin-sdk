@@ -34,6 +34,7 @@ type createState struct {
 // in the case of an error and properly cleaning them up.
 type Resource struct {
 	name                string
+	resourceType        string
 	stateType           reflect.Type
 	stateValue          interface{}
 	createFunc          interface{}
@@ -63,6 +64,11 @@ func NewResource(opts ...ResourceOption) *Resource {
 	var r Resource
 	for _, opt := range opts {
 		opt(&r)
+	}
+
+	// Default resource type to the name, if not specified
+	if r.resourceType == "" {
+		r.resourceType = r.name
 	}
 
 	return &r
@@ -177,14 +183,9 @@ func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
 		return nil, fmt.Errorf("state for resource is not serializable to protobuf: %w", err)
 	}
 
-	id, err := component.Id()
-	if err != nil {
-		return nil, err
-	}
-
 	return &pb.DeclaredResource{
-		Id:                  id,
 		Name:                r.name,
+		Type:                r.resourceType,
 		Platform:            r.platform,
 		CategoryDisplayHint: r.categoryDisplayHint,
 		State:               stateProtoAny,
@@ -543,9 +544,18 @@ type ResourceOption func(*Resource)
 
 // WithName sets the resource name. This name is used in output meant to be
 // consumed by a user so it should be descriptive but short, such as
-// "security group".
+// "security group" or "app container". It must be unique among resources you create.
 func WithName(n string) ResourceOption {
 	return func(r *Resource) { r.name = n }
+}
+
+// WithType optionally sets the type of the resource according to the platform.
+// E.g. "container", "instance", "autoscaling group", "pod", etc.
+// If not specified, type will default to the resource's name.
+// Multiple resources may share the same type, and generally one resource
+// will have a type that matches the DeclaredResource corresponding to this resource.
+func WithType(t string) ResourceOption {
+	return func(r *Resource) { r.resourceType = t }
 }
 
 // WithCreate sets the creation function for this resource.

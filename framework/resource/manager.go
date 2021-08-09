@@ -389,6 +389,10 @@ func (m *Manager) StatusAll(args ...interface{}) ([]*pb.StatusReport_Resource, e
 	var reports []*pb.StatusReport_Resource
 	for _, r := range m.resources {
 		if st := r.Status(); st != nil {
+			// Fill in the declared resource ref for each resource the plugin made.
+			for _, stResource := range st.Resources {
+				stResource.DeclaredResource = &pb.Ref_DeclaredResource{Name: r.name}
+			}
 			reports = append(reports, st.Resources...)
 		}
 	}
@@ -435,6 +439,9 @@ func WithResource(r *Resource) ManagerOption {
 			name, _ = component.Id()
 		}
 
+		// Note(izaak): If multiple resources have the same name, all but one
+		// will be overwritten. We could enforce uniqueness here, but we'd have
+		// to introduce an error return.
 		m.resources[name] = r
 	}
 }

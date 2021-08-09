@@ -102,6 +102,7 @@ func TestManagerCreateAll(t *testing.T) {
 		expectedStateJson, _ := json.Marshal(expectedState)
 		expectedDr := pb.DeclaredResource{
 			Name:                "A",
+			Type:                "T",
 			Platform:            "test",
 			CategoryDisplayHint: pb.ResourceCategoryDisplayHint_OTHER,
 			StateJson:           string(expectedStateJson),
@@ -112,6 +113,7 @@ func TestManagerCreateAll(t *testing.T) {
 			WithDeclaredResourcesResp(&dcr),
 			WithResource(NewResource(
 				WithName(expectedDr.Name),
+				WithType(expectedDr.Type),
 				WithCreate(func(state *State) error {
 					state.InternalId = expectedState.InternalId
 					return nil
@@ -130,8 +132,9 @@ func TestManagerCreateAll(t *testing.T) {
 		require.NotEmpty(dcr.DeclaredResources)
 		declaredResource := dcr.DeclaredResources[0]
 
-		require.NotEmpty(declaredResource.Id)
+		require.NotEmpty(declaredResource.Name)
 		require.Equal(declaredResource.Name, expectedDr.Name)
+		require.Equal(declaredResource.Type, expectedDr.Type)
 		require.Equal(declaredResource.StateJson, expectedDr.StateJson)
 		require.Equal(declaredResource.CategoryDisplayHint, expectedDr.CategoryDisplayHint)
 	})

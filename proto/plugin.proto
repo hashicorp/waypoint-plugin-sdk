@@ -332,7 +332,8 @@ message Ref {
 
   // DeclaredResource references a declared resource.
   message DeclaredResource {
-    string id = 1;
+    // Unique name of the declared resource.
+    string name = 1;
   }
 }
 
@@ -366,7 +367,10 @@ message StatusReport {
     // The id of the resource, according to the platform.
     string id = 4;
 
-    // declared resource that this directly references.
+    // The declared resource that this resource was created from. I.e. a plugin may have
+    // an autoscaling group declared resource, and a status report may find an autoscaling group
+    // resource and multiple instance resources that all reference the original ASG declared resource.
+    // This field is set automatically by the resource manager framework.
     Ref.DeclaredResource declared_resource = 5;
 
     // Resources that created this resource.
@@ -406,6 +410,7 @@ message StatusReport {
     ALIVE = 1;
     READY = 2;
     DOWN = 3;
+    MISSING = 5; // We're expecting it to exist, but it does not.
     PARTIAL = 4; // Some resources in deployment are OK, others are not OK
   }
 }
@@ -739,11 +744,11 @@ message Deploy {
 
 // A platform resource that an operation (release/deployment) has created, depends on, or manages.
 message DeclaredResource {
-  // The id of the declared resource. Automatically generated
-  string id = 6;
-
-  // platform-specific name of the resource type. i.e. instance, pod, auto-scaling group, etc
+  // Unique name name for the resource. Usually derived from the platform. Required.
   string name = 1;
+
+  // platform-specific type of the resource type. i.e. instance, pod, auto-scaling group, etc
+  string type = 6;
 
   // The platform on which the resource should exist, i.e. docker, gcp, k8s, etc.
   string platform = 2;

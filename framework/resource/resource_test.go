@@ -127,8 +127,9 @@ func TestResource_DeclaredResource(t *testing.T) {
 	require := require.New(t)
 
 	testResource := &Resource{
-		name:      "test resource",
-		stateType: reflect.TypeOf(&testproto.Data{}),
+		name:         "test resource A",
+		resourceType: "testresource",
+		stateType:    reflect.TypeOf(&testproto.Data{}),
 		stateValue: &testproto.Data{
 			Value:  "val",
 			Number: 1,
@@ -143,6 +144,7 @@ func TestResource_DeclaredResource(t *testing.T) {
 	require.Nil(err)
 
 	require.Equal(dr.Name, testResource.name)
+	require.Equal(dr.Type, testResource.resourceType)
 	require.Equal(dr.Platform, testResource.platform)
 	require.Equal(dr.CategoryDisplayHint, testResource.categoryDisplayHint)
 	require.NotEmpty(dr.StateJson)
