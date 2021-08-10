@@ -358,11 +358,8 @@ func TestManagerDestroyAll_loadState(t *testing.T) {
 	// Destroy
 	require.NoError(m.DestroyAll())
 
-	// Destroy order is non-deterministic for this case, so sort
-	sort.Strings(destroyOrder)
-
 	// Ensure we destroyed
-	require.Equal([]string{"A", "B"}, destroyOrder)
+	require.Equal([]string{"B", "A"}, destroyOrder)
 	require.Equal(destroyState, int32(42))
 }
 
