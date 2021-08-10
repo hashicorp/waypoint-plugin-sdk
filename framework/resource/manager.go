@@ -245,8 +245,29 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 
 	cs := m.createState
 	if cs == nil || len(cs.Order) == 0 {
-		// We have no creation that was ever done so we have nothing to destroy.
-		return nil
+		// If we have no creation order, then we fall back to checking
+		// manually for state set on each resource. Note this has a huge
+		// limitation in that our Order is probably wrong. For the case we're
+		// implementing this for, the order doesn't matter so this works,
+		// and hopefully by the time ordering matters everything is swapped
+		// over to the resource manager.
+		for n, r := range m.resources {
+			if r.State() == nil {
+				continue
+			}
+
+			// We have state, so we want to destroy this.
+			if cs == nil {
+				cs = &createState{}
+			}
+
+			cs.Order = append(cs.Order, n)
+		}
+
+		// Still empty? Then we do nothing
+		if cs == nil || len(cs.Order) == 0 {
+			return nil
+		}
 	}
 
 	var finalInputs []argmapper.Value

@@ -311,6 +311,58 @@ func TestManagerDestroyAll_noDestroyFunc(t *testing.T) {
 	require.Equal([]string{"B"}, destroyOrder)
 }
 
+func TestManagerDestroyAll_loadState(t *testing.T) {
+	require := require.New(t)
+
+	// init is a function so that we can reinitialize an empty manager
+	// for this test to test loading state
+	var destroyOrder []string
+	var destroyState int32
+	init := func() *Manager {
+		return NewManager(
+			WithResource(NewResource(
+				WithName("A"),
+				WithState(&testproto.Data{}),
+				WithCreate(func(s *testproto.Data, v int32) error {
+					s.Number = v
+					return nil
+				}),
+				WithDestroy(func(s *testproto.Data) error {
+					destroyOrder = append(destroyOrder, "A")
+					destroyState = s.Number
+					return nil
+				}),
+			)),
+
+			WithResource(NewResource(
+				WithName("B"),
+				WithState(&testState{}),
+				WithCreate(func(s *testproto.Data) error {
+					return nil
+				}),
+				WithDestroy(func() error {
+					destroyOrder = append(destroyOrder, "B")
+					return nil
+				}),
+			)),
+		)
+	}
+
+	// Create manager
+	m := init()
+
+	// Manually set some destroy state
+	require.NoError(m.Resource("A").SetState(&testproto.Data{Number: 42}))
+	require.NoError(m.Resource("B").SetState(&testState{}))
+
+	// Destroy
+	require.NoError(m.DestroyAll())
+
+	// Ensure we destroyed
+	require.Equal([]string{"B", "A"}, destroyOrder)
+	require.Equal(destroyState, int32(42))
+}
+
 // TestStatus_Manager tests the Manager's ability to call resource status
 // methods and present them for creating a report
 func TestStatus_Manager(t *testing.T) {
