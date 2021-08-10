@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sync/atomic"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
@@ -37,6 +38,7 @@ type Resource struct {
 	resourceType        string
 	stateType           reflect.Type
 	stateValue          interface{}
+	setStateClock       uint32
 	createFunc          interface{}
 	destroyFunc         interface{}
 	platform            string
@@ -108,6 +110,11 @@ func (r *Resource) State() interface{} {
 // However, this function is particularly useful to transition to using the
 // resource manager from a previous version that didn't use the resource manager.
 //
+// When calling Manager.DestroyAll after manually setting state using SetState,
+// the Manager will destroy the resources in the opposite order SetState is called.
+// To put it another way: try to call SetState on resources in the order they
+// were created, since DestroyAll destroys in reverse creation order.
+//
 // The value v must be the same type as the type given for WithState.
 func (r *Resource) SetState(v interface{}) error {
 	if reflect.TypeOf(v) != r.stateType {
@@ -116,6 +123,7 @@ func (r *Resource) SetState(v interface{}) error {
 	}
 
 	r.stateValue = v
+	r.setStateClock = atomic.AddUint32(&setStateCallOrder, 1)
 	return nil
 }
 
@@ -643,3 +651,9 @@ func markerValue(n string) argmapper.Value {
 }
 
 var statusResponseType = reflect.TypeOf((*StatusResponse)(nil))
+
+// setStateCallOrder is a weird global that is only used to construct an
+// ordering for destroy when Resource.SetState is manually called. See the
+// docs on SetState for more info. We expect this is a legacy thing hence
+// its a bit hacky, but over time we can probably remove it.
+var setStateCallOrder uint32

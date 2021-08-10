@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
@@ -245,6 +246,7 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 
 	cs := m.createState
 	if cs == nil || len(cs.Order) == 0 {
+
 		// If we have no creation order, then we fall back to checking
 		// manually for state set on each resource. Note this has a huge
 		// limitation in that our Order is probably wrong. For the case we're
@@ -268,6 +270,14 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 		if cs == nil || len(cs.Order) == 0 {
 			return nil
 		}
+
+		// We need to sort the order by the setStateClocks on the resources
+		// since for the manual case, we expect users to call SetState in creation
+		// order.
+		sort.Slice(cs.Order, func(i, j int) bool {
+			ir, jr := m.resources[cs.Order[i]], m.resources[cs.Order[j]]
+			return ir.setStateClock < jr.setStateClock
+		})
 	}
 
 	var finalInputs []argmapper.Value
