@@ -101,6 +101,39 @@ func (m *Manager) LoadState(v *any.Any) error {
 	return nil
 }
 
+// SetManualDestroyOrder sets the destroy order (by resource name) manually.
+// Usually, this order is automatically determined to be the reverse of the
+// creation order. However, you may want to manually override this.
+//
+// The most common use case for this is to set the manual destroy order for
+// legacy non-resource-manager resources when using Resource.SetState directly.
+// If this isn't called in that scenario, destroy order is non-deterministic.
+//
+// It is very rare that this is used.
+//
+// This must be called AFTER LoadState (if LoadState) is used. LoadState will
+// overwrite these values if it is called after this call.
+func (m *Manager) SetManualDestroyOrder(ns ...string) error {
+	if m.createState == nil {
+		m.createState = &createState{}
+	}
+
+	for _, n := range ns {
+		if _, ok := m.resources[n]; !ok {
+			return fmt.Errorf("resource name %q not defined", n)
+		}
+	}
+
+	// We need to reverse since we expect the order in our state to be
+	// creation order.
+	for i, j := 0, len(ns)-1; i < j; i, j = i+1, j-1 {
+		ns[i], ns[j] = ns[j], ns[i]
+	}
+
+	m.createState.Order = ns
+	return nil
+}
+
 // State returns the serialized state for this manager and all the resources
 // that are part of this manager. This is a `google.protobuf.Any` type and
 // plugin authors are expected to serialize this type directly into their
