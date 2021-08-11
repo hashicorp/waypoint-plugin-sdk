@@ -65,7 +65,7 @@ func TestFunc(t *testing.T) {
 
 		// We should have an error
 		require.Error(result.Err())
-		require.Contains(result.Err().Error(), "argument cannot")
+		require.IsType(result.Err(), &argmapper.ErrArgumentUnsatisfied{})
 	})
 
 	t.Run("match callback output if no results", func(t *testing.T) {
