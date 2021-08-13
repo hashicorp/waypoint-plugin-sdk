@@ -384,7 +384,7 @@ func healthSummary(resources []*pb.StatusReport_Resource) (
 	// We want to generate healths in a deterministic order. To do that,
 	// we need to pull out the map keys, sort them, and access by those in order.
 	var distinctHealths []int
-	for k, _ := range countByHealthByResourceType {
+	for k := range countByHealthByResourceType {
 		distinctHealths = append(distinctHealths, k)
 	}
 
@@ -402,7 +402,7 @@ func healthSummary(resources []*pb.StatusReport_Resource) (
 		countByResourceType := countByHealthByResourceType[healthStatus]
 
 		var distinctResourceTypes []string
-		for k, _ := range countByResourceType {
+		for k := range countByResourceType {
 			distinctResourceTypes = append(distinctResourceTypes, k)
 		}
 		sort.Strings(distinctResourceTypes)
