@@ -3,11 +3,13 @@ package resource
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-multierror"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -352,6 +354,100 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	}
 
 	return result.Err()
+}
+
+// healthSummary figures out what the overall health and message should be for a given set of resources.
+// If all resources return the same health, the overall health will be that health. If resources
+// return different healths, the overall health will be PARTIAL, and the health message
+// will give more details.
+func healthSummary(resources []*pb.StatusReport_Resource) (
+	overallHealth pb.StatusReport_Health, overallHealthMessage string, err error,
+) {
+	if len(resources) == 0 {
+		return overallHealth, overallHealthMessage, fmt.Errorf("cannot evaluate health summary - no resources provided")
+	}
+
+	// count healths by overall health, then by resource type
+	// Key health type by int so we can sort by the order the types are defined in the protobuf definition
+	countByHealthByResourceType := make(map[int]map[string]int)
+	for _, r := range resources {
+		if r == nil {
+			return overallHealth, overallHealthMessage, fmt.Errorf("cannot evaluate health summary with a nil resource")
+		}
+		if _, ok := countByHealthByResourceType[int(r.Health)]; !ok {
+			countByHealthByResourceType[int(r.Health)] = make(map[string]int)
+		}
+		healthsByResource := countByHealthByResourceType[int(r.Health)]
+		healthsByResource[r.Type]++
+	}
+
+	// We want to generate healths in a deterministic order. To do that,
+	// we need to pull out the map keys, sort them, and access by those in order.
+	var distinctHealths []int
+	for k, _ := range countByHealthByResourceType {
+		distinctHealths = append(distinctHealths, k)
+	}
+
+	if len(distinctHealths) == 1 {
+		return pb.StatusReport_Health(distinctHealths[0]),
+			fmt.Sprintf("All %d resources are reporting %s", len(resources), pb.StatusReport_Health_name[int32(distinctHealths[0])]),
+			nil
+	}
+
+	// We have more than one distinct health type, we have some kind of partial status
+	overallHealth = pb.StatusReport_PARTIAL
+
+	sort.Ints(distinctHealths)
+	for _, healthStatus := range distinctHealths {
+		countByResourceType := countByHealthByResourceType[healthStatus]
+
+		var distinctResourceTypes []string
+		for k, _ := range countByResourceType {
+			distinctResourceTypes = append(distinctResourceTypes, k)
+		}
+		sort.Strings(distinctResourceTypes)
+
+		for _, resourceType := range distinctResourceTypes {
+			count := countByResourceType[resourceType]
+			overallHealthMessage = overallHealthMessage + fmt.Sprintf("%d %s %s, ", count, resourceType, pb.StatusReport_Health_name[int32(healthStatus)])
+		}
+	}
+	overallHealthMessage = strings.TrimSuffix(overallHealthMessage, ", ")
+
+	return overallHealth, overallHealthMessage, nil
+}
+
+// StatusReport generates a report by invoking the statusFunc method of all resources under management,
+// using those statuses to determine an overall composite health, and returns it within a
+// status report.
+// If all resources return the same health, the overall health will be that health. If resources
+// return different healths, the overall health will be PARTIAL, and the health message
+// will give more details.
+// If your plugin wishes to use a different algorithm for determining overall health, you may
+// modify this report before returning from your status function.
+func (m *Manager) StatusReport(args ...interface{}) (*pb.StatusReport, error) {
+	if err := m.Validate(); err != nil {
+		return nil, err
+	}
+
+	resources, err := m.StatusAll(args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed generating resource statuses: %s", err)
+	}
+
+	// Determine overall health based on these resources
+	health, healthMessage, err := healthSummary(resources)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.StatusReport{
+		External:      true,
+		GeneratedTime: timestamppb.Now(),
+		Resources:     resources,
+		Health:        health,
+		HealthMessage: healthMessage,
+	}, nil
 }
 
 // StatusAll invokes the statusFunc method of all the resources under management.

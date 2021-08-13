@@ -388,6 +388,26 @@ func (r *Resource) mapperForStatus() (*argmapper.Func, error) {
 		// Call our function. We throw away any result types except for the
 		// error.
 		result := original.Call(args...)
+
+		// Fill in default values where we can
+		if r.statusResp != nil {
+			for _, resource := range r.statusResp.Resources {
+				if resource == nil {
+					continue
+				}
+				// Default values to the parent resource type where possible
+				if resource.Name == "" {
+					resource.Name = r.name
+				}
+				if resource.Type == "" {
+					resource.Type = r.resourceType
+				}
+				if resource.Platform == "" {
+					resource.Platform = r.platform
+				}
+			}
+		}
+
 		return result.Err()
 	}, argmapper.FuncOnce())
 }

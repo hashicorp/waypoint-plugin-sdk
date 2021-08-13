@@ -3142,10 +3142,13 @@ type StatusReport_Resource struct {
 	// Resources that created this resource.
 	ParentResourceId string `protobuf:"bytes,6,opt,name=parent_resource_id,json=parentResourceId,proto3" json:"parent_resource_id,omitempty"`
 	// Friendly name of the resource, if applicable
+	// If using resource manager, this will default to the name of the resource manager resource
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The platform on which the resource exists.
+	// If using resource manager, this will default to the platform of the resource manager resource
 	Platform string `protobuf:"bytes,7,opt,name=platform,proto3" json:"platform,omitempty"`
 	// platform-specific name of the resource type. i.e. instance, pod, auto-scaling group, etc
+	// If using resource manager, this will default to the type of the resource manager resource
 	Type string `protobuf:"bytes,8,opt,name=type,proto3" json:"type,omitempty"`
 	// A link directly to the resource in the platform, if applicable.
 	PlatformUrl string `protobuf:"bytes,9,opt,name=platform_url,json=platformUrl,proto3" json:"platform_url,omitempty"`
