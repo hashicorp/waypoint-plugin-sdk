@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
-	"github.com/ryboe/q"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -189,8 +188,6 @@ func (c *registryClient) access(
 	if err != nil {
 		return nil, err
 	}
-
-	q.Q(resp.Result)
 
 	return &plugincomponent.AccessInfo{Any: resp.Result}, nil
 }
