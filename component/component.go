@@ -71,10 +71,14 @@ type Builder interface {
 	BuildFunc() interface{}
 }
 
-// Builder is responsible for building an artifact from source.
+// BuilderODR is an optional interface that builder type plugins can implement.
+// If the plugin is running in an ondemand runner context, then this function will
+// be called to perform the build, if the inerface is implemented. If the plugin does
+// not define this interface, then BuildFunc will be used for all contexts.
 type BuilderODR interface {
-	// BuildFunc should return the method handle for the "build" operation.
-	// The build function has access to a *Source and should return an Artifact.
+	// BuildODRFunc should return the method handle for the "build" operation that
+	// occurs in the context of an ondemand runner (meaning the job has it's own container
+	// environment that it can solely use).
 	BuildODRFunc() interface{}
 }
 
