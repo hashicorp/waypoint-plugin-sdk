@@ -377,12 +377,15 @@ message StatusReport {
     string parent_resource_id = 6;
 
     // Friendly name of the resource, if applicable
+    // If using resource manager, this will default to the name of the resource manager resource
     string name = 1;
 
     // The platform on which the resource exists.
+    // If using resource manager, this will default to the platform of the resource manager resource
     string platform = 7;
 
     // platform-specific name of the resource type. i.e. instance, pod, auto-scaling group, etc
+    // If using resource manager, this will default to the type of the resource manager resource
     string type = 8;
 
     // A link directly to the resource in the platform, if applicable.

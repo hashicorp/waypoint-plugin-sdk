@@ -380,7 +380,8 @@ func TestStatus_Manager(t *testing.T) {
 				}),
 				WithStatus(func(s *testState, sr *StatusResponse) error {
 					rr := &pb.StatusReport_Resource{
-						Name: fmt.Sprintf(statusNameTpl, s.Value),
+						Name:   fmt.Sprintf(statusNameTpl, s.Value),
+						Health: pb.StatusReport_READY,
 					}
 					sr.Resources = append(sr.Resources, rr)
 					return nil
@@ -396,7 +397,8 @@ func TestStatus_Manager(t *testing.T) {
 				}),
 				WithStatus(func(sr *StatusResponse) error {
 					rr := &pb.StatusReport_Resource{
-						Name: "no state here",
+						Name:   "no state here",
+						Health: pb.StatusReport_DOWN,
 					}
 					sr.Resources = append(sr.Resources, rr)
 					return nil
@@ -413,12 +415,14 @@ func TestStatus_Manager(t *testing.T) {
 				}),
 				WithStatus(func(s *testState2, sr *StatusResponse) error {
 					rr := &pb.StatusReport_Resource{
-						Name: fmt.Sprintf(statusNameTpl, s.Value),
+						Name:   fmt.Sprintf(statusNameTpl, s.Value),
+						Health: pb.StatusReport_ALIVE,
 					}
 					// make sure we can return more than 1 StatusReport_Resource
 					// in a single Resource Status method
 					rr2 := &pb.StatusReport_Resource{
-						Name: fmt.Sprintf(statusNameTpl, s.Value+1),
+						Name:   fmt.Sprintf(statusNameTpl, s.Value+1),
+						Health: pb.StatusReport_ALIVE,
 					}
 					sr.Resources = append(sr.Resources, rr, rr2)
 					return nil
@@ -440,6 +444,7 @@ func TestStatus_Manager(t *testing.T) {
 	m := init()
 	require.NoError(m.CreateAll(42, "13"))
 
+	// Get status for each resource
 	reports, err := m.StatusAll()
 	require.NoError(err)
 
@@ -450,6 +455,16 @@ func TestStatus_Manager(t *testing.T) {
 	require.Equal(fmt.Sprintf(statusNameTpl, 13), reports[1].Name)
 	require.Equal(fmt.Sprintf(statusNameTpl, 14), reports[2].Name)
 	require.Equal(fmt.Sprintf(statusNameTpl, 42), reports[3].Name)
+
+	// Generate overall status report
+	statusReport, err := m.StatusReport()
+	require.NoError(err)
+	require.NotNil(statusReport)
+
+	require.True(statusReport.External)
+	require.NotNil(statusReport.GeneratedTime)
+	require.Equal(statusReport.Health, pb.StatusReport_PARTIAL)
+	require.Equal(statusReport.HealthMessage, "2 C ALIVE, 1 A READY, 1 B DOWN")
 
 	// Destroy
 	require.NoError(m.DestroyAll())
@@ -504,6 +519,76 @@ func TestStatus_Manager_LoopRepro(t *testing.T) {
 
 	// Destroy
 	require.NoError(m.DestroyAll())
+}
+
+func Test_healthSummary(t *testing.T) {
+	tests := []struct {
+		name                     string
+		resources                []*pb.StatusReport_Resource
+		wantOverallHealth        pb.StatusReport_Health
+		wantOverallHealthMessage string
+		wantErr                  bool
+	}{
+		{
+			name: "All resources have same health",
+			resources: []*pb.StatusReport_Resource{
+				{
+					Health: pb.StatusReport_READY,
+					Type:   "network",
+				},
+				{
+					Health: pb.StatusReport_READY,
+					Type:   "container",
+				},
+			},
+			wantOverallHealth:        pb.StatusReport_READY,
+			wantOverallHealthMessage: "All 2 resources are reporting READY",
+			wantErr:                  false,
+		},
+		{
+			name: "Resources have different healths",
+			resources: []*pb.StatusReport_Resource{
+				{
+					Health: pb.StatusReport_READY,
+					Type:   "deployment",
+				},
+				{
+					Health: pb.StatusReport_READY,
+					Type:   "pod",
+				},
+				{
+					Health: pb.StatusReport_READY,
+					Type:   "pod",
+				},
+				{
+					Health: pb.StatusReport_DOWN,
+					Type:   "pod",
+				},
+			},
+			wantOverallHealth:        pb.StatusReport_PARTIAL,
+			wantOverallHealthMessage: "1 deployment READY, 2 pod READY, 1 pod DOWN",
+		},
+		{
+			name:      "fails given no resources",
+			resources: []*pb.StatusReport_Resource{},
+			wantErr:   true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotOverallHealth, gotOverallHealthMessage, err := healthSummary(tt.resources)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("healthSummary() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotOverallHealth != tt.wantOverallHealth {
+				t.Errorf("healthSummary() gotOverallHealth = %v, want %v", gotOverallHealth, tt.wantOverallHealth)
+			}
+			if gotOverallHealthMessage != tt.wantOverallHealthMessage {
+				t.Errorf("healthSummary() gotOverallHealthMessage = %v, want %v", gotOverallHealthMessage, tt.wantOverallHealthMessage)
+			}
+		})
+	}
 }
 
 // byName implements sort.Interface for sorting the results from calling
