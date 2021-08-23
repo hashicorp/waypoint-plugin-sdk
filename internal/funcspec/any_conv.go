@@ -47,3 +47,41 @@ func anyConvGen(v argmapper.Value) (*argmapper.Func, error) {
 		return nil
 	})
 }
+
+type protoToAny interface {
+	Proto() *any.Any
+}
+
+func fromConvGen(v argmapper.Value) (*argmapper.Func, error) {
+	anyType := reflect.TypeOf((*any.Any)(nil))
+	protoMessageType := reflect.TypeOf((*protoToAny)(nil)).Elem()
+	if !v.Type.Implements(protoMessageType) {
+		return nil, nil
+	}
+
+	// We take this value as our input.
+	inputSet, err := argmapper.NewValueSet([]argmapper.Value{v})
+	if err != nil {
+		return nil, err
+	}
+
+	// Generate an int with the subtype of the string value
+	outputSet, err := argmapper.NewValueSet([]argmapper.Value{{
+		Name:    v.Name,
+		Type:    anyType,
+		Subtype: proto.MessageName(reflect.Zero(v.Type).Interface().(proto.Message)),
+	}})
+	if err != nil {
+		return nil, err
+	}
+
+	return argmapper.BuildFunc(inputSet, outputSet, func(in, out *argmapper.ValueSet) error {
+		anyVal, err := ptypes.MarshalAny(inputSet.Typed(v.Type).Value.Interface().(proto.Message))
+		if err != nil {
+			return err
+		}
+
+		outputSet.Typed(anyType).Value = reflect.ValueOf(anyVal)
+		return nil
+	})
+}

@@ -13,10 +13,15 @@ import (
 // ClientConfig returns the base client config to use when connecting
 // to a plugin. This sets the handshake config, protocols, etc. Manually
 // override any values you want to set.
-func ClientConfig(log hclog.Logger) *plugin.ClientConfig {
+func ClientConfig(log hclog.Logger, odr bool) *plugin.ClientConfig {
+	odrSettings := &internalplugin.ODRSetting{Enabled: odr}
+
 	return &plugin.ClientConfig{
-		HandshakeConfig:  internalplugin.Handshake,
-		VersionedPlugins: internalplugin.Plugins(internalplugin.WithLogger(log)),
+		HandshakeConfig: internalplugin.Handshake,
+		VersionedPlugins: internalplugin.Plugins(
+			internalplugin.WithLogger(log),
+			internalplugin.WithODR(odrSettings),
+		),
 		AllowedProtocols: []plugin.Protocol{plugin.ProtocolGRPC},
 
 		// We always set managed to true just in case we don't properly

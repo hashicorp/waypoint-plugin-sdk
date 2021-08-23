@@ -650,6 +650,9 @@ service Builder {
 
   rpc BuildSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc Build(FuncSpec.Args) returns (Build.Resp);
+
+  rpc BuildODR(FuncSpec.Args) returns (Build.Resp);
+  rpc BuildSpecODR(google.protobuf.Empty) returns (FuncSpec);
 }
 
 message Build {
@@ -804,6 +807,11 @@ service Registry {
 
   rpc PushSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc Push(FuncSpec.Args) returns (Push.Resp);
+
+  // Access and AccessSpec are used to provide the optional component.RegistryAccess
+  // interface.
+  rpc AccessSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Access(FuncSpec.Args) returns (Access.Resp);
 }
 
 message Push {
@@ -813,6 +821,15 @@ message Push {
 
     // template data for the artifact
     bytes template_data = 2;
+  }
+}
+
+// Access is returned by Registry.Access as the return value for the plugin's
+// return value from the AccessInfoFunc call.
+message Access {
+  message Resp {
+    // result is the resulting opaque data type
+    google.protobuf.Any result = 1;
   }
 }
 

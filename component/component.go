@@ -71,12 +71,32 @@ type Builder interface {
 	BuildFunc() interface{}
 }
 
+// BuilderODR is an optional interface that builder type plugins can implement.
+// If the plugin is running in an ondemand runner context, then this function will
+// be called to perform the build, if the inerface is implemented. If the plugin does
+// not define this interface, then BuildFunc will be used for all contexts.
+type BuilderODR interface {
+	// BuildODRFunc should return the method handle for the "build" operation that
+	// occurs in the context of an ondemand runner (meaning the job has it's own container
+	// environment that it can solely use).
+	BuildODRFunc() interface{}
+}
+
 // Registry is responsible for managing artifacts.
 type Registry interface {
 	// PushFunc should return the method handle to the function for the "push"
 	// operation. The push function should take an artifact type and push it
 	// to the registry.
 	PushFunc() interface{}
+}
+
+// RegistryAccess is an optional interface that a registry plugin can implement.
+// If it does, this function is called before the build plugin and the results
+// are made available to the build plugin. This allows the build plugin to be doing
+// the creation and export, where the registry plugin is just providing the information
+// on where to publish the image.
+type RegistryAccess interface {
+	AccessInfoFunc() interface{}
 }
 
 // Platform is responsible for deploying artifacts.
@@ -359,3 +379,7 @@ type DeclaredResourcesResp struct {
 // IsOutParameter causes DeclaredResourcesResp to implement the OutParameter interface, which
 // will prevent it from being added as an arg to any plugin advertised dynamic function spec.
 func (d *DeclaredResourcesResp) isOutParameter() {}
+
+// AccessInfo is the type of data returned by AccessInfoFunc and made available to the
+// build plugin.
+type AccessInfo interface{}
