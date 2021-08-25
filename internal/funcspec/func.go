@@ -162,6 +162,7 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 		// Go through our callback output looking
 		return nil
 	}, append([]argmapper.Arg{
+		argmapper.FuncName(s.Name),
 		argmapper.ConverterGen(anyConvGen),
 	}, args...)...)
 	if err != nil {
