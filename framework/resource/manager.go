@@ -356,6 +356,49 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	return result.Err()
 }
 
+func Bad() error {
+	rm := BadInit()
+	if err := rm.CreateAll(); err != nil {
+		return err
+	}
+
+	rm2 := BadInit()
+	if err := rm2.LoadState(rm.State()); err != nil {
+		return err
+	}
+
+	err := rm2.DestroyAll(1)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func BadInit() *Manager {
+
+	type S struct{}
+	return NewManager(
+		WithResource(NewResource(
+			WithName("A"),
+			WithState(&S{}),
+			WithCreate(func() {}),
+			WithDestroy(func(_ int) {}),
+		)),
+		WithResource(NewResource(
+			WithName("B"),
+			WithState(&S{}),
+			WithCreate(func() {}),
+			WithDestroy(func(_ int) {}),
+		)),
+		WithResource(NewResource(
+			WithName("C"),
+			WithState(&S{}),
+			WithCreate(func() {}),
+			WithDestroy(func(_ int) {}),
+		)),
+	)
+}
+
 // healthSummary figures out what the overall health and message should be for a given set of resources.
 // If all resources return the same health, the overall health will be that health. If resources
 // return different healths, the overall health will be PARTIAL, and the health message

@@ -591,6 +591,16 @@ func Test_healthSummary(t *testing.T) {
 	}
 }
 
+func TestManagerDestroyAll_repro(t *testing.T) {
+	require := require.New(t)
+
+	t.Log("I AM RUNNING THE RIGHT TEST!!!")
+	for i := 0; i < 1000; i++ {
+		require.NoError(Bad())
+	}
+
+}
+
 // byName implements sort.Interface for sorting the results from calling
 // Status(), to ensure ordering when validating the tests
 type byName []*pb.StatusReport_Resource
