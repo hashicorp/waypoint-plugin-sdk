@@ -152,7 +152,9 @@ func Logger(input *pb.Args_Logger) hclog.Logger {
 	// We use the default logger as the base. Within a plugin we always set
 	// it so we can confidently use this. This lets plugins potentially mess
 	// with this but that's a risk we have to take.
-	return hclog.L().ResetNamed(input.Name)
+	logger := hclog.L().ResetNamed(input.Name)
+	logger.SetLevel(hclog.Trace)
+	return logger
 }
 
 func LoggerProto(log hclog.Logger) *pb.Args_Logger {
