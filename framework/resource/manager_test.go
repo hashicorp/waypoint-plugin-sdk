@@ -591,6 +591,45 @@ func Test_healthSummary(t *testing.T) {
 	}
 }
 
+func TestManagerDestroyAll_repro(t *testing.T) {
+	require := require.New(t)
+
+	init := func() *Manager {
+		type S struct{}
+		return NewManager(
+			WithResource(NewResource(
+				WithName("A"),
+				WithState(&S{}),
+				WithCreate(func() {}),
+				WithDestroy(func(_ int) {}),
+			)),
+			WithResource(NewResource(
+				WithName("B"),
+				WithState(&S{}),
+				WithCreate(func() {}),
+				WithDestroy(func(_ int) {}),
+			)),
+			WithResource(NewResource(
+				WithName("C"),
+				WithState(&S{}),
+				WithCreate(func() {}),
+				WithDestroy(func(_ int) {}),
+			)),
+		)
+	}
+
+	for i := 0; i < 100; i++ {
+		t.Log(fmt.Sprintf("Iteration %d", i))
+		rm := init()
+		require.NoError(rm.CreateAll())
+
+		rm2 := init()
+		require.NoError(rm2.LoadState(rm.State()))
+
+		require.NoError(rm2.DestroyAll(1))
+	}
+}
+
 // byName implements sort.Interface for sorting the results from calling
 // Status(), to ensure ordering when validating the tests
 type byName []*pb.StatusReport_Resource
