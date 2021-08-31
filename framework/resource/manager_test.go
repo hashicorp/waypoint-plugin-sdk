@@ -618,6 +618,7 @@ func TestManagerDestroyAll_repro(t *testing.T) {
 		)
 	}
 
+	// Usually fails in under 30 iterations
 	for i := 0; i < 100; i++ {
 		t.Log(fmt.Sprintf("Iteration %d", i))
 		rm := init()
@@ -626,6 +627,7 @@ func TestManagerDestroyAll_repro(t *testing.T) {
 		rm2 := init()
 		require.NoError(rm2.LoadState(rm.State()))
 
+		// This is the bad call
 		require.NoError(rm2.DestroyAll(1))
 	}
 }
