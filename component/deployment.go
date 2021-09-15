@@ -5,6 +5,7 @@ package component
 // settings for the deployment
 type DeploymentConfig struct {
 	Id                    string
+	Sequence              uint64
 	ServerAddr            string
 	ServerTls             bool
 	ServerTlsSkipVerify   bool
