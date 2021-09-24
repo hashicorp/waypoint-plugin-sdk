@@ -32,6 +32,8 @@ message Args {
     bool local = 1;
     string workspace = 2;
     string id = 3;
+    string project = 4;
+    string app = 5;
   }
 
   // See component.DeploymentConfig
