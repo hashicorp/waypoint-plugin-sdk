@@ -11,6 +11,7 @@ import (
 // Deployment implements component.Deployment.
 type Deployment struct {
 	Any         *any.Any
+	AnyJson     string
 	Deployment  *pb.Deploy
 	TemplateVal map[string]interface{}
 }

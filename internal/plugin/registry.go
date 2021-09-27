@@ -146,6 +146,7 @@ func (c *registryClient) push(
 
 	return &plugincomponent.Artifact{
 		Any:         resp.Result,
+		AnyJson:     resp.ResultJson,
 		TemplateVal: tplData,
 	}, nil
 }

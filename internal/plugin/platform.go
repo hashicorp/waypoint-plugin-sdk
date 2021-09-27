@@ -303,6 +303,7 @@ func (c *platformClient) deploy(
 
 	return &plugincomponent.Deployment{
 		Any:         resp.Result,
+		AnyJson:     resp.ResultJson,
 		Deployment:  resp.Deployment,
 		TemplateVal: tplData,
 	}, nil

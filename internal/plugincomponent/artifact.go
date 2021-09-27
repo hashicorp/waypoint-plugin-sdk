@@ -10,6 +10,7 @@ import (
 // Artifact implements component.Artifact.
 type Artifact struct {
 	Any         *any.Any
+	AnyJson     string
 	LabelsVal   map[string]string
 	TemplateVal map[string]interface{}
 }

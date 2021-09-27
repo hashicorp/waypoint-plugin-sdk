@@ -188,6 +188,7 @@ func (c *builderClient) build(
 
 	return &plugincomponent.Artifact{
 		Any:         resp.Result,
+		AnyJson:     resp.ResultJson,
 		LabelsVal:   resp.Labels,
 		TemplateVal: tplData,
 	}, nil

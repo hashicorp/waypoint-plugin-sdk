@@ -11,6 +11,7 @@ import (
 // Release implements component.Release.
 type Release struct {
 	Any         *any.Any
+	AnyJson     string
 	Release     *pb.Release
 	TemplateVal map[string]interface{}
 }
