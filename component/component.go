@@ -236,6 +236,14 @@ type JobInfo struct {
 	// Workspace is the workspace that this job is executing in. This should
 	// be used by plugins to properly isolate resources from each other.
 	Workspace string
+
+	// Project is the name of the project being targeted for the current operation.
+	Project string
+
+	// App is the name of the app being targeted for the current operation.
+	// This could be blank if this is a project-scoped operation, but is never
+	// blank for specific operations like build, deploy, etc.
+	App string
 }
 
 // DeploymentInfo is available to some plugins to get information about the
