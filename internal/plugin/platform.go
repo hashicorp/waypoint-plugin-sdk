@@ -435,7 +435,7 @@ func (s *platformServer) Deploy(
 	// Inject our outparameter, so we can capture the response after invocation
 	declaredResourcesResp := &component.DeclaredResourcesResp{}
 
-	encoded, raw, err := callDynamicFuncAny2(s.Impl.DeployFunc(), args.Args,
+	encoded, encodedJson, raw, err := callDynamicFuncAny2(s.Impl.DeployFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Typed(internal),
 		argmapper.Typed(ctx),
@@ -447,6 +447,7 @@ func (s *platformServer) Deploy(
 
 	result := &proto.Deploy_Resp{
 		Result:     encoded,
+		ResultJson: encodedJson,
 		Deployment: &proto.Deploy{},
 		DeclaredResources: &proto.DeclaredResources{
 			Resources: declaredResourcesResp.DeclaredResources,

@@ -244,7 +244,7 @@ func (s *registryServer) Push(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, raw, err := callDynamicFuncAny2(s.Impl.PushFunc(), args.Args,
+	encoded, encodedJson, raw, err := callDynamicFuncAny2(s.Impl.PushFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -254,7 +254,7 @@ func (s *registryServer) Push(
 		return nil, err
 	}
 
-	result := &proto.Push_Resp{Result: encoded}
+	result := &proto.Push_Resp{Result: encoded, ResultJson: encodedJson}
 	result.TemplateData, err = templateData(raw)
 	if err != nil {
 		return nil, err
@@ -303,7 +303,7 @@ func (s *registryServer) Access(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, raw, err := callDynamicFuncAny2(fn, args.Args,
+	encoded, _, raw, err := callDynamicFuncAny2(fn, args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),

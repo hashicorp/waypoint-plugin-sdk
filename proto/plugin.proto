@@ -664,6 +664,7 @@ service Builder {
 message Build {
   message Resp {
     google.protobuf.Any result = 1;
+    string result_json = 4;
     map<string, string> labels = 2;
     bytes template_data = 3;
   }
@@ -742,6 +743,7 @@ message Deploy {
   message Resp {
     // result is the resulting opaque data type
     google.protobuf.Any result = 1;
+    string result_json = 5;
 
     // deployment structure
     Deploy deployment = 3;
@@ -824,6 +826,7 @@ message Push {
   message Resp {
     // result is the resulting opaque data type
     google.protobuf.Any result = 1;
+    string result_json = 3;
 
     // template data for the artifact
     bytes template_data = 2;
@@ -955,5 +958,6 @@ service TaskLauncher {
 message TaskLaunch {
   message Resp {
     google.protobuf.Any result = 1;
+    string result_json = 2;
   }
 }
