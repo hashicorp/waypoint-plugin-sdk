@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
@@ -101,10 +102,10 @@ func callDynamicFuncAny2(
 	f interface{},
 	args funcspec.Args,
 	callArgs ...argmapper.Arg,
-) (*any.Any, interface{}, error) {
+) (*any.Any, string, interface{}, error) {
 	result, err := callDynamicFunc2(f, args, callArgs...)
 	if err != nil {
-		return nil, nil, err
+		return nil, "", nil, err
 	}
 
 	// We expect the final result to always be a proto message so we can
@@ -115,12 +116,22 @@ func callDynamicFuncAny2(
 	// proto.Message.
 	msg, ok := result.(proto.Message)
 	if !ok {
-		return nil, nil, fmt.Errorf(
+		return nil, "", nil, fmt.Errorf(
 			"result of plugin-based function must be a proto.Message, got %T", msg)
 	}
 
 	anyVal, err := ptypes.MarshalAny(msg)
-	return anyVal, result, err
+	if err != nil {
+		return nil, "", nil, err
+	}
+
+	var jm jsonpb.Marshaler
+	anyJson, err := jm.MarshalToString(msg)
+	if err != nil {
+		return nil, "", nil, err
+	}
+
+	return anyVal, anyJson, result, err
 }
 
 func argProtoAny(arg *pb.FuncSpec_Value) (interface{}, error) {

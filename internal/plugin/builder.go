@@ -188,6 +188,7 @@ func (c *builderClient) build(
 
 	return &plugincomponent.Artifact{
 		Any:         resp.Result,
+		AnyJson:     resp.ResultJson,
 		LabelsVal:   resp.Labels,
 		TemplateVal: tplData,
 	}, nil
@@ -289,7 +290,7 @@ func (s *builderServer) Build(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, raw, err := callDynamicFuncAny2(s.Impl.BuildFunc(), args.Args,
+	encoded, encodedJson, raw, err := callDynamicFuncAny2(s.Impl.BuildFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -299,7 +300,7 @@ func (s *builderServer) Build(
 		return nil, err
 	}
 
-	result := &proto.Build_Resp{Result: encoded}
+	result := &proto.Build_Resp{Result: encoded, ResultJson: encodedJson}
 	if artifact, ok := raw.(component.Artifact); ok {
 		result.Labels = artifact.Labels()
 	}
@@ -324,7 +325,7 @@ func (s *builderServer) BuildODR(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, raw, err := callDynamicFuncAny2(odr.BuildODRFunc(), args.Args,
+	encoded, encodedJson, raw, err := callDynamicFuncAny2(odr.BuildODRFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -334,7 +335,7 @@ func (s *builderServer) BuildODR(
 		return nil, err
 	}
 
-	result := &proto.Build_Resp{Result: encoded}
+	result := &proto.Build_Resp{Result: encoded, ResultJson: encodedJson}
 	if artifact, ok := raw.(component.Artifact); ok {
 		result.Labels = artifact.Labels()
 	}

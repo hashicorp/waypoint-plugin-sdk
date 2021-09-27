@@ -214,7 +214,7 @@ func (s *taskLauncherServer) StartTask(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, _, err := callDynamicFuncAny2(s.Impl.StartTaskFunc(), args.Args,
+	encoded, encodedJson, _, err := callDynamicFuncAny2(s.Impl.StartTaskFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -224,7 +224,7 @@ func (s *taskLauncherServer) StartTask(
 		return nil, err
 	}
 
-	result := &proto.TaskLaunch_Resp{Result: encoded}
+	result := &proto.TaskLaunch_Resp{Result: encoded, ResultJson: encodedJson}
 	return result, nil
 }
 
