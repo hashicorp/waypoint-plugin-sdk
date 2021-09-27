@@ -1,6 +1,8 @@
 package plugincomponent
 
 import (
+	"encoding/json"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
 
@@ -19,8 +21,10 @@ type Release struct {
 func (c *Release) Proto() proto.Message                 { return c.Any }
 func (c *Release) URL() string                          { return c.Release.Url }
 func (c *Release) TemplateData() map[string]interface{} { return c.TemplateVal }
+func (c *Release) MarshalJSON() ([]byte, error)         { return []byte(c.AnyJson), nil }
 
 var (
 	_ component.Release  = (*Release)(nil)
 	_ component.Template = (*Release)(nil)
+	_ json.Marshaler     = (*Release)(nil)
 )
