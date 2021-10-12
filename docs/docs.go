@@ -89,6 +89,11 @@ type Documentation struct {
 	mappers        []Mapper
 }
 
+// DocField contains a field that can be set - i.e. a Documentation or a SubFieldDoc
+type DocField interface {
+	SetField(name, synposis string, opts ...docOption) error
+}
+
 // Option is implemented by various functions to automatically populate
 // the Documentation.
 type Option func(*Documentation) error
@@ -139,6 +144,26 @@ func fromConfig(v interface{}, target map[string]*FieldDocs) error {
 
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
+
+		// Parse doc attributes
+		docTags, ok := f.Tag.Lookup("docs")
+		if ok {
+			parts := strings.Split(docTags, ",")
+
+			// Check if this field is marked as hidden, and if so do not add it to docs.
+			isHidden := false
+			for _, part := range parts {
+				if part == "hidden" {
+					isHidden = true
+					break
+				}
+			}
+			if isHidden {
+				continue
+			}
+		}
+
+		// Parse HCL attributes
 		name, ok := f.Tag.Lookup("hcl")
 		if !ok {
 			return fmt.Errorf("missing hcl tag on field: %s", f.Name)
@@ -222,8 +247,8 @@ func (o Default) docOption() bool       { return true }
 func (o EnvVar) docOption() bool        { return true }
 func (o Category) docOption() bool      { return true }
 
-// Summary creates a SummaryString by doing some light space editting
-// and joining of the given array of strings. This is a convienence function
+// Summary creates a SummaryString by doing some light space editing
+// and joining of the given array of strings. This is a convenience function
 // for writing multi-line summaries that format well as Go code.
 func Summary(in ...string) SummaryString {
 	var sb strings.Builder
@@ -356,6 +381,7 @@ func SubFields(f func(d *SubFieldDoc)) *SubFieldDoc {
 	return sf
 }
 
+//
 // SetField sets various documentation for the given field. If the field is already
 // known, the documentation is merely updated. If the field is missing, it is created.
 func (d *Documentation) SetField(name, synposis string, opts ...docOption) error {
