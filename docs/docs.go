@@ -382,7 +382,7 @@ func (d *SubFieldDoc) Fields() []*FieldDocs {
 	return fields
 }
 
-// DEPRECATED - use the method SubField instead. This breaks if you next more than 1 layer deep.
+// DEPRECATED - use the method SubField instead. This breaks if you nest more than 1 layer deep.
 func SubFields(f func(d *SubFieldDoc)) *SubFieldDoc {
 	sf := &SubFieldDoc{
 		fields: make(map[string]*FieldDocs),
