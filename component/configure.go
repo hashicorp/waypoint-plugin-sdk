@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/docs"
 )
 
-// Configurable can be optionally implemented by any compontent to
+// Configurable can be optionally implemented by any component to
 // accept user configuration.
 type Configurable interface {
 	// Config should return a pointer to an allocated configuration
@@ -19,7 +19,7 @@ type Configurable interface {
 // Documented can be optionally implemented by any component to
 // return documentation about the component.
 type Documented interface {
-	// Documentation() returns a completed docs.Documentation struct
+	// Documentation returns a completed docs.Documentation struct
 	// describing the components configuration.
 	Documentation() (*docs.Documentation, error)
 }
