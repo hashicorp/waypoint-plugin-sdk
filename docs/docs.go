@@ -335,6 +335,17 @@ func (s *SubFieldDoc) merge(m map[string]*FieldDocs) {
 	}
 }
 
+// Create sub-fields from existing subfield docs.
+func (s *SubFieldDoc) SubFields(parent string, f func(d *SubFieldDoc)) *SubFieldDoc {
+	sf := &SubFieldDoc{
+		fields: s.fields[parent].discoveredFields,
+	}
+
+	f(sf)
+
+	return sf
+}
+
 func (s *SubFieldDoc) SetField(name, synposis string, opts ...docOption) error {
 	field, ok := s.fields[name]
 	if !ok {
@@ -371,6 +382,7 @@ func (d *SubFieldDoc) Fields() []*FieldDocs {
 	return fields
 }
 
+// DEPRECATED - use the method SubField instead. This breaks if you next more than 1 layer deep.
 func SubFields(f func(d *SubFieldDoc)) *SubFieldDoc {
 	sf := &SubFieldDoc{
 		fields: make(map[string]*FieldDocs),
@@ -381,7 +393,17 @@ func SubFields(f func(d *SubFieldDoc)) *SubFieldDoc {
 	return sf
 }
 
-//
+// Create sub-fields from existing parent docs.
+func (d *Documentation) SubFields(parent string, f func(d *SubFieldDoc)) *SubFieldDoc {
+	sf := &SubFieldDoc{
+		fields: d.fields[parent].discoveredFields,
+	}
+
+	f(sf)
+
+	return sf
+}
+
 // SetField sets various documentation for the given field. If the field is already
 // known, the documentation is merely updated. If the field is missing, it is created.
 func (d *Documentation) SetField(name, synposis string, opts ...docOption) error {
