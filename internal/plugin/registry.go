@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
@@ -304,7 +303,7 @@ func (s *registryServer) Access(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, _, raw, err := callDynamicFuncAny2(fn, args.Args,
+	encoded, _, _, err := callDynamicFuncAny2(fn, args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -314,8 +313,6 @@ func (s *registryServer) Access(
 		s.Logger.Error("error calling access info func", "error", err)
 		return nil, err
 	}
-
-	s.Logger.Error("Access Info", "info", raw, "encoded", spew.Sdump(encoded))
 
 	result := &proto.Access_Resp{Result: encoded}
 
