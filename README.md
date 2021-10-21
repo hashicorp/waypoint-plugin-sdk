@@ -23,9 +23,9 @@ import (
 func main() {
 
   sdk.Main(sdk.WithComponents(
-  	// Comment out any components which are not
-  	// required for your plugin
-  	&builder.Builder{},
+    // Comment out any components which are not
+    // required for your plugin
+    &builder.Builder{},
   ))
 
 }
@@ -48,13 +48,13 @@ import (
 type Builder struct {}
 
 func (b *Builder) BuildFunc() interface{} {
-	// return a function which will be called by Waypoint
-	return func(ctx context.Context, ui terminal.UI) (*Binary, error) {
-	u := ui.Status()
-	defer u.Close()
-	u.Update("Building application")
+  // return a function which will be called by Waypoint
+  return func(ctx context.Context, ui terminal.UI) (*Binary, error) {
+  u := ui.Status()
+  defer u.Close()
+  u.Update("Building application")
 
-	return &Binary{}, nil
+  return &Binary{}, nil
   }
 }
 ```
@@ -92,32 +92,32 @@ Please see the following Plugins for examples of real world implementations of t
 
 ### Build
 
-[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/builder.go)  
+[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/builder.go)
 [Build Packs](https://github.com/hashicorp/waypoint/tree/main/builtin/pack/builder.go)
 
 ### Registry
 
 [Amazon ECR](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ecr/registry.go)
-[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/registry.go)  
+[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/registry.go)
 [Files](https://github.com/hashicorp/waypoint/tree/main/builtin/files/registry.go)
 
 ### Deploy
 
-[Nomad](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/platform.go)  
-[Nomad Jobspec](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/jobspec/platform.go)  
-[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/platform.go)  
-[kubectl Apply](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/apply/platform.go)  
-[Helm](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/helm/platform.go)  
-[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/platform.go)  
-[Azure Container Interface](https://github.com/hashicorp/waypoint/tree/main/builtin/azure/aci/platform.go)  
-[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/platform.go)  
+[Nomad](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/platform.go)
+[Nomad Jobspec](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/jobspec/platform.go)
+[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/platform.go)
+[kubectl Apply](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/apply/platform.go)
+[Helm](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/helm/platform.go)
+[Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/platform.go)
+[Azure Container Interface](https://github.com/hashicorp/waypoint/tree/main/builtin/azure/aci/platform.go)
+[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/platform.go)
 [Amazon EC2](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ec2/platform.go)
 [Amazon ECS](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ecs/platform.go)
 
 ### Release
 
-[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/releaser.go)  
-[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/releaser.go)  
+[Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/releaser.go)
+[Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/releaser.go)
 [Amazon ALB](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/alb/releaser.go)
 
 ### Config Sourcers
