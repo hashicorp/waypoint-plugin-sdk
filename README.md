@@ -104,7 +104,6 @@ Please see the following Plugins for examples of real world implementations of t
 [Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/platform.go)  
 [Azure Container Interface](https://github.com/hashicorp/waypoint/tree/main/builtin/azure/aci/platform.go)  
 [Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/platform.go)  
-[Netlify](https://github.com/hashicorp/waypoint/tree/main/builtin/netlify/platform.go)  
 [Amazon EC2](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ec2/platform.go)
 
 ### Release
