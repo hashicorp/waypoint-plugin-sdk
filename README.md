@@ -91,25 +91,39 @@ For full walkthrough for creating a Waypoint Plugin and reference documentation,
 Please see the following Plugins for examples of real world implementations of the Waypoint SDK.
 
 ### Build
+
 [Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/builder.go)  
 [Build Packs](https://github.com/hashicorp/waypoint/tree/main/builtin/pack/builder.go)
 
 ### Registry
+
+[Amazon ECR](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ecr/registry.go)
 [Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/registry.go)  
 [Files](https://github.com/hashicorp/waypoint/tree/main/builtin/files/registry.go)
 
 ### Deploy
+
 [Nomad](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/platform.go)  
+[Nomad Jobspec](https://github.com/hashicorp/waypoint/tree/main/builtin/nomad/jobspec/platform.go)  
 [Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/platform.go)  
+[kubectl Apply](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/apply/platform.go)  
+[Helm](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/helm/platform.go)  
 [Docker](https://github.com/hashicorp/waypoint/tree/main/builtin/docker/platform.go)  
 [Azure Container Interface](https://github.com/hashicorp/waypoint/tree/main/builtin/azure/aci/platform.go)  
 [Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/platform.go)  
 [Amazon EC2](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ec2/platform.go)
+[Amazon ECS](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/ecs/platform.go)
 
 ### Release
+
 [Kubernetes](https://github.com/hashicorp/waypoint/tree/main/builtin/k8s/releaser.go)  
 [Google Cloud Run](https://github.com/hashicorp/waypoint/tree/main/builtin/google/cloudrun/releaser.go)  
 [Amazon ALB](https://github.com/hashicorp/waypoint/tree/main/builtin/aws/alb/releaser.go)
+
+### Config Sourcers
+
+[Terraform Cloud](https://github.com/hashicorp/waypoint/tree/main/builtin/tfc)
+[Vault](https://github.com/hashicorp/waypoint/tree/main/builtin/vault)
 
 ## Contributing
 
