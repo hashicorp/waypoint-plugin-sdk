@@ -1,6 +1,6 @@
 module github.com/hashicorp/waypoint-plugin-sdk
 
-go 1.14
+go 1.17
 
 require (
 	github.com/bgentry/speakeasy v0.1.0
@@ -33,4 +33,30 @@ require (
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5
 	google.golang.org/grpc v1.33.1
 	google.golang.org/protobuf v1.26.0
+)
+
+require (
+	github.com/VividCortex/ewma v1.1.1 // indirect
+	github.com/agext/levenshtein v1.2.1 // indirect
+	github.com/apparentlymart/go-textseg v1.0.0 // indirect
+	github.com/apparentlymart/go-textseg/v12 v12.0.0 // indirect
+	github.com/cheggaaa/pb/v3 v3.0.5 // indirect
+	github.com/google/go-cmp v0.5.5 // indirect
+	github.com/gookit/color v1.3.1 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/mattn/go-runewidth v0.0.7 // indirect
+	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
+	github.com/oklog/run v1.0.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rogpeppe/go-internal v1.6.1 // indirect
+	github.com/stretchr/objx v0.2.0 // indirect
+	github.com/tj/go-spin v1.1.0 // indirect
+	github.com/y0ssar1an/q v1.0.7 // indirect
+	github.com/zclconf/go-cty v1.2.0 // indirect
+	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3 // indirect
+	golang.org/x/text v0.3.2 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
