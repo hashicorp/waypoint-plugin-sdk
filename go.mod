@@ -8,6 +8,7 @@ require (
 	github.com/containerd/console v1.0.1
 	github.com/creack/pty v1.1.11
 	github.com/davecgh/go-spew v1.1.1
+	github.com/evanphx/opaqueany v0.0.0-20220318234137-445fc9203d6d
 	github.com/fatih/color v1.9.0
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-argmapper v0.2.3
@@ -32,7 +33,7 @@ require (
 	golang.org/x/sys v0.0.0-20200916030750-2334cc1a136f
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5
 	google.golang.org/grpc v1.33.1
-	google.golang.org/protobuf v1.26.0
+	google.golang.org/protobuf v1.27.1
 )
 
 require (
