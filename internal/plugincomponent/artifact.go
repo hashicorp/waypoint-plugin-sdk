@@ -3,15 +3,15 @@ package plugincomponent
 import (
 	"encoding/json"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/evanphx/opaqueany"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 )
 
 // Artifact implements component.Artifact.
 type Artifact struct {
-	Any         *any.Any
+	Any         *opaqueany.Any
 	AnyJson     string
 	LabelsVal   map[string]string
 	TemplateVal map[string]interface{}

@@ -4,20 +4,19 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/docs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
 	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // RegistryPlugin implements plugin.Plugin (specifically GRPCPlugin) for

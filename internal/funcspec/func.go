@@ -3,8 +3,7 @@ package funcspec
 import (
 	"reflect"
 
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/evanphx/opaqueany"
 	"github.com/hashicorp/go-argmapper"
 
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -85,7 +84,7 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 	outputSet := cbFunc.Output()
 
 	// If we have results specified on the Spec, then we expect this to represent
-	// a mapper. Mapper callbacks MUST return *any.Any or []*any.Any. When we
+	// a mapper. Mapper callbacks MUST return *opaqueany.Any or []*opaqueany.Any. When we
 	// have a mapper, we change the output type to be all the values we're
 	// mapping to.
 	if len(s.Result) > 0 {
@@ -108,11 +107,11 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 		callArgs := make([]argmapper.Arg, 0, len(args)+len(in.Values()))
 
 		// Build up our callArgs which we'll pass to our callback. We pass
-		// through all args except for *any.Any values. For *any values, we
+		// through all args except for *opaqueany.Any values. For *any values, we
 		// add them to our Args list.
 		var args Args
 		for _, v := range in.Values() {
-			// Append any *any.Any types or supported primitive to the Args
+			// Append any *opaqueany.Any types or supported primitive to the Args
 			_, okPrim := validPrimitive[v.Type.Kind()]
 			if v.Type == anyType || okPrim {
 				args = appendValue(args, v)
@@ -137,20 +136,17 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 		}
 
 		// We're a mapper, so we have to go through our values and look
-		// for the *any.Any value or []*any.Any and populate our expected
+		// for the *opaqueany.Any value or []*opaqueany.Any and populate our expected
 		// outputs.
 		for _, v := range cbOut.Values() {
 			switch v.Type {
 			case anyType:
-				// We're seeing an *any.Any. So we encode this and try
+				// We're seeing an *opaqueany.Any. So we encode this and try
 				// to match it to any value that we have.
-				anyVal := v.Value.Interface().(*any.Any)
-				st, err := ptypes.AnyMessageName(anyVal)
-				if err != nil {
-					return err
-				}
+				anyVal := v.Value.Interface().(*opaqueany.Any)
+				st := anyVal.MessageName()
 
-				expected := out.TypedSubtype(v.Type, st)
+				expected := out.TypedSubtype(v.Type, string(st))
 				if expected == nil {
 					continue
 				}
@@ -173,6 +169,6 @@ func Func(s *pb.FuncSpec, cb interface{}, args ...argmapper.Arg) *argmapper.Func
 }
 
 var (
-	anyType  = reflect.TypeOf((*any.Any)(nil))
+	anyType  = reflect.TypeOf((*opaqueany.Any)(nil))
 	argsType = reflect.TypeOf(Args(nil))
 )

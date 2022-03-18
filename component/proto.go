@@ -3,11 +3,11 @@ package component
 import (
 	"reflect"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/evanphx/opaqueany"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 // ProtoMarshaler is the interface required by objects that must support
@@ -43,17 +43,25 @@ func Proto(m interface{}) (proto.Message, error) {
 	return pm.Proto(), nil
 }
 
-// ProtoAny returns an *any.Any for the given ProtoMarshaler object. This
+// ProtoAny returns an *opaqueany.Any for the given ProtoMarshaler object. This
 // will return nil if the given message is nil.
-func ProtoAny(m interface{}) (*any.Any, error) {
+func ProtoAny(m interface{}) (*opaqueany.Any, error) {
 	msg, err := Proto(m)
 	if err != nil {
 		return nil, err
 	}
 
-	// If the message is already an Any, then we're done
-	if result, ok := msg.(*any.Any); ok {
+	// If the message is already an opaqueany.Any, then we're done
+	if result, ok := msg.(*opaqueany.Any); ok {
 		return result, nil
+	}
+
+	// If the message is an any.Any, then convert it to an opaqueany.Any
+	if result, ok := msg.(*anypb.Any); ok {
+		return &opaqueany.Any{
+			TypeUrl: result.TypeUrl,
+			Value:   result.Value,
+		}, nil
 	}
 
 	// If we have a nil message, we don't marshal anything.
@@ -61,15 +69,14 @@ func ProtoAny(m interface{}) (*any.Any, error) {
 		return nil, nil
 	}
 
-	// Marshal it
-	return ptypes.MarshalAny(msg)
+	return opaqueany.New(msg)
 }
 
-// ProtoAny returns []*any.Any for the given input slice by encoding
+// ProtoAny returns []*opaqueany.Any for the given input slice by encoding
 // each result into a proto value.
-func ProtoAnySlice(m interface{}) ([]*any.Any, error) {
+func ProtoAnySlice(m interface{}) ([]*opaqueany.Any, error) {
 	val := reflect.ValueOf(m)
-	result := make([]*any.Any, val.Len())
+	result := make([]*opaqueany.Any, val.Len())
 	for i := 0; i < val.Len(); i++ {
 		var err error
 		result[i], err = ProtoAny(val.Index(i).Interface())
@@ -99,11 +106,11 @@ func ProtoAnyUnmarshal(m interface{}, out proto.Message) error {
 		msg = pm.Proto()
 	}
 
-	result, ok := msg.(*any.Any)
+	result, ok := msg.(*opaqueany.Any)
 	if !ok {
-		return status.Errorf(codes.FailedPrecondition, "expected *any.Any, got %T", msg)
+		return status.Errorf(codes.FailedPrecondition, "expected *opaqueany.Any, got %T", msg)
 	}
 
 	// Unmarshal
-	return ptypes.UnmarshalAny(result, out)
+	return result.UnmarshalTo(out)
 }

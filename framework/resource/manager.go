@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/evanphx/opaqueany"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-multierror"
@@ -79,7 +79,7 @@ func (m *Manager) Resource(n string) *Resource {
 }
 
 // LoadState loads the serialized state from Proto.
-func (m *Manager) LoadState(v *any.Any) error {
+func (m *Manager) LoadState(v *opaqueany.Any) error {
 	var s pb.Framework_ResourceManagerState
 	if err := component.ProtoAnyUnmarshal(v, &s); err != nil {
 		return err
@@ -109,7 +109,7 @@ func (m *Manager) LoadState(v *any.Any) error {
 // plugin authors are expected to serialize this type directly into their
 // return values. This is an opaque type; plugin authors should make no attempt
 // to deserialize this.
-func (m *Manager) State() *any.Any {
+func (m *Manager) State() *opaqueany.Any {
 	result, err := component.ProtoAny(m.proto())
 	if err != nil {
 		// This should never happen. Errors that happen are usually encoded

@@ -3,8 +3,8 @@ package plugincomponent
 import (
 	"encoding/json"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/evanphx/opaqueany"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -12,7 +12,7 @@ import (
 
 // Release implements component.Release.
 type Release struct {
-	Any         *any.Any
+	Any         *opaqueany.Any
 	AnyJson     string
 	Release     *pb.Release
 	TemplateVal map[string]interface{}

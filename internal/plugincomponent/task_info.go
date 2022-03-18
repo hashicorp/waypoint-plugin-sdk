@@ -1,12 +1,12 @@
 package plugincomponent
 
 import (
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/evanphx/opaqueany"
+	"google.golang.org/protobuf/proto"
 )
 
 type RunningTask struct {
-	Any *any.Any
+	Any *opaqueany.Any
 }
 
 func (c *RunningTask) Proto() proto.Message { return c.Any }

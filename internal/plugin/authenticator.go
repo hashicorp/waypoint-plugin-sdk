@@ -4,8 +4,8 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"

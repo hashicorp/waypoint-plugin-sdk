@@ -4,11 +4,11 @@ package hashicorp.waypoint.sdk;
 
 option go_package = "./;proto";
 
-import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/rpc/status.proto";
 import "protostructure.proto";
+import "any.proto";
 
 /********************************************************************
 * Generic Args
@@ -90,7 +90,7 @@ message Args {
 
     // Target is a single target for releasing.
     message Target {
-      google.protobuf.Any deployment = 1;
+      opaqueany.Any deployment = 1;
       uint32 percent = 2;
     }
   }
@@ -169,18 +169,18 @@ message FuncSpec {
     // name is the name of the argument. This may be empty for typed arguments.
     string name = 1;
 
-    // type is the type of the argument. All arguments encoded using *any.Any
+    // type is the type of the argument. All arguments encoded using *opaqueany.Any
     // specify the proto Any message type and not a language-specific type.
     string type = 2;
 
-    // primitive_type is set to a non-zero if the type is NOT an *any.Any.
+    // primitive_type is set to a non-zero if the type is NOT an *opaqueany.Any.
     PrimitiveType primitive_type = 4;
 
     // value for this Value. This is only set for Args and has no impact on specs.
     // This value MUST match the type or primitive_type fields.
     oneof value {
       // proto is set if the value is a protobuf message.
-      google.protobuf.Any proto_any = 3;
+      opaqueany.Any proto_any = 3;
 
       // Primitive values below
       bool bool = 5;
@@ -318,7 +318,7 @@ message Framework {
     // raw is the raw state for this resource (if any, this can be nil).
     // The type can't typically be known since this is opaque and only
     // known by the plugin implementation.
-    google.protobuf.Any raw = 2;
+    opaqueany.Any raw = 2;
 
     // json is the jsonpb-encoded version of the raw state. This might be
     // used downstream even by consumers who don't know the original protobuf
@@ -628,7 +628,7 @@ message Map {
   message Response {
     // result is the mapped data type that matches the type expected
     // by the MapRequest.result field.
-    google.protobuf.Any result = 1;
+    opaqueany.Any result = 1;
   }
 
   message ListResponse {
@@ -663,7 +663,7 @@ service Builder {
 
 message Build {
   message Resp {
-    google.protobuf.Any result = 1;
+    opaqueany.Any result = 1;
     string result_json = 4;
     map<string, string> labels = 2;
     bytes template_data = 3;
@@ -742,7 +742,7 @@ message Deploy {
   string url = 1;
   message Resp {
     // result is the resulting opaque data type
-    google.protobuf.Any result = 1;
+    opaqueany.Any result = 1;
     string result_json = 5;
 
     // deployment structure
@@ -768,7 +768,7 @@ message DeclaredResource {
   string platform = 2;
 
   // Internal ResourceManager representation of the resource.
-  google.protobuf.Any state = 3;
+  opaqueany.Any state = 3;
 
   // Any additional information a plugin wants to expose on this resource.
   // EX: Availability zones on a load balancer, concurrency limit on a lambda function, etc.
@@ -825,7 +825,7 @@ service Registry {
 message Push {
   message Resp {
     // result is the resulting opaque data type
-    google.protobuf.Any result = 1;
+    opaqueany.Any result = 1;
     string result_json = 3;
 
     // template data for the artifact
@@ -838,7 +838,7 @@ message Push {
 message Access {
   message Resp {
     // result is the resulting opaque data type
-    google.protobuf.Any result = 1;
+    opaqueany.Any result = 1;
   }
 }
 
@@ -883,7 +883,7 @@ message Release {
 
   message Resp {
     // result is the resulting data type for building.
-    google.protobuf.Any result = 1;
+    opaqueany.Any result = 1;
 
     // release structure
     Release release = 2;
@@ -957,7 +957,7 @@ service TaskLauncher {
 
 message TaskLaunch {
   message Resp {
-    google.protobuf.Any result = 1;
+    opaqueany.Any result = 1;
     string result_json = 2;
   }
 }

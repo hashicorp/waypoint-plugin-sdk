@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/evanphx/opaqueany"
 	"github.com/hashicorp/go-argmapper"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoregistry"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -22,7 +22,7 @@ func callDynamicFunc2(
 	args funcspec.Args,
 	callArgs ...argmapper.Arg,
 ) (interface{}, error) {
-	// Decode our *any.Any values.
+	// Decode our *opaqueany.Any values.
 	for _, arg := range args {
 		var value interface{}
 		var err error
@@ -97,12 +97,12 @@ func callDynamicFunc2(
 }
 
 // callDynamicFuncAny is callDynamicFunc that automatically encodes the
-// result to an *any.Any.
+// result to an *opaqueany.Any.
 func callDynamicFuncAny2(
 	f interface{},
 	args funcspec.Args,
 	callArgs ...argmapper.Arg,
-) (*any.Any, string, interface{}, error) {
+) (*opaqueany.Any, string, interface{}, error) {
 	result, err := callDynamicFunc2(f, args, callArgs...)
 	if err != nil {
 		return nil, "", nil, err
@@ -120,32 +120,30 @@ func callDynamicFuncAny2(
 			"result of plugin-based function must be a proto.Message, got %T", msg)
 	}
 
-	anyVal, err := ptypes.MarshalAny(msg)
+	anyVal, err := opaqueany.New(msg)
 	if err != nil {
 		return nil, "", nil, err
 	}
 
-	var jm jsonpb.Marshaler
-	anyJson, err := jm.MarshalToString(msg)
+	anyJson, err := protojson.Marshal(msg)
 	if err != nil {
 		return nil, "", nil, err
 	}
 
-	return anyVal, anyJson, result, err
+	return anyVal, string(anyJson), result, err
 }
 
 func argProtoAny(arg *pb.FuncSpec_Value) (interface{}, error) {
 	anyVal := arg.Value.(*pb.FuncSpec_Value_ProtoAny).ProtoAny
 
-	name, err := ptypes.AnyMessageName(anyVal)
-	if err != nil {
-		return nil, err
-	}
+	name := anyVal.MessageName()
 
-	typ := proto.MessageType(name)
-	if typ == nil {
+	mt, err := protoregistry.GlobalTypes.FindMessageByName(name)
+	if err != nil {
 		return nil, fmt.Errorf("cannot decode type: %s", name)
 	}
+
+	typ := reflect.TypeOf(proto.Message(mt.Zero().Interface()))
 
 	// Allocate the message type. If it is a pointer we want to
 	// allocate the actual structure and not the pointer to the structure.
@@ -156,7 +154,7 @@ func argProtoAny(arg *pb.FuncSpec_Value) (interface{}, error) {
 	v.Elem().Set(reflect.Zero(typ))
 
 	// Unmarshal directly into our newly allocated structure.
-	if err := ptypes.UnmarshalAny(anyVal, v.Interface().(proto.Message)); err != nil {
+	if err := anyVal.UnmarshalTo(v.Interface().(proto.Message)); err != nil {
 		return nil, err
 	}
 

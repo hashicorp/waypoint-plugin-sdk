@@ -7,10 +7,10 @@ import (
 	"reflect"
 	"sync/atomic"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-multierror"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -553,17 +553,18 @@ func (r *Resource) proto() *pb.Framework_ResourceState {
 		panic(err)
 	}
 
-	var m jsonpb.Marshaler
-	m.Indent = "\t" // make it human-readable
-	jsonVal, err := m.MarshalToString(stateProto)
+	jsonVal, err := protojson.MarshalOptions{
+		Indent: "\t",
+	}.Marshal(stateProto)
+
 	if err != nil {
-		jsonVal = fmt.Sprintf(`{"error": %q}`, err)
+		jsonVal = []byte(fmt.Sprintf(`{"error": %q}`, err))
 	}
 
 	return &pb.Framework_ResourceState{
 		Name: r.name,
 		Raw:  anyVal,
-		Json: jsonVal,
+		Json: string(jsonVal),
 	}
 }
 

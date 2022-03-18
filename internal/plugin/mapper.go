@@ -4,15 +4,17 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
-	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/evanphx/opaqueany"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal-shared/protomappers"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
@@ -70,7 +72,7 @@ func (c *MapperClient) Mappers() ([]*argmapper.Func, error) {
 		// We use a closure here to capture spec so that we can provide
 		// the correct result type. All we're doing is making our callback
 		// call the Map RPC call and return the result/error.
-		cb := func(ctx context.Context, args funcspec.Args) (*any.Any, error) {
+		cb := func(ctx context.Context, args funcspec.Args) (*opaqueany.Any, error) {
 			resp, err := c.client.Map(ctx, &pb.Map_Request{
 				Args:   &pb.FuncSpec_Args{Args: args},
 				Result: specCopy.Result[0].Type,
@@ -135,14 +137,16 @@ func (s *mapperServer) Map(
 	args *pb.Map_Request,
 ) (*pb.Map_Response, error) {
 	// Find the output type, which we should know about.
-	typ := proto.MessageType(args.Result)
-	if typ == nil {
+	mt, err := protoregistry.GlobalTypes.FindMessageByName(protoreflect.FullName(args.Result))
+	if err != nil {
 		return nil, status.Newf(
 			codes.FailedPrecondition,
 			"output type is not known: %s",
 			args.Result,
 		).Err()
 	}
+
+	typ := reflect.TypeOf(proto.Message(mt.Zero().Interface()))
 
 	// Build our function that expects this type as an argument
 	// so that we can return it. We do this dynamic function thing so
