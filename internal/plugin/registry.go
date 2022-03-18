@@ -298,8 +298,6 @@ func (s *registryServer) Access(
 
 	fn := ra.AccessInfoFunc()
 
-	s.Logger.Error("CALLING ACCESS", "target", hclog.Fmt("%T", ra), "fn", hclog.Fmt("%#v", fn))
-
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
