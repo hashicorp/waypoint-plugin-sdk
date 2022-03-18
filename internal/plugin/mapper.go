@@ -5,7 +5,6 @@ import (
 	"reflect"
 
 	"github.com/evanphx/opaqueany"
-	empty "google.golang.org/protobuf/types/known/emptypb"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
@@ -15,6 +14,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal-shared/protomappers"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
