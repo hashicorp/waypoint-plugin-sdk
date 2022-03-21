@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // BuilderPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -39,7 +39,7 @@ func (p *BuilderPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) er
 		Broker:  broker,
 	}
 
-	proto.RegisterBuilderServer(s, &builderServer{
+	pb.RegisterBuilderServer(s, &builderServer{
 		base: base,
 		Impl: p.Impl,
 
@@ -57,7 +57,7 @@ func (p *BuilderPlugin) GRPCClient(
 	c *grpc.ClientConn,
 ) (interface{}, error) {
 	client := &builderClient{
-		client:  proto.NewBuilderClient(c),
+		client:  pb.NewBuilderClient(c),
 		logger:  p.Logger,
 		broker:  broker,
 		mappers: p.Mappers,
@@ -94,7 +94,7 @@ func (p *BuilderPlugin) GRPCClient(
 // builderClient is an implementation of component.Builder that
 // communicates over gRPC.
 type builderClient struct {
-	client  proto.BuilderClient
+	client  pb.BuilderClient
 	logger  hclog.Logger
 	broker  *plugin.GRPCBroker
 	mappers []*argmapper.Func
@@ -174,7 +174,7 @@ func (c *builderClient) build(
 	args funcspec.Args,
 ) (component.Artifact, error) {
 	// Call our function
-	resp, err := c.client.Build(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.Build(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +199,7 @@ func (c *builderClient) buildODR(
 	args funcspec.Args,
 ) (component.Artifact, error) {
 	// Call our function
-	resp, err := c.client.BuildODR(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.BuildODR(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -224,19 +224,21 @@ type builderServer struct {
 	*base
 	*authenticatorServer
 
+	pb.UnsafeBuilderServer // to avoid having to copy stubs into here for authServer
+
 	Impl component.Builder
 }
 
 func (s *builderServer) ConfigStruct(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_StructResp, error) {
+) (*pb.Config_StructResp, error) {
 	return configStruct(s.Impl)
 }
 
 func (s *builderServer) Configure(
 	ctx context.Context,
-	req *proto.Config_ConfigureRequest,
+	req *pb.Config_ConfigureRequest,
 ) (*empty.Empty, error) {
 	return configure(s.Impl, req)
 }
@@ -244,14 +246,14 @@ func (s *builderServer) Configure(
 func (s *builderServer) Documentation(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_Documentation, error) {
+) (*pb.Config_Documentation, error) {
 	return documentation(s.Impl)
 }
 
 func (s *builderServer) BuildSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: builder")
 	}
@@ -266,7 +268,7 @@ func (s *builderServer) BuildSpec(
 func (s *builderServer) BuildSpecODR(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: builder")
 	}
@@ -285,8 +287,8 @@ func (s *builderServer) BuildSpecODR(
 
 func (s *builderServer) Build(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.Build_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.Build_Resp, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
@@ -300,7 +302,7 @@ func (s *builderServer) Build(
 		return nil, err
 	}
 
-	result := &proto.Build_Resp{Result: encoded, ResultJson: encodedJson}
+	result := &pb.Build_Resp{Result: encoded, ResultJson: encodedJson}
 	if artifact, ok := raw.(component.Artifact); ok {
 		result.Labels = artifact.Labels()
 	}
@@ -315,8 +317,8 @@ func (s *builderServer) Build(
 
 func (s *builderServer) BuildODR(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.Build_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.Build_Resp, error) {
 	odr, ok := s.Impl.(component.BuilderODR)
 	if !ok {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: builder")
@@ -335,7 +337,7 @@ func (s *builderServer) BuildODR(
 		return nil, err
 	}
 
-	result := &proto.Build_Resp{Result: encoded, ResultJson: encodedJson}
+	result := &pb.Build_Resp{Result: encoded, ResultJson: encodedJson}
 	if artifact, ok := raw.(component.Artifact); ok {
 		result.Labels = artifact.Labels()
 	}
@@ -351,7 +353,7 @@ func (s *builderServer) BuildODR(
 var (
 	_ plugin.Plugin                = (*BuilderPlugin)(nil)
 	_ plugin.GRPCPlugin            = (*BuilderPlugin)(nil)
-	_ proto.BuilderServer          = (*builderServer)(nil)
+	_ pb.BuilderServer             = (*builderServer)(nil)
 	_ component.Builder            = (*builderClient)(nil)
 	_ component.Configurable       = (*builderClient)(nil)
 	_ component.Documented         = (*builderClient)(nil)

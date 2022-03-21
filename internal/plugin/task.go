@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // TaskLauncherPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -36,7 +36,7 @@ func (p *TaskLauncherPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Serve
 		Broker:  broker,
 	}
 
-	proto.RegisterTaskLauncherServer(s, &taskLauncherServer{
+	pb.RegisterTaskLauncherServer(s, &taskLauncherServer{
 		base: base,
 		Impl: p.Impl,
 
@@ -54,7 +54,7 @@ func (p *TaskLauncherPlugin) GRPCClient(
 	c *grpc.ClientConn,
 ) (interface{}, error) {
 	client := &taskLauncherClient{
-		client:  proto.NewTaskLauncherClient(c),
+		client:  pb.NewTaskLauncherClient(c),
 		logger:  p.Logger,
 		broker:  broker,
 		mappers: p.Mappers,
@@ -72,7 +72,7 @@ func (p *TaskLauncherPlugin) GRPCClient(
 // taskLauncherClient is an implementation of component.TaskLauncher that
 // communicates over gRPC.
 type taskLauncherClient struct {
-	client  proto.TaskLauncherClient
+	client  pb.TaskLauncherClient
 	logger  hclog.Logger
 	broker  *plugin.GRPCBroker
 	mappers []*argmapper.Func
@@ -136,7 +136,7 @@ func (c *taskLauncherClient) start(
 	args funcspec.Args,
 ) (component.RunningTask, error) {
 	// Call our function
-	resp, err := c.client.StartTask(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.StartTask(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		c.logger.Error("error starting task", "error", err)
 		return nil, err
@@ -154,7 +154,7 @@ func (c *taskLauncherClient) stop(
 	args funcspec.Args,
 ) error {
 	// Call our function
-	_, err := c.client.StopTask(ctx, &proto.FuncSpec_Args{Args: args})
+	_, err := c.client.StopTask(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return err
 	}
@@ -168,19 +168,21 @@ type taskLauncherServer struct {
 	*base
 	*authenticatorServer
 
+	pb.UnsafeTaskLauncherServer
+
 	Impl component.TaskLauncher
 }
 
 func (s *taskLauncherServer) ConfigStruct(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_StructResp, error) {
+) (*pb.Config_StructResp, error) {
 	return configStruct(s.Impl)
 }
 
 func (s *taskLauncherServer) Configure(
 	ctx context.Context,
-	req *proto.Config_ConfigureRequest,
+	req *pb.Config_ConfigureRequest,
 ) (*empty.Empty, error) {
 	return configure(s.Impl, req)
 }
@@ -188,14 +190,14 @@ func (s *taskLauncherServer) Configure(
 func (s *taskLauncherServer) Documentation(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_Documentation, error) {
+) (*pb.Config_Documentation, error) {
 	return documentation(s.Impl)
 }
 
 func (s *taskLauncherServer) StartSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: taskLauncher")
 	}
@@ -209,8 +211,8 @@ func (s *taskLauncherServer) StartSpec(
 
 func (s *taskLauncherServer) StartTask(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.TaskLaunch_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.TaskLaunch_Resp, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
@@ -224,14 +226,14 @@ func (s *taskLauncherServer) StartTask(
 		return nil, err
 	}
 
-	result := &proto.TaskLaunch_Resp{Result: encoded, ResultJson: encodedJson}
+	result := &pb.TaskLaunch_Resp{Result: encoded, ResultJson: encodedJson}
 	return result, nil
 }
 
 func (s *taskLauncherServer) StopSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: taskLauncher")
 	}
@@ -245,7 +247,7 @@ func (s *taskLauncherServer) StopSpec(
 
 func (s *taskLauncherServer) StopTask(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
+	args *pb.FuncSpec_Args,
 ) (*empty.Empty, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
@@ -266,7 +268,7 @@ func (s *taskLauncherServer) StopTask(
 var (
 	_ plugin.Plugin                = (*TaskLauncherPlugin)(nil)
 	_ plugin.GRPCPlugin            = (*TaskLauncherPlugin)(nil)
-	_ proto.TaskLauncherServer     = (*taskLauncherServer)(nil)
+	_ pb.TaskLauncherServer        = (*taskLauncherServer)(nil)
 	_ component.TaskLauncher       = (*taskLauncherClient)(nil)
 	_ component.Configurable       = (*taskLauncherClient)(nil)
 	_ component.Documented         = (*taskLauncherClient)(nil)

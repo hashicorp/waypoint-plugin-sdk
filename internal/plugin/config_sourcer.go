@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/docs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
-	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // ConfigSourcerPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -36,7 +36,7 @@ func (p *ConfigSourcerPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Serv
 		Broker:  broker,
 	}
 
-	proto.RegisterConfigSourcerServer(s, &configSourcerServer{
+	pb.RegisterConfigSourcerServer(s, &configSourcerServer{
 		base: base,
 		Impl: p.Impl,
 	})
@@ -49,7 +49,7 @@ func (p *ConfigSourcerPlugin) GRPCClient(
 	c *grpc.ClientConn,
 ) (interface{}, error) {
 	client := &configSourcerClient{
-		client:  proto.NewConfigSourcerClient(c),
+		client:  pb.NewConfigSourcerClient(c),
 		logger:  p.Logger,
 		broker:  broker,
 		mappers: p.Mappers,
@@ -61,7 +61,7 @@ func (p *ConfigSourcerPlugin) GRPCClient(
 // configSourcerClient is an implementation of component.ConfigSourcer that
 // communicates over gRPC.
 type configSourcerClient struct {
-	client  proto.ConfigSourcerClient
+	client  pb.ConfigSourcerClient
 	logger  hclog.Logger
 	broker  *plugin.GRPCBroker
 	mappers []*argmapper.Func
@@ -102,9 +102,9 @@ func (c *configSourcerClient) ReadFunc() interface{} {
 func (c *configSourcerClient) read(
 	ctx context.Context,
 	args funcspec.Args,
-) ([]*proto.ConfigSource_Value, error) {
+) ([]*pb.ConfigSource_Value, error) {
 	// Call our function
-	resp, err := c.client.Read(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.Read(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +137,7 @@ func (c *configSourcerClient) stop(
 	args funcspec.Args,
 ) error {
 	// Call our function
-	_, err := c.client.Stop(ctx, &proto.FuncSpec_Args{Args: args})
+	_, err := c.client.Stop(ctx, &pb.FuncSpec_Args{Args: args})
 	return err
 }
 
@@ -146,19 +146,21 @@ func (c *configSourcerClient) stop(
 type configSourcerServer struct {
 	*base
 
+	pb.UnimplementedConfigSourcerServer
+
 	Impl component.ConfigSourcer
 }
 
 func (s *configSourcerServer) ConfigStruct(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_StructResp, error) {
+) (*pb.Config_StructResp, error) {
 	return configStruct(s.Impl)
 }
 
 func (s *configSourcerServer) Configure(
 	ctx context.Context,
-	req *proto.Config_ConfigureRequest,
+	req *pb.Config_ConfigureRequest,
 ) (*empty.Empty, error) {
 	return configure(s.Impl, req)
 }
@@ -166,14 +168,14 @@ func (s *configSourcerServer) Configure(
 func (s *configSourcerServer) Documentation(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_Documentation, error) {
+) (*pb.Config_Documentation, error) {
 	return documentation(s.Impl)
 }
 
 func (s *configSourcerServer) ReadSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: ConfigSourcer")
 	}
@@ -184,15 +186,15 @@ func (s *configSourcerServer) ReadSpec(
 		argmapper.Typed(s.internal()),
 
 		argmapper.FilterOutput(argmapper.FilterType(
-			reflect.TypeOf((*[]*proto.ConfigSource_Value)(nil)).Elem()),
+			reflect.TypeOf((*[]*pb.ConfigSource_Value)(nil)).Elem()),
 		),
 	)
 }
 
 func (s *configSourcerServer) Read(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.ConfigSource_ReadResponse, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.ConfigSource_ReadResponse, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
@@ -206,19 +208,19 @@ func (s *configSourcerServer) Read(
 		return nil, err
 	}
 
-	values, ok := raw.([]*proto.ConfigSource_Value)
+	values, ok := raw.([]*pb.ConfigSource_Value)
 	if !ok {
 		return nil, status.Errorf(codes.Aborted, "read result is not []*proto.ConfigSource_Value")
 	}
 
-	result := &proto.ConfigSource_ReadResponse{Values: values}
+	result := &pb.ConfigSource_ReadResponse{Values: values}
 	return result, nil
 }
 
 func (s *configSourcerServer) StopSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: ConfigSourcer")
 	}
@@ -232,7 +234,7 @@ func (s *configSourcerServer) StopSpec(
 
 func (s *configSourcerServer) Stop(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
+	args *pb.FuncSpec_Args,
 ) (*empty.Empty, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
@@ -253,7 +255,7 @@ func (s *configSourcerServer) Stop(
 var (
 	_ plugin.Plugin                = (*ConfigSourcerPlugin)(nil)
 	_ plugin.GRPCPlugin            = (*ConfigSourcerPlugin)(nil)
-	_ proto.ConfigSourcerServer    = (*configSourcerServer)(nil)
+	_ pb.ConfigSourcerServer       = (*configSourcerServer)(nil)
 	_ component.ConfigSourcer      = (*configSourcerClient)(nil)
 	_ component.Configurable       = (*configSourcerClient)(nil)
 	_ component.Documented         = (*configSourcerClient)(nil)

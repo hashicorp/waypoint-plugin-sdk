@@ -81,8 +81,8 @@ github.com/hashicorp/go-plugin v1.4.2 h1:yFvG3ufXXpqiMiZx9HLcaK3XbIqQ1WJFR/F1a2C
 github.com/hashicorp/go-plugin v1.4.2/go.mod h1:5fGEH17QVwTTcR0zV7yhDPLLmFX9YSZ38b18Udy6vYQ=
 github.com/hashicorp/hcl/v2 v2.6.0 h1:3krZOfGY6SziUXa6H9PJU6TyohHn7I+ARYnhbeNBz+o=
 github.com/hashicorp/hcl/v2 v2.6.0/go.mod h1:bQTN5mpo+jewjJgh8jr0JUguIi7qPHUF6yIfAEN3jqY=
-github.com/hashicorp/opaqueany v0.0.0-20220321165032-086b3ebbe637 h1:UU4lo0X5yzQdZebXugwqIKZZbj5k1p5vKmy9f9puxXI=
-github.com/hashicorp/opaqueany v0.0.0-20220321165032-086b3ebbe637/go.mod h1:adXen43rUDlxaaEpSsu3lcG4bfteZNptunpxPvx0sW8=
+github.com/hashicorp/opaqueany v0.0.0-20220321170339-a5c6ff5bb0ec h1:WfdoyL0vJ+mQWaUdzNMkk+o1ACVa6aO2i9AzGPboF5k=
+github.com/hashicorp/opaqueany v0.0.0-20220321170339-a5c6ff5bb0ec/go.mod h1:adXen43rUDlxaaEpSsu3lcG4bfteZNptunpxPvx0sW8=
 github.com/hashicorp/protostructure v0.0.0-20220321173139-813f7b927cb7 h1:jTrmnIPP65IvMLaFr05QzwGGHpK2rMpwFxqh9n3nv3o=
 github.com/hashicorp/protostructure v0.0.0-20220321173139-813f7b927cb7/go.mod h1:FE2g4U8UsIjarjyL4FgNUqYw0XMtsUL5kN7qpckyQv4=
 github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb h1:b5rjCoWHc7eqmAS4/qyk21ZsHyb6Mxv/jykxvNTkU4M=
@@ -224,6 +224,8 @@ google.golang.org/grpc v1.27.0/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8
 google.golang.org/grpc v1.27.1/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8abTk=
 google.golang.org/grpc v1.33.1 h1:DGeFlSan2f+WEtCERJ4J9GJWk15TxUi8QGagfI87Xyc=
 google.golang.org/grpc v1.33.1/go.mod h1:fr5YgcSWrqhRRxogOsw7RzIpsmvOZ6IcH4kBYTpR3n0=
+google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0 h1:TLkBREm4nIsEcexnCjgQd5GQWaHcqMzwQV0TX9pq8S0=
+google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0/go.mod h1:DNq5QpG7LJqD2AamLZ7zvKE0DEpVl2BSEVjFycAAjRY=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
 google.golang.org/protobuf v0.0.0-20200228230310-ab0ca4ff8a60/go.mod h1:cfTl7dwQJ+fmap5saPgwCLgHXTUD7jkjRqWcaiX5VyM=

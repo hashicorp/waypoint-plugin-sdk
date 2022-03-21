@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -36,7 +36,7 @@ func (p *RegistryPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) e
 		Broker:  broker,
 	}
 
-	proto.RegisterRegistryServer(s, &registryServer{
+	pb.RegisterRegistryServer(s, &registryServer{
 		base: base,
 		Impl: p.Impl,
 
@@ -54,7 +54,7 @@ func (p *RegistryPlugin) GRPCClient(
 	c *grpc.ClientConn,
 ) (interface{}, error) {
 	client := &registryClient{
-		client:  proto.NewRegistryClient(c),
+		client:  pb.NewRegistryClient(c),
 		logger:  p.Logger,
 		broker:  broker,
 		mappers: p.Mappers,
@@ -87,7 +87,7 @@ func (p *RegistryPlugin) GRPCClient(
 
 // registryClient is an implementation of component.Registry over gRPC.
 type registryClient struct {
-	client  proto.RegistryClient
+	client  pb.RegistryClient
 	logger  hclog.Logger
 	broker  *plugin.GRPCBroker
 	mappers []*argmapper.Func
@@ -130,7 +130,7 @@ func (c *registryClient) push(
 	args funcspec.Args,
 ) (component.Artifact, error) {
 	// Call our function
-	resp, err := c.client.Push(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.Push(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ func (c *registryClient) access(
 	args funcspec.Args,
 ) (component.AccessInfo, error) {
 	// Call our function
-	resp, err := c.client.Access(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.Access(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -197,19 +197,21 @@ type registryServer struct {
 	*base
 	*authenticatorServer
 
+	pb.UnsafeRegistryServer
+
 	Impl component.Registry
 }
 
 func (s *registryServer) ConfigStruct(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_StructResp, error) {
+) (*pb.Config_StructResp, error) {
 	return configStruct(s.Impl)
 }
 
 func (s *registryServer) Configure(
 	ctx context.Context,
-	req *proto.Config_ConfigureRequest,
+	req *pb.Config_ConfigureRequest,
 ) (*empty.Empty, error) {
 	return configure(s.Impl, req)
 }
@@ -217,14 +219,14 @@ func (s *registryServer) Configure(
 func (s *registryServer) Documentation(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_Documentation, error) {
+) (*pb.Config_Documentation, error) {
 	return documentation(s.Impl)
 }
 
 func (s *registryServer) PushSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: registry")
 	}
@@ -238,8 +240,8 @@ func (s *registryServer) PushSpec(
 
 func (s *registryServer) Push(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.Push_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.Push_Resp, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
@@ -253,7 +255,7 @@ func (s *registryServer) Push(
 		return nil, err
 	}
 
-	result := &proto.Push_Resp{Result: encoded, ResultJson: encodedJson}
+	result := &pb.Push_Resp{Result: encoded, ResultJson: encodedJson}
 	result.TemplateData, err = templateData(raw)
 	if err != nil {
 		return nil, err
@@ -268,7 +270,7 @@ func (s *registryServer) Push(
 func (s *registryServer) AccessSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: registry")
 	}
@@ -288,8 +290,8 @@ func (s *registryServer) AccessSpec(
 // Access calls the AccessInfoFunc on the plugin.
 func (s *registryServer) Access(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.Access_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.Access_Resp, error) {
 	ra, ok := s.Impl.(component.RegistryAccess)
 	if !ok {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: registry")
@@ -313,7 +315,7 @@ func (s *registryServer) Access(
 		return nil, err
 	}
 
-	result := &proto.Access_Resp{Result: encoded}
+	result := &pb.Access_Resp{Result: encoded}
 
 	return result, nil
 }
@@ -321,7 +323,7 @@ func (s *registryServer) Access(
 var (
 	_ plugin.Plugin                = (*RegistryPlugin)(nil)
 	_ plugin.GRPCPlugin            = (*RegistryPlugin)(nil)
-	_ proto.RegistryServer         = (*registryServer)(nil)
+	_ pb.RegistryServer            = (*registryServer)(nil)
 	_ component.Registry           = (*registryClient)(nil)
 	_ component.Configurable       = (*registryClient)(nil)
 	_ component.Documented         = (*registryClient)(nil)

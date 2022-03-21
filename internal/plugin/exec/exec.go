@@ -118,6 +118,8 @@ func (p *ExecPlugin) GRPCClient(
 // execServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type execServer struct {
+	pb.UnimplementedExecSessionServiceServer
+
 	Impl    *component.ExecSessionInfo
 	Mappers []*argmapper.Func
 	Logger  hclog.Logger

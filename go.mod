@@ -15,7 +15,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-plugin v1.4.2
 	github.com/hashicorp/hcl/v2 v2.6.0
-	github.com/hashicorp/opaqueany v0.0.0-20220321165032-086b3ebbe637
+	github.com/hashicorp/opaqueany v0.0.0-20220321170339-a5c6ff5bb0ec
 	github.com/hashicorp/protostructure v0.0.0-20220321173139-813f7b927cb7
 	github.com/iancoleman/strcase v0.1.2
 	github.com/kr/pretty v0.3.0 // indirect
@@ -33,6 +33,7 @@ require (
 	golang.org/x/sys v0.0.0-20200916030750-2334cc1a136f
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5
 	google.golang.org/grpc v1.33.1
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
 	google.golang.org/protobuf v1.27.1
 )
 

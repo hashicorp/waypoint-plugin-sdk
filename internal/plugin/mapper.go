@@ -96,6 +96,8 @@ func (c *MapperClient) Mappers() ([]*argmapper.Func, error) {
 
 // mapperServer is a gRPC server that implements the Mapper service.
 type mapperServer struct {
+	pb.UnimplementedMapperServer
+
 	Mappers []*argmapper.Func
 	Logger  hclog.Logger
 }
