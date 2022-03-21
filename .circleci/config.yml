@@ -95,6 +95,7 @@ jobs:
             echo "Checking that go generate has no errors ..."
             sudo chmod 755 -R /usr/local/bin/protoc
             sudo chmod 755 -R /usr/local/include/google
+            go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
             protoc --version
             make gen
       - notify_main_failure
