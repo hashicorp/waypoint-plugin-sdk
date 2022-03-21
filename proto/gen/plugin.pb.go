@@ -8,7 +8,7 @@ package proto
 
 import (
 	context "context"
-	opaqueany "github.com/evanphx/opaqueany"
+	opaqueany "github.com/hashicorp/opaqueany"
 	protostructure "github.com/mitchellh/protostructure"
 	status "google.golang.org/genproto/googleapis/rpc/status"
 	grpc "google.golang.org/grpc"

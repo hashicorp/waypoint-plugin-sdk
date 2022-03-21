@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/evanphx/opaqueany"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/opaqueany"
 
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )

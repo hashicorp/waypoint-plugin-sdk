@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/evanphx/opaqueany"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-plugin"
+	"github.com/hashicorp/opaqueany"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 

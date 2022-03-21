@@ -3,7 +3,7 @@ package plugincomponent
 import (
 	"encoding/json"
 
-	"github.com/evanphx/opaqueany"
+	"github.com/hashicorp/opaqueany"
 	"google.golang.org/protobuf/proto"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"

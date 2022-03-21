@@ -8,7 +8,6 @@ require (
 	github.com/containerd/console v1.0.1
 	github.com/creack/pty v1.1.11
 	github.com/davecgh/go-spew v1.1.1
-	github.com/evanphx/opaqueany v0.0.0-20220318234137-445fc9203d6d
 	github.com/fatih/color v1.9.0
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-argmapper v0.2.3
@@ -16,6 +15,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-plugin v1.4.2
 	github.com/hashicorp/hcl/v2 v2.6.0
+	github.com/hashicorp/opaqueany v0.0.0-20220321165032-086b3ebbe637
 	github.com/iancoleman/strcase v0.1.2
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lab47/vterm v0.0.0-20201001232628-a9dd795f94c2

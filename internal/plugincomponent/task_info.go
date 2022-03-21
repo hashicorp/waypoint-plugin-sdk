@@ -1,7 +1,7 @@
 package plugincomponent
 
 import (
-	"github.com/evanphx/opaqueany"
+	"github.com/hashicorp/opaqueany"
 	"google.golang.org/protobuf/proto"
 )
 

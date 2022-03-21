@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/evanphx/opaqueany"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/opaqueany"
 	"github.com/stretchr/testify/require"
 	empty "google.golang.org/protobuf/types/known/emptypb"
 

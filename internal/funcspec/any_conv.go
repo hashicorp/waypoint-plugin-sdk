@@ -3,8 +3,8 @@ package funcspec
 import (
 	"reflect"
 
-	"github.com/evanphx/opaqueany"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/opaqueany"
 	"google.golang.org/protobuf/proto"
 )
 

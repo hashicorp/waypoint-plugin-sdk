@@ -3,7 +3,7 @@ package plugincomponent
 import (
 	"encoding/json"
 
-	"github.com/evanphx/opaqueany"
+	"github.com/hashicorp/opaqueany"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
