@@ -83,6 +83,8 @@ github.com/hashicorp/hcl/v2 v2.6.0 h1:3krZOfGY6SziUXa6H9PJU6TyohHn7I+ARYnhbeNBz+
 github.com/hashicorp/hcl/v2 v2.6.0/go.mod h1:bQTN5mpo+jewjJgh8jr0JUguIi7qPHUF6yIfAEN3jqY=
 github.com/hashicorp/opaqueany v0.0.0-20220321165032-086b3ebbe637 h1:UU4lo0X5yzQdZebXugwqIKZZbj5k1p5vKmy9f9puxXI=
 github.com/hashicorp/opaqueany v0.0.0-20220321165032-086b3ebbe637/go.mod h1:adXen43rUDlxaaEpSsu3lcG4bfteZNptunpxPvx0sW8=
+github.com/hashicorp/protostructure v0.0.0-20220321173139-813f7b927cb7 h1:jTrmnIPP65IvMLaFr05QzwGGHpK2rMpwFxqh9n3nv3o=
+github.com/hashicorp/protostructure v0.0.0-20220321173139-813f7b927cb7/go.mod h1:FE2g4U8UsIjarjyL4FgNUqYw0XMtsUL5kN7qpckyQv4=
 github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb h1:b5rjCoWHc7eqmAS4/qyk21ZsHyb6Mxv/jykxvNTkU4M=
 github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb/go.mod h1:+NfK9FKeTrX5uv1uIXGdwYDTeHna2qgaIlx54MXqjAM=
 github.com/iancoleman/strcase v0.1.2 h1:gnomlvw9tnV3ITTAxzKSgTF+8kFWcU/f+TgttpXGz1U=
@@ -123,8 +125,6 @@ github.com/mitchellh/go-wordwrap v1.0.1 h1:TLuKupo69TCn6TQSyGxwI1EblZZEsQ0vMlAFQ
 github.com/mitchellh/go-wordwrap v1.0.1/go.mod h1:R62XHJLzvMFRBbcrT7m7WgmE1eOyTSsCt+hzestvNj0=
 github.com/mitchellh/mapstructure v1.3.3 h1:SzB1nHZ2Xi+17FP0zVQBHIZqvwRN9408fJO8h+eeNA8=
 github.com/mitchellh/mapstructure v1.3.3/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
-github.com/mitchellh/protostructure v0.0.0-20200814180458-3cfccdb015ce h1:VCR1UYdCg/9zbbnDVsULhmoGVsR5JJ91aPjTGv304Z4=
-github.com/mitchellh/protostructure v0.0.0-20200814180458-3cfccdb015ce/go.mod h1:HSEBVpkzTG20tk0Ocqhmd1Xt/FAB27aqI7+TkkS0qZE=
 github.com/morikuni/aec v1.0.0 h1:nP9CBfwrvYnBRgY6qfDQkygYDmYwOilePFkwzv4dU8A=
 github.com/morikuni/aec v1.0.0/go.mod h1:BbKIizmSmc5MMPqRYbxO4ZU0S0+P200+tUnFx7PXmsc=
 github.com/oklog/run v1.0.0 h1:Ru7dDtJNOyC66gQ5dQmaCa0qIsAUFY3sFpK1Xk8igrw=

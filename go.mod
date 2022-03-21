@@ -16,6 +16,7 @@ require (
 	github.com/hashicorp/go-plugin v1.4.2
 	github.com/hashicorp/hcl/v2 v2.6.0
 	github.com/hashicorp/opaqueany v0.0.0-20220321165032-086b3ebbe637
+	github.com/hashicorp/protostructure v0.0.0-20220321173139-813f7b927cb7
 	github.com/iancoleman/strcase v0.1.2
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lab47/vterm v0.0.0-20201001232628-a9dd795f94c2
@@ -24,7 +25,6 @@ require (
 	github.com/mitchellh/go-glint v0.0.0-20201015034436-f80573c636de
 	github.com/mitchellh/go-testing-interface v1.14.1
 	github.com/mitchellh/mapstructure v1.3.3
-	github.com/mitchellh/protostructure v0.0.0-20200814180458-3cfccdb015ce
 	github.com/morikuni/aec v1.0.0
 	github.com/oklog/ulid v1.3.1
 	github.com/olekukonko/tablewriter v0.0.4
