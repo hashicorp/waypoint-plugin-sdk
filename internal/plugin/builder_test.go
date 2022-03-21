@@ -4,10 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-plugin"
+	"github.com/hashicorp/opaqueany"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -53,10 +52,10 @@ func TestBuilderBuild(t *testing.T) {
 	require.NotNil(raw)
 	require.Implements((*component.Artifact)(nil), raw)
 
-	anyVal := raw.(component.ProtoMarshaler).Proto().(*any.Any)
-	name, err := ptypes.AnyMessageName(anyVal)
+	anyVal := raw.(component.ProtoMarshaler).Proto().(*opaqueany.Any)
+	name := anyVal.MessageName()
 	require.NoError(err)
-	require.Equal("testproto.Data", name)
+	require.Equal("testproto.Data", string(name))
 
 	require.True(called)
 }

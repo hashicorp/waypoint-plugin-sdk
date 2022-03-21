@@ -4,10 +4,10 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/hashicorp/go-argmapper"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -93,7 +93,8 @@ func Spec(fn interface{}, args ...argmapper.Arg) (*pb.FuncSpec, error) {
 }
 
 func typeToMessage(typ reflect.Type) string {
-	return proto.MessageName(reflect.Zero(typ).Interface().(proto.Message))
+	val := reflect.Zero(typ).Interface().(proto.Message)
+	return string(val.ProtoReflect().Descriptor().FullName())
 }
 
 func filterPrimitive(v argmapper.Value) bool {

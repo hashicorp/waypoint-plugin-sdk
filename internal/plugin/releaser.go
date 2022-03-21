@@ -4,20 +4,20 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/docs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // ReleaseManagerPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -37,7 +37,7 @@ func (p *ReleaseManagerPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Ser
 		Broker:  broker,
 	}
 
-	proto.RegisterReleaseManagerServer(s, &releaseManagerServer{
+	pb.RegisterReleaseManagerServer(s, &releaseManagerServer{
 		base: base,
 		Impl: p.Impl,
 
@@ -70,7 +70,7 @@ func (p *ReleaseManagerPlugin) GRPCClient(
 	c *grpc.ClientConn,
 ) (interface{}, error) {
 	client := &releaseManagerClient{
-		client:  proto.NewReleaseManagerClient(c),
+		client:  pb.NewReleaseManagerClient(c),
 		logger:  p.Logger,
 		broker:  broker,
 		mappers: p.Mappers,
@@ -150,7 +150,7 @@ func (p *ReleaseManagerPlugin) GRPCClient(
 // releaseManagerClient is an implementation of component.ReleaseManager that
 // communicates over gRPC.
 type releaseManagerClient struct {
-	client  proto.ReleaseManagerClient
+	client  pb.ReleaseManagerClient
 	logger  hclog.Logger
 	broker  *plugin.GRPCBroker
 	mappers []*argmapper.Func
@@ -199,7 +199,7 @@ func (c *releaseManagerClient) release(
 ) (component.Release, error) {
 	// Call our function
 
-	resp, err := c.client.Release(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.Release(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -229,26 +229,28 @@ type releaseManagerServer struct {
 	*workspaceDestroyerServer
 	*statusServer
 
+	pb.UnsafeReleaseManagerServer
+
 	Impl component.ReleaseManager
 }
 
 func (s *releaseManagerServer) ConfigStruct(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_StructResp, error) {
+) (*pb.Config_StructResp, error) {
 	return configStruct(s.Impl)
 }
 
 func (s *releaseManagerServer) Documentation(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_Documentation, error) {
+) (*pb.Config_Documentation, error) {
 	return documentation(s.Impl)
 }
 
 func (s *releaseManagerServer) Configure(
 	ctx context.Context,
-	req *proto.Config_ConfigureRequest,
+	req *pb.Config_ConfigureRequest,
 ) (*empty.Empty, error) {
 	return configure(s.Impl, req)
 }
@@ -256,7 +258,7 @@ func (s *releaseManagerServer) Configure(
 func (s *releaseManagerServer) ReleaseSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: release manager")
 	}
@@ -270,8 +272,8 @@ func (s *releaseManagerServer) ReleaseSpec(
 
 func (s *releaseManagerServer) Release(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.Release_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.Release_Resp, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
@@ -294,12 +296,12 @@ func (s *releaseManagerServer) Release(
 	}
 
 	release := raw.(component.Release)
-	result := &proto.Release_Resp{
+	result := &pb.Release_Resp{
 		Result: encoded,
-		Release: &proto.Release{
+		Release: &pb.Release{
 			Url: release.URL(),
 		},
-		DeclaredResources: &proto.DeclaredResources{
+		DeclaredResources: &pb.DeclaredResources{
 			Resources: declaredResourcesResp.DeclaredResources,
 		},
 	}
@@ -315,7 +317,7 @@ func (s *releaseManagerServer) Release(
 var (
 	_ plugin.Plugin                = (*ReleaseManagerPlugin)(nil)
 	_ plugin.GRPCPlugin            = (*ReleaseManagerPlugin)(nil)
-	_ proto.ReleaseManagerServer   = (*releaseManagerServer)(nil)
+	_ pb.ReleaseManagerServer      = (*releaseManagerServer)(nil)
 	_ component.ReleaseManager     = (*releaseManagerClient)(nil)
 	_ component.Configurable       = (*releaseManagerClient)(nil)
 	_ component.Documented         = (*releaseManagerClient)(nil)

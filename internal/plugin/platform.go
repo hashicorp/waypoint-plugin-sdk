@@ -6,20 +6,20 @@ import (
 	"reflect"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/docs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/funcspec"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pluginargs"
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/plugincomponent"
-	proto "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
+	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
 
 // PlatformPlugin implements plugin.Plugin (specifically GRPCPlugin) for
@@ -39,7 +39,7 @@ func (p *PlatformPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) e
 		Broker:  broker,
 	}
 
-	proto.RegisterPlatformServer(s, &platformServer{
+	pb.RegisterPlatformServer(s, &platformServer{
 		base: base,
 		destroyerServer: &destroyerServer{
 			base: base,
@@ -84,7 +84,7 @@ func (p *PlatformPlugin) GRPCClient(
 ) (interface{}, error) {
 	// Build our client to the platform service
 	client := &platformClient{
-		client:  proto.NewPlatformClient(c),
+		client:  pb.NewPlatformClient(c),
 		logger:  p.Logger,
 		broker:  broker,
 		mappers: p.Mappers,
@@ -238,7 +238,7 @@ func (p *PlatformPlugin) GRPCClient(
 
 // platformClient is an implementation of component.Platform over gRPC.
 type platformClient struct {
-	client  proto.PlatformClient
+	client  pb.PlatformClient
 	logger  hclog.Logger
 	broker  *plugin.GRPCBroker
 	mappers []*argmapper.Func
@@ -286,7 +286,7 @@ func (c *platformClient) deploy(
 	defer internal.Cleanup.Close()
 
 	// Call our function
-	resp, err := c.client.Deploy(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.Deploy(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -342,7 +342,7 @@ func (c *platformClient) defaultReleaser(
 	defer internal.Cleanup.Close()
 
 	// Call our function
-	resp, err := c.client.DefaultReleaser(ctx, &proto.FuncSpec_Args{Args: args})
+	resp, err := c.client.DefaultReleaser(ctx, &pb.FuncSpec_Args{Args: args})
 	if err != nil {
 		return nil, err
 	}
@@ -354,7 +354,7 @@ func (c *platformClient) defaultReleaser(
 	}
 
 	return &releaseManagerClient{
-		client:  proto.NewReleaseManagerClient(conn),
+		client:  pb.NewReleaseManagerClient(conn),
 		logger:  c.logger.Named("releaser"),
 		broker:  c.broker,
 		mappers: c.mappers,
@@ -373,27 +373,29 @@ type platformServer struct {
 	*generationServer
 	*statusServer
 
+	pb.UnsafePlatformServer
+
 	Impl component.Platform
 }
 
 func (s *platformServer) IsLogPlatform(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.ImplementsResp, error) {
+) (*pb.ImplementsResp, error) {
 	_, ok := s.Impl.(component.LogPlatform)
-	return &proto.ImplementsResp{Implements: ok}, nil
+	return &pb.ImplementsResp{Implements: ok}, nil
 }
 
 func (s *platformServer) ConfigStruct(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_StructResp, error) {
+) (*pb.Config_StructResp, error) {
 	return configStruct(s.Impl)
 }
 
 func (s *platformServer) Configure(
 	ctx context.Context,
-	req *proto.Config_ConfigureRequest,
+	req *pb.Config_ConfigureRequest,
 ) (*empty.Empty, error) {
 	return configure(s.Impl, req)
 }
@@ -401,7 +403,7 @@ func (s *platformServer) Configure(
 func (s *platformServer) Documentation(
 	ctx context.Context,
 	empty *empty.Empty,
-) (*proto.Config_Documentation, error) {
+) (*pb.Config_Documentation, error) {
 	docs, err := documentation(s.Impl)
 
 	if docs != nil {
@@ -414,7 +416,7 @@ func (s *platformServer) Documentation(
 func (s *platformServer) DeploySpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	if s.Impl == nil {
 		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: platform")
 	}
@@ -428,8 +430,8 @@ func (s *platformServer) DeploySpec(
 
 func (s *platformServer) Deploy(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.Deploy_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.Deploy_Resp, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
@@ -446,11 +448,11 @@ func (s *platformServer) Deploy(
 		return nil, err
 	}
 
-	result := &proto.Deploy_Resp{
+	result := &pb.Deploy_Resp{
 		Result:     encoded,
 		ResultJson: encodedJson,
-		Deployment: &proto.Deploy{},
-		DeclaredResources: &proto.DeclaredResources{
+		Deployment: &pb.Deploy{},
+		DeclaredResources: &pb.DeclaredResources{
 			Resources: declaredResourcesResp.DeclaredResources,
 		},
 	}
@@ -471,7 +473,7 @@ func (s *platformServer) Deploy(
 func (s *platformServer) DefaultReleaserSpec(
 	ctx context.Context,
 	args *empty.Empty,
-) (*proto.FuncSpec, error) {
+) (*pb.FuncSpec, error) {
 	var f interface{}
 	if impl, ok := s.Impl.(component.PlatformReleaser); ok {
 		f = impl.DefaultReleaserFunc()
@@ -496,8 +498,8 @@ func (s *platformServer) DefaultReleaserSpec(
 
 func (s *platformServer) DefaultReleaser(
 	ctx context.Context,
-	args *proto.FuncSpec_Args,
-) (*proto.DefaultReleaser_Resp, error) {
+	args *pb.FuncSpec_Args,
+) (*pb.DefaultReleaser_Resp, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
@@ -531,20 +533,20 @@ func (s *platformServer) DefaultReleaser(
 		base.Logger = s.Logger.Named("releaser")
 
 		server := plugin.DefaultGRPCServer(opts)
-		proto.RegisterReleaseManagerServer(server, &releaseManagerServer{
+		pb.RegisterReleaseManagerServer(server, &releaseManagerServer{
 			Impl: releaser,
 			base: &base,
 		})
 		return server
 	})
 
-	return &proto.DefaultReleaser_Resp{StreamId: id}, nil
+	return &pb.DefaultReleaser_Resp{StreamId: id}, nil
 }
 
 var (
 	_ plugin.Plugin                = (*PlatformPlugin)(nil)
 	_ plugin.GRPCPlugin            = (*PlatformPlugin)(nil)
-	_ proto.PlatformServer         = (*platformServer)(nil)
+	_ pb.PlatformServer            = (*platformServer)(nil)
 	_ component.Platform           = (*platformClient)(nil)
 	_ component.PlatformReleaser   = (*platformClient)(nil)
 	_ component.Configurable       = (*platformClient)(nil)

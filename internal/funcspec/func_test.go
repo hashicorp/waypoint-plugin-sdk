@@ -4,12 +4,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/opaqueany"
 	"github.com/stretchr/testify/require"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/hashicorp/go-hclog"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -27,18 +25,19 @@ func TestFunc(t *testing.T) {
 		require.NoError(err)
 		require.NotNil(spec)
 
-		f := Func(spec, func(args Args) (*any.Any, error) {
+		f := Func(spec, func(args Args) (*opaqueany.Any, error) {
 			require.Len(args, 1)
 			require.NotNil(args[0])
 
 			// At this point we'd normally RPC out.
-			return ptypes.MarshalAny(&empty.Empty{})
+			return opaqueany.New(&empty.Empty{})
 		})
 
-		msg, err := ptypes.MarshalAny(&empty.Empty{})
+		msg, err := opaqueany.New(&empty.Empty{})
 		require.NoError(err)
 
-		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&empty.Empty{})))
+		name := string((&empty.Empty{}).ProtoReflect().Descriptor().FullName())
+		result := f.Call(argmapper.TypedSubtype(msg, name))
 		require.NoError(result.Err())
 		require.Equal(reflect.Struct, reflect.ValueOf(result.Out(0)).Kind())
 	})
@@ -50,18 +49,19 @@ func TestFunc(t *testing.T) {
 		require.NoError(err)
 		require.NotNil(spec)
 
-		f := Func(spec, func(args Args) (*any.Any, error) {
+		f := Func(spec, func(args Args) (*opaqueany.Any, error) {
 			require.Len(args, 1)
 			require.NotNil(args[0])
 
 			// At this point we'd normally RPC out.
-			return ptypes.MarshalAny(&empty.Empty{})
+			return opaqueany.New(&empty.Empty{})
 		})
 
 		// Create an argument with the wrong type
-		msg, err := ptypes.MarshalAny(&pb.FuncSpec{})
+		msg, err := opaqueany.New(&empty.Empty{})
 		require.NoError(err)
-		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&pb.FuncSpec{})))
+		name := string((&pb.FuncSpec{}).ProtoReflect().Descriptor().FullName())
+		result := f.Call(argmapper.TypedSubtype(msg, name))
 
 		// We should have an error
 		require.Error(result.Err())
@@ -86,9 +86,11 @@ func TestFunc(t *testing.T) {
 		})
 
 		// Call the function with the proto type we expect
-		msg, err := ptypes.MarshalAny(&empty.Empty{})
+		msg, err := opaqueany.New(&empty.Empty{})
 		require.NoError(err)
-		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&empty.Empty{})))
+
+		name := string((&empty.Empty{}).ProtoReflect().Descriptor().FullName())
+		result := f.Call(argmapper.TypedSubtype(msg, name))
 
 		// Should succeed and give us our primitive
 		require.NoError(result.Err())
@@ -102,20 +104,21 @@ func TestFunc(t *testing.T) {
 		require.NoError(err)
 		require.NotNil(spec)
 
-		f := Func(spec, func(args Args, v int) (*any.Any, error) {
+		f := Func(spec, func(args Args, v int) (*opaqueany.Any, error) {
 			require.Len(args, 2)
 			require.NotNil(args[0])
 			require.NotNil(args[1])
 			require.Equal(42, v)
 
 			// At this point we'd normally RPC out.
-			return ptypes.MarshalAny(&empty.Empty{})
+			return opaqueany.New(&empty.Empty{})
 		}, argmapper.Typed(int(42)))
 
-		msg, err := ptypes.MarshalAny(&empty.Empty{})
+		msg, err := opaqueany.New(&empty.Empty{})
 		require.NoError(err)
 
-		result := f.Call(argmapper.TypedSubtype(msg, proto.MessageName(&empty.Empty{})))
+		name := string((&empty.Empty{}).ProtoReflect().Descriptor().FullName())
+		result := f.Call(argmapper.TypedSubtype(msg, name))
 		require.NoError(result.Err())
 		require.Equal(reflect.Struct, reflect.ValueOf(result.Out(0)).Kind())
 	})
@@ -127,14 +130,14 @@ func TestFunc(t *testing.T) {
 		require.NoError(err)
 		require.NotNil(spec)
 
-		f := Func(spec, func(args Args, v int) (*any.Any, error) {
+		f := Func(spec, func(args Args, v int) (*opaqueany.Any, error) {
 			require.Len(args, 2)
 			require.NotNil(args[0])
 			require.NotNil(args[1])
 			require.Equal(42, v)
 
 			// At this point we'd normally RPC out.
-			return ptypes.MarshalAny(&empty.Empty{})
+			return opaqueany.New(&empty.Empty{})
 		}, argmapper.Typed(int(42)))
 
 		result := f.Call(argmapper.Typed(true))

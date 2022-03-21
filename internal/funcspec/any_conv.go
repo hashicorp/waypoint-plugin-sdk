@@ -3,19 +3,18 @@ package funcspec
 import (
 	"reflect"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/opaqueany"
+	"google.golang.org/protobuf/proto"
 )
 
 // anyConvGen is an argmapper.ConverterGenFunc that dynamically creates
-// converters to *any.Any for types that implement proto.Message. This
-// allows automatic conversion to *any.Any.
+// converters to *opaqueany.Any for types that implement proto.Message. This
+// allows automatic conversion to *opaqueopaqueany.Any.
 //
 // This is automatically injected for all funcspec.Func calls.
 func anyConvGen(v argmapper.Value) (*argmapper.Func, error) {
-	anyType := reflect.TypeOf((*any.Any)(nil))
+	anyType := reflect.TypeOf((*opaqueany.Any)(nil))
 	protoMessageType := reflect.TypeOf((*proto.Message)(nil)).Elem()
 	if !v.Type.Implements(protoMessageType) {
 		return nil, nil
@@ -31,14 +30,14 @@ func anyConvGen(v argmapper.Value) (*argmapper.Func, error) {
 	outputSet, err := argmapper.NewValueSet([]argmapper.Value{{
 		Name:    v.Name,
 		Type:    anyType,
-		Subtype: proto.MessageName(reflect.Zero(v.Type).Interface().(proto.Message)),
+		Subtype: string(proto.MessageName(reflect.Zero(v.Type).Interface().(proto.Message))),
 	}})
 	if err != nil {
 		return nil, err
 	}
 
 	return argmapper.BuildFunc(inputSet, outputSet, func(in, out *argmapper.ValueSet) error {
-		anyVal, err := ptypes.MarshalAny(inputSet.Typed(v.Type).Value.Interface().(proto.Message))
+		anyVal, err := opaqueany.New(inputSet.Typed(v.Type).Value.Interface().(proto.Message))
 		if err != nil {
 			return err
 		}
@@ -49,11 +48,11 @@ func anyConvGen(v argmapper.Value) (*argmapper.Func, error) {
 }
 
 type protoToAny interface {
-	Proto() *any.Any
+	Proto() *opaqueany.Any
 }
 
 func fromConvGen(v argmapper.Value) (*argmapper.Func, error) {
-	anyType := reflect.TypeOf((*any.Any)(nil))
+	anyType := reflect.TypeOf((*opaqueany.Any)(nil))
 	protoMessageType := reflect.TypeOf((*protoToAny)(nil)).Elem()
 	if !v.Type.Implements(protoMessageType) {
 		return nil, nil
@@ -69,14 +68,14 @@ func fromConvGen(v argmapper.Value) (*argmapper.Func, error) {
 	outputSet, err := argmapper.NewValueSet([]argmapper.Value{{
 		Name:    v.Name,
 		Type:    anyType,
-		Subtype: proto.MessageName(reflect.Zero(v.Type).Interface().(proto.Message)),
+		Subtype: string(proto.MessageName(reflect.Zero(v.Type).Interface().(proto.Message))),
 	}})
 	if err != nil {
 		return nil, err
 	}
 
 	return argmapper.BuildFunc(inputSet, outputSet, func(in, out *argmapper.ValueSet) error {
-		anyVal, err := ptypes.MarshalAny(inputSet.Typed(v.Type).Value.Interface().(proto.Message))
+		anyVal, err := opaqueany.New(inputSet.Typed(v.Type).Value.Interface().(proto.Message))
 		if err != nil {
 			return err
 		}

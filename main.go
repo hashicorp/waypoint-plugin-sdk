@@ -4,13 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/mattn/go-colorable"
 	"os"
 	"os/signal"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
+	"github.com/mattn/go-colorable"
 
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
@@ -21,7 +22,7 @@ import (
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/stdio"
 )
 
-//go:generate sh -c "protoc -I`go list -m -f \"{{.Dir}}\" github.com/mitchellh/protostructure` -I ./thirdparty/proto/api-common-protos -I proto/ proto/*.proto --go_out=plugins=grpc:proto/gen/"
+//go:generate sh -c "protoc -I`go list -m -f \"{{.Dir}}\" github.com/hashicorp/protostructure` -I`go list -m -f \"{{.Dir}}\" github.com/hashicorp/opaqueany` -I ./thirdparty/proto/api-common-protos -I proto/ proto/*.proto --go_out=proto/gen/ --go-grpc_out=proto/gen/"
 
 // Main is the primary entrypoint for plugins serving components. This
 // function never returns; it blocks until the program is exited. This should

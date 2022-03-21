@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 // Original copyright 2020 ActiveState Software. All rights reserved.

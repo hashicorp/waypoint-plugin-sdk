@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/golang/protobuf/ptypes"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-plugin"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	"github.com/hashicorp/waypoint-plugin-sdk/component/mocks"
@@ -142,7 +142,7 @@ func TestPlatform_status(t *testing.T) {
 			Resources:     resources,
 			External:      true,
 			HealthMessage: "ready to go",
-			GeneratedTime: ptypes.TimestampNow(),
+			GeneratedTime: timestamppb.Now(),
 			Health:        pb.StatusReport_READY,
 		}, nil
 	}

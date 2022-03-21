@@ -4,11 +4,11 @@ import (
 	"context"
 	"io"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -118,6 +118,8 @@ func (p *ExecPlugin) GRPCClient(
 // execServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type execServer struct {
+	pb.UnimplementedExecSessionServiceServer
+
 	Impl    *component.ExecSessionInfo
 	Mappers []*argmapper.Func
 	Logger  hclog.Logger

@@ -3,16 +3,16 @@ package plugincomponent
 import (
 	"encoding/json"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/hashicorp/opaqueany"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/component"
+	"google.golang.org/protobuf/proto"
 )
 
 // Deployment implements component.Deployment.
 type Deployment struct {
-	Any         *any.Any
+	Any         *opaqueany.Any
 	AnyJson     string
 	Deployment  *pb.Deploy
 	TemplateVal map[string]interface{}

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-argmapper"
+	"github.com/hashicorp/opaqueany"
 
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
 )
@@ -14,7 +14,7 @@ import (
 // the FuncSpec. This can be used in the callback (cb) to Func.
 type Args []*pb.FuncSpec_Value
 
-// appendValue appends an argmapper.Value to Args. The value must be an *any.Any
+// appendValue appends an argmapper.Value to Args. The value must be an *opaqueany.Any
 // or a supported primitive value. If an invalid value is given this will panic.
 func appendValue(args Args, v argmapper.Value) Args {
 	value := &pb.FuncSpec_Value{
@@ -29,7 +29,7 @@ func appendValue(args Args, v argmapper.Value) Args {
 	}
 
 	switch v := v.Value.Interface().(type) {
-	case *any.Any:
+	case *opaqueany.Any:
 		value.Value = &pb.FuncSpec_Value_ProtoAny{ProtoAny: v}
 
 	case bool:

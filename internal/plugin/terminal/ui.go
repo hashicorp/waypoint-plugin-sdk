@@ -7,13 +7,13 @@ import (
 	"os"
 	"sync"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
 	statuspkg "google.golang.org/grpc/status"
+	empty "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/hashicorp/waypoint-plugin-sdk/internal/pkg/pty"
 	pb "github.com/hashicorp/waypoint-plugin-sdk/proto/gen"
@@ -68,6 +68,8 @@ func (p *UIPlugin) GRPCClient(
 // uiServer is a gRPC server that the client talks to and calls a
 // real implementation of the component.
 type uiServer struct {
+	pb.UnimplementedTerminalUIServiceServer
+
 	Impl    terminal.UI
 	Mappers []*argmapper.Func
 	Logger  hclog.Logger
