@@ -1,4 +1,4 @@
-PROTOC_VERSION="3.15.8"
+PROTOC_VERSION="3.17.3"
 
 .PHONY: gen
 gen: # generate go code
