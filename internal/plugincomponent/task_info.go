@@ -6,7 +6,8 @@ import (
 )
 
 type RunningTask struct {
-	Any *opaqueany.Any
+	Any        *opaqueany.Any
+	ResourceId string
 }
 
 func (c *RunningTask) Proto() proto.Message { return c.Any }

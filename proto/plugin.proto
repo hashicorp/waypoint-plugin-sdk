@@ -959,5 +959,9 @@ message TaskLaunch {
   message Resp {
     opaqueany.Any result = 1;
     string result_json = 2;
+    // the id for the launched resource name on the given Task platform. This
+    // can be referenced later to track the pod, job, etc that this TaskLaunch
+    // created.
+    string resource_id = 3;
   }
 }

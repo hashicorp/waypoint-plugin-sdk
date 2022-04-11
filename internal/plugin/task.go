@@ -145,7 +145,8 @@ func (c *taskLauncherClient) start(
 	c.logger.Info("start done", "value", resp.Result)
 
 	return &plugincomponent.RunningTask{
-		Any: resp.Result,
+		Any:        resp.Result,
+		ResourceId: resp.ResourceId,
 	}, nil
 }
 
@@ -216,7 +217,7 @@ func (s *taskLauncherServer) StartTask(
 	internal := s.internal()
 	defer internal.Cleanup.Close()
 
-	encoded, encodedJson, _, err := callDynamicFuncAny2(s.Impl.StartTaskFunc(), args.Args,
+	encoded, encodedJson, raw, err := callDynamicFuncAny2(s.Impl.StartTaskFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Logger(s.Logger),
 		argmapper.Typed(ctx),
@@ -226,8 +227,20 @@ func (s *taskLauncherServer) StartTask(
 		return nil, err
 	}
 
-	result := &pb.TaskLaunch_Resp{Result: encoded, ResultJson: encodedJson}
-	return result, nil
+	// Grab response to set resource id from raw result in plugin
+	tlResp, ok := raw.(*pb.TaskLaunch_Resp)
+	if !ok {
+		return nil, status.Errorf(codes.Aborted, "task result returned by plugin is not a *proto.TaskLaunch_Resp")
+	}
+
+	resourceId := tlResp.ResourceId
+
+	resp := &pb.TaskLaunch_Resp{
+		Result:     encoded,
+		ResultJson: encodedJson,
+		ResourceId: resourceId,
+	}
+	return resp, nil
 }
 
 func (s *taskLauncherServer) StopSpec(
