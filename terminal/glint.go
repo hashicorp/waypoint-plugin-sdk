@@ -51,10 +51,6 @@ func (ui *glintUI) Input(input *Input) (string, error) {
 
 // Interactive implements UI
 func (ui *glintUI) Interactive() bool {
-	// TODO(mitchellh): We can make this interactive later but Glint itself
-	// doesn't support input yet. We can pause the document, do some input,
-	// then resume potentially.
-	//return false
 	return true
 }
 
