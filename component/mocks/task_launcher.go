@@ -40,3 +40,19 @@ func (_m *TaskLauncher) StopTaskFunc() interface{} {
 
 	return r0
 }
+
+// WatchTaskFunc provides a mock function with given fields:
+func (_m *TaskLauncher) WatchTaskFunc() interface{} {
+	ret := _m.Called()
+
+	var r0 interface{}
+	if rf, ok := ret.Get(0).(func() interface{}); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(interface{})
+		}
+	}
+
+	return r0
+}

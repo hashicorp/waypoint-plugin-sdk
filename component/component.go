@@ -62,6 +62,12 @@ type TaskLauncher interface {
 	// StopTaskFunc is called to force a previously started task to stop. It will
 	// be passed the state value returned by StartTaskFunc for identification.
 	StopTaskFunc() interface{}
+
+	// WatchTaskFunc is called after Start but before Stop to block and
+	// watch a single task. It should stream output to the given UI and
+	// return the exit status after it exits. It is given the state resulting
+	// from StartTaskFunc so that it can look up the resource.
+	WatchTaskFunc() interface{}
 }
 
 // Builder is responsible for building an artifact from source.

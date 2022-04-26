@@ -22,3 +22,9 @@ type TaskLaunchInfo struct {
 	// arguments to that program.
 	Arguments []string
 }
+
+// TaskResult is the result value that must be returned by the RunTask
+// function.
+type TaskResult struct {
+	ExitCode int
+}
