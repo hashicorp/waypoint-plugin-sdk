@@ -62,6 +62,17 @@ type TaskLauncher interface {
 	// StopTaskFunc is called to force a previously started task to stop. It will
 	// be passed the state value returned by StartTaskFunc for identification.
 	StopTaskFunc() interface{}
+
+	// RunTaskFunc is the synchronous version of task launching; the task
+	// launcher should start the task and block until it completes.
+	//
+	// Beyond being synchronous, RunTask has access to a UI and is expected
+	// to stream output (if available) to the UI. Further, it is expected
+	// to return the result of the execution as an integer return value.
+	//
+	// This function is NOT allowed to return arbitrary protobuf state because
+	// it is one-and-done.
+	RunTaskFunc() interface{}
 }
 
 // Builder is responsible for building an artifact from source.

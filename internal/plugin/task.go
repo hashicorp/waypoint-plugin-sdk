@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/hashicorp/go-argmapper"
 	"github.com/hashicorp/go-hclog"
@@ -131,6 +132,23 @@ func (c *taskLauncherClient) StopTaskFunc() interface{} {
 	)
 }
 
+func (c *taskLauncherClient) RunTaskFunc() interface{} {
+	// Get the build spec
+	spec, err := c.client.RunSpec(context.Background(), &empty.Empty{})
+	if err != nil {
+		return funcErr(err)
+	}
+
+	return funcspec.Func(spec, c.run,
+		argmapper.Logger(c.logger),
+		argmapper.Typed(&pluginargs.Internal{
+			Broker:  c.broker,
+			Mappers: c.mappers,
+			Cleanup: &pluginargs.Cleanup{},
+		}),
+	)
+}
+
 func (c *taskLauncherClient) start(
 	ctx context.Context,
 	args funcspec.Args,
@@ -160,6 +178,26 @@ func (c *taskLauncherClient) stop(
 	}
 
 	return nil
+}
+
+func (c *taskLauncherClient) run(
+	ctx context.Context,
+	args funcspec.Args,
+	internal *pluginargs.Internal,
+) (*component.TaskResult, error) {
+	// Run the cleanup
+	defer internal.Cleanup.Close()
+
+	// Call our function
+	resp, err := c.client.RunTask(ctx, &pb.FuncSpec_Args{Args: args})
+	if err != nil {
+		c.logger.Error("error starting task", "error", err)
+		return nil, err
+	}
+
+	return &component.TaskResult{
+		ExitCode: int(resp.ExitCode),
+	}, nil
 }
 
 // taskLauncherServer is a gRPC server that the client talks to and calls a
@@ -263,6 +301,49 @@ func (s *taskLauncherServer) StopTask(
 	}
 
 	return &empty.Empty{}, nil
+}
+
+func (s *taskLauncherServer) RunSpec(
+	ctx context.Context,
+	args *empty.Empty,
+) (*pb.FuncSpec, error) {
+	if s.Impl == nil {
+		return nil, status.Errorf(codes.Unimplemented, "plugin does not implement: taskLauncher")
+	}
+
+	return funcspec.Spec(s.Impl.RunTaskFunc(),
+		argmapper.Logger(s.Logger),
+		argmapper.ConverterFunc(s.Mappers...),
+		argmapper.Typed(s.internal()),
+		argmapper.FilterOutput(
+			argmapper.FilterType(reflect.TypeOf((*component.TaskResult)(nil))),
+		),
+	)
+}
+
+func (s *taskLauncherServer) RunTask(
+	ctx context.Context,
+	args *pb.FuncSpec_Args,
+) (*pb.TaskRun_Resp, error) {
+	internal := s.internal()
+	defer internal.Cleanup.Close()
+
+	result, err := callDynamicFunc2(s.Impl.RunTaskFunc(), args.Args,
+		argmapper.ConverterFunc(s.Mappers...),
+		argmapper.Logger(s.Logger),
+		argmapper.Typed(ctx),
+		argmapper.Typed(internal),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := &pb.TaskRun_Resp{}
+	if r, ok := result.(*component.TaskResult); ok {
+		ret.ExitCode = int32(r.ExitCode)
+	}
+
+	return ret, nil
 }
 
 var (

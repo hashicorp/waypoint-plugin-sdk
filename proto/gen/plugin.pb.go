@@ -1416,6 +1416,44 @@ func (*TaskLaunch) Descriptor() ([]byte, []int) {
 	return file_plugin_proto_rawDescGZIP(), []int{24}
 }
 
+type TaskRun struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *TaskRun) Reset() {
+	*x = TaskRun{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[25]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TaskRun) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskRun) ProtoMessage() {}
+
+func (x *TaskRun) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[25]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskRun.ProtoReflect.Descriptor instead.
+func (*TaskRun) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{25}
+}
+
 // See component.Source
 type Args_Source struct {
 	state         protoimpl.MessageState
@@ -1431,7 +1469,7 @@ type Args_Source struct {
 func (x *Args_Source) Reset() {
 	*x = Args_Source{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[25]
+		mi := &file_plugin_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1444,7 +1482,7 @@ func (x *Args_Source) String() string {
 func (*Args_Source) ProtoMessage() {}
 
 func (x *Args_Source) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[25]
+	mi := &file_plugin_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1490,7 +1528,7 @@ type Args_JobInfo struct {
 func (x *Args_JobInfo) Reset() {
 	*x = Args_JobInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[26]
+		mi := &file_plugin_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1503,7 +1541,7 @@ func (x *Args_JobInfo) String() string {
 func (*Args_JobInfo) ProtoMessage() {}
 
 func (x *Args_JobInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[26]
+	mi := &file_plugin_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1571,7 +1609,7 @@ type Args_DeploymentConfig struct {
 func (x *Args_DeploymentConfig) Reset() {
 	*x = Args_DeploymentConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[27]
+		mi := &file_plugin_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1584,7 +1622,7 @@ func (x *Args_DeploymentConfig) String() string {
 func (*Args_DeploymentConfig) ProtoMessage() {}
 
 func (x *Args_DeploymentConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[27]
+	mi := &file_plugin_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1654,7 +1692,7 @@ type Args_DataDir struct {
 func (x *Args_DataDir) Reset() {
 	*x = Args_DataDir{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[28]
+		mi := &file_plugin_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1667,7 +1705,7 @@ func (x *Args_DataDir) String() string {
 func (*Args_DataDir) ProtoMessage() {}
 
 func (x *Args_DataDir) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[28]
+	mi := &file_plugin_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1696,7 +1734,7 @@ type Args_Logger struct {
 func (x *Args_Logger) Reset() {
 	*x = Args_Logger{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[29]
+		mi := &file_plugin_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1709,7 +1747,7 @@ func (x *Args_Logger) String() string {
 func (*Args_Logger) ProtoMessage() {}
 
 func (x *Args_Logger) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[29]
+	mi := &file_plugin_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1744,7 +1782,7 @@ type Args_TerminalUI struct {
 func (x *Args_TerminalUI) Reset() {
 	*x = Args_TerminalUI{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[30]
+		mi := &file_plugin_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1757,7 +1795,7 @@ func (x *Args_TerminalUI) String() string {
 func (*Args_TerminalUI) ProtoMessage() {}
 
 func (x *Args_TerminalUI) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[30]
+	mi := &file_plugin_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1795,7 +1833,7 @@ type Args_ReleaseTargets struct {
 func (x *Args_ReleaseTargets) Reset() {
 	*x = Args_ReleaseTargets{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[31]
+		mi := &file_plugin_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1808,7 +1846,7 @@ func (x *Args_ReleaseTargets) String() string {
 func (*Args_ReleaseTargets) ProtoMessage() {}
 
 func (x *Args_ReleaseTargets) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[31]
+	mi := &file_plugin_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1844,7 +1882,7 @@ type Args_LabelSet struct {
 func (x *Args_LabelSet) Reset() {
 	*x = Args_LabelSet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[32]
+		mi := &file_plugin_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1857,7 +1895,7 @@ func (x *Args_LabelSet) String() string {
 func (*Args_LabelSet) ProtoMessage() {}
 
 func (x *Args_LabelSet) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[32]
+	mi := &file_plugin_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1904,7 +1942,7 @@ type Args_ExecSessionInfo struct {
 func (x *Args_ExecSessionInfo) Reset() {
 	*x = Args_ExecSessionInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[33]
+		mi := &file_plugin_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1917,7 +1955,7 @@ func (x *Args_ExecSessionInfo) String() string {
 func (*Args_ExecSessionInfo) ProtoMessage() {}
 
 func (x *Args_ExecSessionInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[33]
+	mi := &file_plugin_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1988,7 +2026,7 @@ type Args_LogViewer struct {
 func (x *Args_LogViewer) Reset() {
 	*x = Args_LogViewer{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[34]
+		mi := &file_plugin_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2001,7 +2039,7 @@ func (x *Args_LogViewer) String() string {
 func (*Args_LogViewer) ProtoMessage() {}
 
 func (x *Args_LogViewer) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[34]
+	mi := &file_plugin_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2056,7 +2094,7 @@ type Args_TaskLaunchInfo struct {
 func (x *Args_TaskLaunchInfo) Reset() {
 	*x = Args_TaskLaunchInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[35]
+		mi := &file_plugin_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2069,7 +2107,7 @@ func (x *Args_TaskLaunchInfo) String() string {
 func (*Args_TaskLaunchInfo) ProtoMessage() {}
 
 func (x *Args_TaskLaunchInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[35]
+	mi := &file_plugin_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2125,7 +2163,7 @@ type Args_DataDir_Project struct {
 func (x *Args_DataDir_Project) Reset() {
 	*x = Args_DataDir_Project{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[36]
+		mi := &file_plugin_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2138,7 +2176,7 @@ func (x *Args_DataDir_Project) String() string {
 func (*Args_DataDir_Project) ProtoMessage() {}
 
 func (x *Args_DataDir_Project) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[36]
+	mi := &file_plugin_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2180,7 +2218,7 @@ type Args_DataDir_App struct {
 func (x *Args_DataDir_App) Reset() {
 	*x = Args_DataDir_App{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[37]
+		mi := &file_plugin_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2193,7 +2231,7 @@ func (x *Args_DataDir_App) String() string {
 func (*Args_DataDir_App) ProtoMessage() {}
 
 func (x *Args_DataDir_App) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[37]
+	mi := &file_plugin_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2235,7 +2273,7 @@ type Args_DataDir_Component struct {
 func (x *Args_DataDir_Component) Reset() {
 	*x = Args_DataDir_Component{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[38]
+		mi := &file_plugin_proto_msgTypes[39]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2248,7 +2286,7 @@ func (x *Args_DataDir_Component) String() string {
 func (*Args_DataDir_Component) ProtoMessage() {}
 
 func (x *Args_DataDir_Component) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[38]
+	mi := &file_plugin_proto_msgTypes[39]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2291,7 +2329,7 @@ type Args_ReleaseTargets_Target struct {
 func (x *Args_ReleaseTargets_Target) Reset() {
 	*x = Args_ReleaseTargets_Target{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[39]
+		mi := &file_plugin_proto_msgTypes[40]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2304,7 +2342,7 @@ func (x *Args_ReleaseTargets_Target) String() string {
 func (*Args_ReleaseTargets_Target) ProtoMessage() {}
 
 func (x *Args_ReleaseTargets_Target) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[39]
+	mi := &file_plugin_proto_msgTypes[40]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2361,7 +2399,7 @@ type FuncSpec_Value struct {
 func (x *FuncSpec_Value) Reset() {
 	*x = FuncSpec_Value{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[42]
+		mi := &file_plugin_proto_msgTypes[43]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2374,7 +2412,7 @@ func (x *FuncSpec_Value) String() string {
 func (*FuncSpec_Value) ProtoMessage() {}
 
 func (x *FuncSpec_Value) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[42]
+	mi := &file_plugin_proto_msgTypes[43]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2505,7 +2543,7 @@ type FuncSpec_Args struct {
 func (x *FuncSpec_Args) Reset() {
 	*x = FuncSpec_Args{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[43]
+		mi := &file_plugin_proto_msgTypes[44]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2518,7 +2556,7 @@ func (x *FuncSpec_Args) String() string {
 func (*FuncSpec_Args) ProtoMessage() {}
 
 func (x *FuncSpec_Args) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[43]
+	mi := &file_plugin_proto_msgTypes[44]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2556,7 +2594,7 @@ type Config_ConfigureRequest struct {
 func (x *Config_ConfigureRequest) Reset() {
 	*x = Config_ConfigureRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[44]
+		mi := &file_plugin_proto_msgTypes[45]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2569,7 +2607,7 @@ func (x *Config_ConfigureRequest) String() string {
 func (*Config_ConfigureRequest) ProtoMessage() {}
 
 func (x *Config_ConfigureRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[44]
+	mi := &file_plugin_proto_msgTypes[45]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2607,7 +2645,7 @@ type Config_StructResp struct {
 func (x *Config_StructResp) Reset() {
 	*x = Config_StructResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[45]
+		mi := &file_plugin_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2620,7 +2658,7 @@ func (x *Config_StructResp) String() string {
 func (*Config_StructResp) ProtoMessage() {}
 
 func (x *Config_StructResp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[45]
+	mi := &file_plugin_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2662,7 +2700,7 @@ type Config_FieldDocumentation struct {
 func (x *Config_FieldDocumentation) Reset() {
 	*x = Config_FieldDocumentation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[46]
+		mi := &file_plugin_proto_msgTypes[47]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2675,7 +2713,7 @@ func (x *Config_FieldDocumentation) String() string {
 func (*Config_FieldDocumentation) ProtoMessage() {}
 
 func (x *Config_FieldDocumentation) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[46]
+	mi := &file_plugin_proto_msgTypes[47]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2767,7 +2805,7 @@ type Config_MapperDocumentation struct {
 func (x *Config_MapperDocumentation) Reset() {
 	*x = Config_MapperDocumentation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[47]
+		mi := &file_plugin_proto_msgTypes[48]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2780,7 +2818,7 @@ func (x *Config_MapperDocumentation) String() string {
 func (*Config_MapperDocumentation) ProtoMessage() {}
 
 func (x *Config_MapperDocumentation) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[47]
+	mi := &file_plugin_proto_msgTypes[48]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2835,7 +2873,7 @@ type Config_Documentation struct {
 func (x *Config_Documentation) Reset() {
 	*x = Config_Documentation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[48]
+		mi := &file_plugin_proto_msgTypes[49]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2848,7 +2886,7 @@ func (x *Config_Documentation) String() string {
 func (*Config_Documentation) ProtoMessage() {}
 
 func (x *Config_Documentation) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[48]
+	mi := &file_plugin_proto_msgTypes[49]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2932,7 +2970,7 @@ type Auth_AuthResponse struct {
 func (x *Auth_AuthResponse) Reset() {
 	*x = Auth_AuthResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[52]
+		mi := &file_plugin_proto_msgTypes[53]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2945,7 +2983,7 @@ func (x *Auth_AuthResponse) String() string {
 func (*Auth_AuthResponse) ProtoMessage() {}
 
 func (x *Auth_AuthResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[52]
+	mi := &file_plugin_proto_msgTypes[53]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2980,7 +3018,7 @@ type Generation_Resp struct {
 func (x *Generation_Resp) Reset() {
 	*x = Generation_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[53]
+		mi := &file_plugin_proto_msgTypes[54]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2993,7 +3031,7 @@ func (x *Generation_Resp) String() string {
 func (*Generation_Resp) ProtoMessage() {}
 
 func (x *Generation_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[53]
+	mi := &file_plugin_proto_msgTypes[54]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3032,7 +3070,7 @@ type Framework_ResourceManagerState struct {
 func (x *Framework_ResourceManagerState) Reset() {
 	*x = Framework_ResourceManagerState{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[54]
+		mi := &file_plugin_proto_msgTypes[55]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3045,7 +3083,7 @@ func (x *Framework_ResourceManagerState) String() string {
 func (*Framework_ResourceManagerState) ProtoMessage() {}
 
 func (x *Framework_ResourceManagerState) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[54]
+	mi := &file_plugin_proto_msgTypes[55]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3096,7 +3134,7 @@ type Framework_ResourceState struct {
 func (x *Framework_ResourceState) Reset() {
 	*x = Framework_ResourceState{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[55]
+		mi := &file_plugin_proto_msgTypes[56]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3109,7 +3147,7 @@ func (x *Framework_ResourceState) String() string {
 func (*Framework_ResourceState) ProtoMessage() {}
 
 func (x *Framework_ResourceState) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[55]
+	mi := &file_plugin_proto_msgTypes[56]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3159,7 +3197,7 @@ type Ref_DeclaredResource struct {
 func (x *Ref_DeclaredResource) Reset() {
 	*x = Ref_DeclaredResource{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[56]
+		mi := &file_plugin_proto_msgTypes[57]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3172,7 +3210,7 @@ func (x *Ref_DeclaredResource) String() string {
 func (*Ref_DeclaredResource) ProtoMessage() {}
 
 func (x *Ref_DeclaredResource) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[56]
+	mi := &file_plugin_proto_msgTypes[57]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3236,7 +3274,7 @@ type StatusReport_Resource struct {
 func (x *StatusReport_Resource) Reset() {
 	*x = StatusReport_Resource{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[57]
+		mi := &file_plugin_proto_msgTypes[58]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3249,7 +3287,7 @@ func (x *StatusReport_Resource) String() string {
 func (*StatusReport_Resource) ProtoMessage() {}
 
 func (x *StatusReport_Resource) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[57]
+	mi := &file_plugin_proto_msgTypes[58]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3361,7 +3399,7 @@ type ExecSession_OutputRequest struct {
 func (x *ExecSession_OutputRequest) Reset() {
 	*x = ExecSession_OutputRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[58]
+		mi := &file_plugin_proto_msgTypes[59]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3374,7 +3412,7 @@ func (x *ExecSession_OutputRequest) String() string {
 func (*ExecSession_OutputRequest) ProtoMessage() {}
 
 func (x *ExecSession_OutputRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[58]
+	mi := &file_plugin_proto_msgTypes[59]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3419,7 +3457,7 @@ type ExecSession_InputRequest struct {
 func (x *ExecSession_InputRequest) Reset() {
 	*x = ExecSession_InputRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[59]
+		mi := &file_plugin_proto_msgTypes[60]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3432,7 +3470,7 @@ func (x *ExecSession_InputRequest) String() string {
 func (*ExecSession_InputRequest) ProtoMessage() {}
 
 func (x *ExecSession_InputRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[59]
+	mi := &file_plugin_proto_msgTypes[60]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3511,7 +3549,7 @@ type Logs_Resp struct {
 func (x *Logs_Resp) Reset() {
 	*x = Logs_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[60]
+		mi := &file_plugin_proto_msgTypes[61]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3524,7 +3562,7 @@ func (x *Logs_Resp) String() string {
 func (*Logs_Resp) ProtoMessage() {}
 
 func (x *Logs_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[60]
+	mi := &file_plugin_proto_msgTypes[61]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3558,7 +3596,7 @@ type Logs_NextBatchResp struct {
 func (x *Logs_NextBatchResp) Reset() {
 	*x = Logs_NextBatchResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[61]
+		mi := &file_plugin_proto_msgTypes[62]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3571,7 +3609,7 @@ func (x *Logs_NextBatchResp) String() string {
 func (*Logs_NextBatchResp) ProtoMessage() {}
 
 func (x *Logs_NextBatchResp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[61]
+	mi := &file_plugin_proto_msgTypes[62]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3607,7 +3645,7 @@ type Logs_Event struct {
 func (x *Logs_Event) Reset() {
 	*x = Logs_Event{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[62]
+		mi := &file_plugin_proto_msgTypes[63]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3620,7 +3658,7 @@ func (x *Logs_Event) String() string {
 func (*Logs_Event) ProtoMessage() {}
 
 func (x *Logs_Event) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[62]
+	mi := &file_plugin_proto_msgTypes[63]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3668,7 +3706,7 @@ type TerminalUI_IsInteractiveResponse struct {
 func (x *TerminalUI_IsInteractiveResponse) Reset() {
 	*x = TerminalUI_IsInteractiveResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[63]
+		mi := &file_plugin_proto_msgTypes[64]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3681,7 +3719,7 @@ func (x *TerminalUI_IsInteractiveResponse) String() string {
 func (*TerminalUI_IsInteractiveResponse) ProtoMessage() {}
 
 func (x *TerminalUI_IsInteractiveResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[63]
+	mi := &file_plugin_proto_msgTypes[64]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3715,7 +3753,7 @@ type TerminalUI_OutputRequest struct {
 func (x *TerminalUI_OutputRequest) Reset() {
 	*x = TerminalUI_OutputRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[64]
+		mi := &file_plugin_proto_msgTypes[65]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3728,7 +3766,7 @@ func (x *TerminalUI_OutputRequest) String() string {
 func (*TerminalUI_OutputRequest) ProtoMessage() {}
 
 func (x *TerminalUI_OutputRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[64]
+	mi := &file_plugin_proto_msgTypes[65]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3764,7 +3802,7 @@ type TerminalUI_Response struct {
 func (x *TerminalUI_Response) Reset() {
 	*x = TerminalUI_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[65]
+		mi := &file_plugin_proto_msgTypes[66]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3777,7 +3815,7 @@ func (x *TerminalUI_Response) String() string {
 func (*TerminalUI_Response) ProtoMessage() {}
 
 func (x *TerminalUI_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[65]
+	mi := &file_plugin_proto_msgTypes[66]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3837,7 +3875,7 @@ type TerminalUI_Event struct {
 func (x *TerminalUI_Event) Reset() {
 	*x = TerminalUI_Event{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[66]
+		mi := &file_plugin_proto_msgTypes[67]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3850,7 +3888,7 @@ func (x *TerminalUI_Event) String() string {
 func (*TerminalUI_Event) ProtoMessage() {}
 
 func (x *TerminalUI_Event) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[66]
+	mi := &file_plugin_proto_msgTypes[67]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3994,7 +4032,7 @@ type TerminalUI_Event_Input struct {
 func (x *TerminalUI_Event_Input) Reset() {
 	*x = TerminalUI_Event_Input{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[67]
+		mi := &file_plugin_proto_msgTypes[68]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4007,7 +4045,7 @@ func (x *TerminalUI_Event_Input) String() string {
 func (*TerminalUI_Event_Input) ProtoMessage() {}
 
 func (x *TerminalUI_Event_Input) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[67]
+	mi := &file_plugin_proto_msgTypes[68]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4056,7 +4094,7 @@ type TerminalUI_Event_InputResp struct {
 func (x *TerminalUI_Event_InputResp) Reset() {
 	*x = TerminalUI_Event_InputResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[68]
+		mi := &file_plugin_proto_msgTypes[69]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4069,7 +4107,7 @@ func (x *TerminalUI_Event_InputResp) String() string {
 func (*TerminalUI_Event_InputResp) ProtoMessage() {}
 
 func (x *TerminalUI_Event_InputResp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[68]
+	mi := &file_plugin_proto_msgTypes[69]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4112,7 +4150,7 @@ type TerminalUI_Event_Status struct {
 func (x *TerminalUI_Event_Status) Reset() {
 	*x = TerminalUI_Event_Status{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[69]
+		mi := &file_plugin_proto_msgTypes[70]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4125,7 +4163,7 @@ func (x *TerminalUI_Event_Status) String() string {
 func (*TerminalUI_Event_Status) ProtoMessage() {}
 
 func (x *TerminalUI_Event_Status) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[69]
+	mi := &file_plugin_proto_msgTypes[70]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4174,7 +4212,7 @@ type TerminalUI_Event_Line struct {
 func (x *TerminalUI_Event_Line) Reset() {
 	*x = TerminalUI_Event_Line{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[70]
+		mi := &file_plugin_proto_msgTypes[71]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4187,7 +4225,7 @@ func (x *TerminalUI_Event_Line) String() string {
 func (*TerminalUI_Event_Line) ProtoMessage() {}
 
 func (x *TerminalUI_Event_Line) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[70]
+	mi := &file_plugin_proto_msgTypes[71]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4229,7 +4267,7 @@ type TerminalUI_Event_Raw struct {
 func (x *TerminalUI_Event_Raw) Reset() {
 	*x = TerminalUI_Event_Raw{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[71]
+		mi := &file_plugin_proto_msgTypes[72]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4242,7 +4280,7 @@ func (x *TerminalUI_Event_Raw) String() string {
 func (*TerminalUI_Event_Raw) ProtoMessage() {}
 
 func (x *TerminalUI_Event_Raw) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[71]
+	mi := &file_plugin_proto_msgTypes[72]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4284,7 +4322,7 @@ type TerminalUI_Event_NamedValue struct {
 func (x *TerminalUI_Event_NamedValue) Reset() {
 	*x = TerminalUI_Event_NamedValue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[72]
+		mi := &file_plugin_proto_msgTypes[73]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4297,7 +4335,7 @@ func (x *TerminalUI_Event_NamedValue) String() string {
 func (*TerminalUI_Event_NamedValue) ProtoMessage() {}
 
 func (x *TerminalUI_Event_NamedValue) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[72]
+	mi := &file_plugin_proto_msgTypes[73]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4338,7 +4376,7 @@ type TerminalUI_Event_NamedValues struct {
 func (x *TerminalUI_Event_NamedValues) Reset() {
 	*x = TerminalUI_Event_NamedValues{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[73]
+		mi := &file_plugin_proto_msgTypes[74]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4351,7 +4389,7 @@ func (x *TerminalUI_Event_NamedValues) String() string {
 func (*TerminalUI_Event_NamedValues) ProtoMessage() {}
 
 func (x *TerminalUI_Event_NamedValues) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[73]
+	mi := &file_plugin_proto_msgTypes[74]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4386,7 +4424,7 @@ type TerminalUI_Event_TableEntry struct {
 func (x *TerminalUI_Event_TableEntry) Reset() {
 	*x = TerminalUI_Event_TableEntry{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[74]
+		mi := &file_plugin_proto_msgTypes[75]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4399,7 +4437,7 @@ func (x *TerminalUI_Event_TableEntry) String() string {
 func (*TerminalUI_Event_TableEntry) ProtoMessage() {}
 
 func (x *TerminalUI_Event_TableEntry) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[74]
+	mi := &file_plugin_proto_msgTypes[75]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4440,7 +4478,7 @@ type TerminalUI_Event_TableRow struct {
 func (x *TerminalUI_Event_TableRow) Reset() {
 	*x = TerminalUI_Event_TableRow{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[75]
+		mi := &file_plugin_proto_msgTypes[76]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4453,7 +4491,7 @@ func (x *TerminalUI_Event_TableRow) String() string {
 func (*TerminalUI_Event_TableRow) ProtoMessage() {}
 
 func (x *TerminalUI_Event_TableRow) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[75]
+	mi := &file_plugin_proto_msgTypes[76]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4488,7 +4526,7 @@ type TerminalUI_Event_Table struct {
 func (x *TerminalUI_Event_Table) Reset() {
 	*x = TerminalUI_Event_Table{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[76]
+		mi := &file_plugin_proto_msgTypes[77]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4501,7 +4539,7 @@ func (x *TerminalUI_Event_Table) String() string {
 func (*TerminalUI_Event_Table) ProtoMessage() {}
 
 func (x *TerminalUI_Event_Table) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[76]
+	mi := &file_plugin_proto_msgTypes[77]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4543,7 +4581,7 @@ type TerminalUI_Event_StepGroup struct {
 func (x *TerminalUI_Event_StepGroup) Reset() {
 	*x = TerminalUI_Event_StepGroup{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[77]
+		mi := &file_plugin_proto_msgTypes[78]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4556,7 +4594,7 @@ func (x *TerminalUI_Event_StepGroup) String() string {
 func (*TerminalUI_Event_StepGroup) ProtoMessage() {}
 
 func (x *TerminalUI_Event_StepGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[77]
+	mi := &file_plugin_proto_msgTypes[78]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4602,7 +4640,7 @@ type TerminalUI_Event_Step struct {
 func (x *TerminalUI_Event_Step) Reset() {
 	*x = TerminalUI_Event_Step{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[78]
+		mi := &file_plugin_proto_msgTypes[79]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4615,7 +4653,7 @@ func (x *TerminalUI_Event_Step) String() string {
 func (*TerminalUI_Event_Step) ProtoMessage() {}
 
 func (x *TerminalUI_Event_Step) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[78]
+	mi := &file_plugin_proto_msgTypes[79]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4687,7 +4725,7 @@ type Map_Request struct {
 func (x *Map_Request) Reset() {
 	*x = Map_Request{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[79]
+		mi := &file_plugin_proto_msgTypes[80]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4700,7 +4738,7 @@ func (x *Map_Request) String() string {
 func (*Map_Request) ProtoMessage() {}
 
 func (x *Map_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[79]
+	mi := &file_plugin_proto_msgTypes[80]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4743,7 +4781,7 @@ type Map_Response struct {
 func (x *Map_Response) Reset() {
 	*x = Map_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[80]
+		mi := &file_plugin_proto_msgTypes[81]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4756,7 +4794,7 @@ func (x *Map_Response) String() string {
 func (*Map_Response) ProtoMessage() {}
 
 func (x *Map_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[80]
+	mi := &file_plugin_proto_msgTypes[81]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4791,7 +4829,7 @@ type Map_ListResponse struct {
 func (x *Map_ListResponse) Reset() {
 	*x = Map_ListResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[81]
+		mi := &file_plugin_proto_msgTypes[82]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4804,7 +4842,7 @@ func (x *Map_ListResponse) String() string {
 func (*Map_ListResponse) ProtoMessage() {}
 
 func (x *Map_ListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[81]
+	mi := &file_plugin_proto_msgTypes[82]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4841,7 +4879,7 @@ type Build_Resp struct {
 func (x *Build_Resp) Reset() {
 	*x = Build_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[82]
+		mi := &file_plugin_proto_msgTypes[83]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4854,7 +4892,7 @@ func (x *Build_Resp) String() string {
 func (*Build_Resp) ProtoMessage() {}
 
 func (x *Build_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[82]
+	mi := &file_plugin_proto_msgTypes[83]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4911,7 +4949,7 @@ type DefaultReleaser_Resp struct {
 func (x *DefaultReleaser_Resp) Reset() {
 	*x = DefaultReleaser_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[84]
+		mi := &file_plugin_proto_msgTypes[85]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4924,7 +4962,7 @@ func (x *DefaultReleaser_Resp) String() string {
 func (*DefaultReleaser_Resp) ProtoMessage() {}
 
 func (x *DefaultReleaser_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[84]
+	mi := &file_plugin_proto_msgTypes[85]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4966,7 +5004,7 @@ type Deploy_Resp struct {
 func (x *Deploy_Resp) Reset() {
 	*x = Deploy_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[85]
+		mi := &file_plugin_proto_msgTypes[86]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4979,7 +5017,7 @@ func (x *Deploy_Resp) String() string {
 func (*Deploy_Resp) ProtoMessage() {}
 
 func (x *Deploy_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[85]
+	mi := &file_plugin_proto_msgTypes[86]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5045,7 +5083,7 @@ type Push_Resp struct {
 func (x *Push_Resp) Reset() {
 	*x = Push_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[86]
+		mi := &file_plugin_proto_msgTypes[87]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5058,7 +5096,7 @@ func (x *Push_Resp) String() string {
 func (*Push_Resp) ProtoMessage() {}
 
 func (x *Push_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[86]
+	mi := &file_plugin_proto_msgTypes[87]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5107,7 +5145,7 @@ type Access_Resp struct {
 func (x *Access_Resp) Reset() {
 	*x = Access_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[87]
+		mi := &file_plugin_proto_msgTypes[88]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5120,7 +5158,7 @@ func (x *Access_Resp) String() string {
 func (*Access_Resp) ProtoMessage() {}
 
 func (x *Access_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[87]
+	mi := &file_plugin_proto_msgTypes[88]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5161,7 +5199,7 @@ type Release_Resp struct {
 func (x *Release_Resp) Reset() {
 	*x = Release_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[88]
+		mi := &file_plugin_proto_msgTypes[89]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5174,7 +5212,7 @@ func (x *Release_Resp) String() string {
 func (*Release_Resp) ProtoMessage() {}
 
 func (x *Release_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[88]
+	mi := &file_plugin_proto_msgTypes[89]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5231,7 +5269,7 @@ type ConfigSource_ReadResponse struct {
 func (x *ConfigSource_ReadResponse) Reset() {
 	*x = ConfigSource_ReadResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[89]
+		mi := &file_plugin_proto_msgTypes[90]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5244,7 +5282,7 @@ func (x *ConfigSource_ReadResponse) String() string {
 func (*ConfigSource_ReadResponse) ProtoMessage() {}
 
 func (x *ConfigSource_ReadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[89]
+	mi := &file_plugin_proto_msgTypes[90]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5283,7 +5321,7 @@ type ConfigSource_Value struct {
 func (x *ConfigSource_Value) Reset() {
 	*x = ConfigSource_Value{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[90]
+		mi := &file_plugin_proto_msgTypes[91]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5296,7 +5334,7 @@ func (x *ConfigSource_Value) String() string {
 func (*ConfigSource_Value) ProtoMessage() {}
 
 func (x *ConfigSource_Value) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[90]
+	mi := &file_plugin_proto_msgTypes[91]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5373,7 +5411,7 @@ type TaskLaunch_Resp struct {
 func (x *TaskLaunch_Resp) Reset() {
 	*x = TaskLaunch_Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_plugin_proto_msgTypes[91]
+		mi := &file_plugin_proto_msgTypes[92]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5386,7 +5424,7 @@ func (x *TaskLaunch_Resp) String() string {
 func (*TaskLaunch_Resp) ProtoMessage() {}
 
 func (x *TaskLaunch_Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_plugin_proto_msgTypes[91]
+	mi := &file_plugin_proto_msgTypes[92]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5414,6 +5452,54 @@ func (x *TaskLaunch_Resp) GetResultJson() string {
 		return x.ResultJson
 	}
 	return ""
+}
+
+type TaskRun_Resp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// exit code of the task process
+	ExitCode int32 `protobuf:"varint,1,opt,name=exit_code,json=exitCode,proto3" json:"exit_code,omitempty"`
+}
+
+func (x *TaskRun_Resp) Reset() {
+	*x = TaskRun_Resp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_plugin_proto_msgTypes[93]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TaskRun_Resp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskRun_Resp) ProtoMessage() {}
+
+func (x *TaskRun_Resp) ProtoReflect() protoreflect.Message {
+	mi := &file_plugin_proto_msgTypes[93]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskRun_Resp.ProtoReflect.Descriptor instead.
+func (*TaskRun_Resp) Descriptor() ([]byte, []int) {
+	return file_plugin_proto_rawDescGZIP(), []int{25, 0}
+}
+
+func (x *TaskRun_Resp) GetExitCode() int32 {
+	if x != nil {
+		return x.ExitCode
+	}
+	return 0
 }
 
 var File_plugin_proto protoreflect.FileDescriptor
@@ -6016,6 +6102,9 @@ var file_plugin_proto_rawDesc = []byte{
 	0x61, 0x6e, 0x79, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12,
 	0x1f, 0x0a, 0x0b, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x5f, 0x6a, 0x73, 0x6f, 0x6e, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x4a, 0x73, 0x6f, 0x6e,
+	0x22, 0x2e, 0x0a, 0x07, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x1a, 0x23, 0x0a, 0x04, 0x52,
+	0x65, 0x73, 0x70, 0x12, 0x1b, 0x0a, 0x09, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x63, 0x6f, 0x64, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x65, 0x78, 0x69, 0x74, 0x43, 0x6f, 0x64, 0x65,
 	0x2a, 0x98, 0x01, 0x0a, 0x1b, 0x52, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x43, 0x61, 0x74,
 	0x65, 0x67, 0x6f, 0x72, 0x79, 0x44, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x48, 0x69, 0x6e, 0x74,
 	0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x09, 0x0a,
@@ -6481,7 +6570,7 @@ var file_plugin_proto_rawDesc = []byte{
 	0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74,
 	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72,
 	0x67, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x32, 0xc3, 0x04, 0x0a, 0x0c, 0x54,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x32, 0xe0, 0x05, 0x0a, 0x0c, 0x54,
 	0x61, 0x73, 0x6b, 0x4c, 0x61, 0x75, 0x6e, 0x63, 0x68, 0x65, 0x72, 0x12, 0x51, 0x0a, 0x0c, 0x43,
 	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x12, 0x16, 0x2e, 0x67, 0x6f,
 	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
@@ -6507,19 +6596,29 @@ var file_plugin_proto_rawDesc = []byte{
 	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
 	0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f,
 	0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
-	0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x5b, 0x0a, 0x09, 0x53, 0x74, 0x61, 0x72,
-	0x74, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72,
-	0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46,
-	0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x27, 0x2e, 0x68,
-	0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e,
-	0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x4c, 0x61, 0x75, 0x6e, 0x63, 0x68,
-	0x2e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x49, 0x0a, 0x08, 0x53, 0x74, 0x6f, 0x70, 0x54, 0x61, 0x73,
-	0x6b, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61,
-	0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53,
-	0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x43, 0x0a, 0x07, 0x52, 0x75, 0x6e, 0x53,
+	0x70, 0x65, 0x63, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x20, 0x2e, 0x68, 0x61,
+	0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x12, 0x5b, 0x0a,
+	0x09, 0x53, 0x74, 0x61, 0x72, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73,
+	0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e,
+	0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67,
+	0x73, 0x1a, 0x27, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61,
+	0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x4c,
+	0x61, 0x75, 0x6e, 0x63, 0x68, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x49, 0x0a, 0x08, 0x53, 0x74,
+	0x6f, 0x70, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f,
+	0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
+	0x46, 0x75, 0x6e, 0x63, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x16, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x56, 0x0a, 0x07, 0x52, 0x75, 0x6e, 0x54, 0x61, 0x73, 0x6b,
+	0x12, 0x25, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63, 0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x53, 0x70,
+	0x65, 0x63, 0x2e, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x24, 0x2e, 0x68, 0x61, 0x73, 0x68, 0x69, 0x63,
+	0x6f, 0x72, 0x70, 0x2e, 0x77, 0x61, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2e, 0x73, 0x64, 0x6b,
+	0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x42, 0x0a, 0x5a,
+	0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -6535,7 +6634,7 @@ func file_plugin_proto_rawDescGZIP() []byte {
 }
 
 var file_plugin_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_plugin_proto_msgTypes = make([]protoimpl.MessageInfo, 92)
+var file_plugin_proto_msgTypes = make([]protoimpl.MessageInfo, 94)
 var file_plugin_proto_goTypes = []interface{}{
 	(ResourceCategoryDisplayHint)(0),         // 0: hashicorp.waypoint.sdk.ResourceCategoryDisplayHint
 	(FuncSpec_Value_PrimitiveType)(0),        // 1: hashicorp.waypoint.sdk.FuncSpec.Value.PrimitiveType
@@ -6565,336 +6664,342 @@ var file_plugin_proto_goTypes = []interface{}{
 	(*Release)(nil),                          // 25: hashicorp.waypoint.sdk.Release
 	(*ConfigSource)(nil),                     // 26: hashicorp.waypoint.sdk.ConfigSource
 	(*TaskLaunch)(nil),                       // 27: hashicorp.waypoint.sdk.TaskLaunch
-	(*Args_Source)(nil),                      // 28: hashicorp.waypoint.sdk.Args.Source
-	(*Args_JobInfo)(nil),                     // 29: hashicorp.waypoint.sdk.Args.JobInfo
-	(*Args_DeploymentConfig)(nil),            // 30: hashicorp.waypoint.sdk.Args.DeploymentConfig
-	(*Args_DataDir)(nil),                     // 31: hashicorp.waypoint.sdk.Args.DataDir
-	(*Args_Logger)(nil),                      // 32: hashicorp.waypoint.sdk.Args.Logger
-	(*Args_TerminalUI)(nil),                  // 33: hashicorp.waypoint.sdk.Args.TerminalUI
-	(*Args_ReleaseTargets)(nil),              // 34: hashicorp.waypoint.sdk.Args.ReleaseTargets
-	(*Args_LabelSet)(nil),                    // 35: hashicorp.waypoint.sdk.Args.LabelSet
-	(*Args_ExecSessionInfo)(nil),             // 36: hashicorp.waypoint.sdk.Args.ExecSessionInfo
-	(*Args_LogViewer)(nil),                   // 37: hashicorp.waypoint.sdk.Args.LogViewer
-	(*Args_TaskLaunchInfo)(nil),              // 38: hashicorp.waypoint.sdk.Args.TaskLaunchInfo
-	(*Args_DataDir_Project)(nil),             // 39: hashicorp.waypoint.sdk.Args.DataDir.Project
-	(*Args_DataDir_App)(nil),                 // 40: hashicorp.waypoint.sdk.Args.DataDir.App
-	(*Args_DataDir_Component)(nil),           // 41: hashicorp.waypoint.sdk.Args.DataDir.Component
-	(*Args_ReleaseTargets_Target)(nil),       // 42: hashicorp.waypoint.sdk.Args.ReleaseTargets.Target
-	nil,                                      // 43: hashicorp.waypoint.sdk.Args.LabelSet.LabelsEntry
-	nil,                                      // 44: hashicorp.waypoint.sdk.Args.TaskLaunchInfo.EnvironmentVariablesEntry
-	(*FuncSpec_Value)(nil),                   // 45: hashicorp.waypoint.sdk.FuncSpec.Value
-	(*FuncSpec_Args)(nil),                    // 46: hashicorp.waypoint.sdk.FuncSpec.Args
-	(*Config_ConfigureRequest)(nil),          // 47: hashicorp.waypoint.sdk.Config.ConfigureRequest
-	(*Config_StructResp)(nil),                // 48: hashicorp.waypoint.sdk.Config.StructResp
-	(*Config_FieldDocumentation)(nil),        // 49: hashicorp.waypoint.sdk.Config.FieldDocumentation
-	(*Config_MapperDocumentation)(nil),       // 50: hashicorp.waypoint.sdk.Config.MapperDocumentation
-	(*Config_Documentation)(nil),             // 51: hashicorp.waypoint.sdk.Config.Documentation
-	nil,                                      // 52: hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry
-	nil,                                      // 53: hashicorp.waypoint.sdk.Config.Documentation.TemplateFieldsEntry
-	nil,                                      // 54: hashicorp.waypoint.sdk.Config.Documentation.RequestFieldsEntry
-	(*Auth_AuthResponse)(nil),                // 55: hashicorp.waypoint.sdk.Auth.AuthResponse
-	(*Generation_Resp)(nil),                  // 56: hashicorp.waypoint.sdk.Generation.Resp
-	(*Framework_ResourceManagerState)(nil),   // 57: hashicorp.waypoint.sdk.Framework.ResourceManagerState
-	(*Framework_ResourceState)(nil),          // 58: hashicorp.waypoint.sdk.Framework.ResourceState
-	(*Ref_DeclaredResource)(nil),             // 59: hashicorp.waypoint.sdk.Ref.DeclaredResource
-	(*StatusReport_Resource)(nil),            // 60: hashicorp.waypoint.sdk.StatusReport.Resource
-	(*ExecSession_OutputRequest)(nil),        // 61: hashicorp.waypoint.sdk.ExecSession.OutputRequest
-	(*ExecSession_InputRequest)(nil),         // 62: hashicorp.waypoint.sdk.ExecSession.InputRequest
-	(*Logs_Resp)(nil),                        // 63: hashicorp.waypoint.sdk.Logs.Resp
-	(*Logs_NextBatchResp)(nil),               // 64: hashicorp.waypoint.sdk.Logs.NextBatchResp
-	(*Logs_Event)(nil),                       // 65: hashicorp.waypoint.sdk.Logs.Event
-	(*TerminalUI_IsInteractiveResponse)(nil), // 66: hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
-	(*TerminalUI_OutputRequest)(nil),         // 67: hashicorp.waypoint.sdk.TerminalUI.OutputRequest
-	(*TerminalUI_Response)(nil),              // 68: hashicorp.waypoint.sdk.TerminalUI.Response
-	(*TerminalUI_Event)(nil),                 // 69: hashicorp.waypoint.sdk.TerminalUI.Event
-	(*TerminalUI_Event_Input)(nil),           // 70: hashicorp.waypoint.sdk.TerminalUI.Event.Input
-	(*TerminalUI_Event_InputResp)(nil),       // 71: hashicorp.waypoint.sdk.TerminalUI.Event.InputResp
-	(*TerminalUI_Event_Status)(nil),          // 72: hashicorp.waypoint.sdk.TerminalUI.Event.Status
-	(*TerminalUI_Event_Line)(nil),            // 73: hashicorp.waypoint.sdk.TerminalUI.Event.Line
-	(*TerminalUI_Event_Raw)(nil),             // 74: hashicorp.waypoint.sdk.TerminalUI.Event.Raw
-	(*TerminalUI_Event_NamedValue)(nil),      // 75: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValue
-	(*TerminalUI_Event_NamedValues)(nil),     // 76: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues
-	(*TerminalUI_Event_TableEntry)(nil),      // 77: hashicorp.waypoint.sdk.TerminalUI.Event.TableEntry
-	(*TerminalUI_Event_TableRow)(nil),        // 78: hashicorp.waypoint.sdk.TerminalUI.Event.TableRow
-	(*TerminalUI_Event_Table)(nil),           // 79: hashicorp.waypoint.sdk.TerminalUI.Event.Table
-	(*TerminalUI_Event_StepGroup)(nil),       // 80: hashicorp.waypoint.sdk.TerminalUI.Event.StepGroup
-	(*TerminalUI_Event_Step)(nil),            // 81: hashicorp.waypoint.sdk.TerminalUI.Event.Step
-	(*Map_Request)(nil),                      // 82: hashicorp.waypoint.sdk.Map.Request
-	(*Map_Response)(nil),                     // 83: hashicorp.waypoint.sdk.Map.Response
-	(*Map_ListResponse)(nil),                 // 84: hashicorp.waypoint.sdk.Map.ListResponse
-	(*Build_Resp)(nil),                       // 85: hashicorp.waypoint.sdk.Build.Resp
-	nil,                                      // 86: hashicorp.waypoint.sdk.Build.Resp.LabelsEntry
-	(*DefaultReleaser_Resp)(nil),             // 87: hashicorp.waypoint.sdk.DefaultReleaser.Resp
-	(*Deploy_Resp)(nil),                      // 88: hashicorp.waypoint.sdk.Deploy.Resp
-	(*Push_Resp)(nil),                        // 89: hashicorp.waypoint.sdk.Push.Resp
-	(*Access_Resp)(nil),                      // 90: hashicorp.waypoint.sdk.Access.Resp
-	(*Release_Resp)(nil),                     // 91: hashicorp.waypoint.sdk.Release.Resp
-	(*ConfigSource_ReadResponse)(nil),        // 92: hashicorp.waypoint.sdk.ConfigSource.ReadResponse
-	(*ConfigSource_Value)(nil),               // 93: hashicorp.waypoint.sdk.ConfigSource.Value
-	(*TaskLaunch_Resp)(nil),                  // 94: hashicorp.waypoint.sdk.TaskLaunch.Resp
-	(*timestamppb.Timestamp)(nil),            // 95: google.protobuf.Timestamp
-	(*opaqueany.Any)(nil),                    // 96: opaqueany.Any
-	(*protostructure.Struct)(nil),            // 97: protostructure.Struct
-	(*status.Status)(nil),                    // 98: google.rpc.Status
-	(*emptypb.Empty)(nil),                    // 99: google.protobuf.Empty
+	(*TaskRun)(nil),                          // 28: hashicorp.waypoint.sdk.TaskRun
+	(*Args_Source)(nil),                      // 29: hashicorp.waypoint.sdk.Args.Source
+	(*Args_JobInfo)(nil),                     // 30: hashicorp.waypoint.sdk.Args.JobInfo
+	(*Args_DeploymentConfig)(nil),            // 31: hashicorp.waypoint.sdk.Args.DeploymentConfig
+	(*Args_DataDir)(nil),                     // 32: hashicorp.waypoint.sdk.Args.DataDir
+	(*Args_Logger)(nil),                      // 33: hashicorp.waypoint.sdk.Args.Logger
+	(*Args_TerminalUI)(nil),                  // 34: hashicorp.waypoint.sdk.Args.TerminalUI
+	(*Args_ReleaseTargets)(nil),              // 35: hashicorp.waypoint.sdk.Args.ReleaseTargets
+	(*Args_LabelSet)(nil),                    // 36: hashicorp.waypoint.sdk.Args.LabelSet
+	(*Args_ExecSessionInfo)(nil),             // 37: hashicorp.waypoint.sdk.Args.ExecSessionInfo
+	(*Args_LogViewer)(nil),                   // 38: hashicorp.waypoint.sdk.Args.LogViewer
+	(*Args_TaskLaunchInfo)(nil),              // 39: hashicorp.waypoint.sdk.Args.TaskLaunchInfo
+	(*Args_DataDir_Project)(nil),             // 40: hashicorp.waypoint.sdk.Args.DataDir.Project
+	(*Args_DataDir_App)(nil),                 // 41: hashicorp.waypoint.sdk.Args.DataDir.App
+	(*Args_DataDir_Component)(nil),           // 42: hashicorp.waypoint.sdk.Args.DataDir.Component
+	(*Args_ReleaseTargets_Target)(nil),       // 43: hashicorp.waypoint.sdk.Args.ReleaseTargets.Target
+	nil,                                      // 44: hashicorp.waypoint.sdk.Args.LabelSet.LabelsEntry
+	nil,                                      // 45: hashicorp.waypoint.sdk.Args.TaskLaunchInfo.EnvironmentVariablesEntry
+	(*FuncSpec_Value)(nil),                   // 46: hashicorp.waypoint.sdk.FuncSpec.Value
+	(*FuncSpec_Args)(nil),                    // 47: hashicorp.waypoint.sdk.FuncSpec.Args
+	(*Config_ConfigureRequest)(nil),          // 48: hashicorp.waypoint.sdk.Config.ConfigureRequest
+	(*Config_StructResp)(nil),                // 49: hashicorp.waypoint.sdk.Config.StructResp
+	(*Config_FieldDocumentation)(nil),        // 50: hashicorp.waypoint.sdk.Config.FieldDocumentation
+	(*Config_MapperDocumentation)(nil),       // 51: hashicorp.waypoint.sdk.Config.MapperDocumentation
+	(*Config_Documentation)(nil),             // 52: hashicorp.waypoint.sdk.Config.Documentation
+	nil,                                      // 53: hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry
+	nil,                                      // 54: hashicorp.waypoint.sdk.Config.Documentation.TemplateFieldsEntry
+	nil,                                      // 55: hashicorp.waypoint.sdk.Config.Documentation.RequestFieldsEntry
+	(*Auth_AuthResponse)(nil),                // 56: hashicorp.waypoint.sdk.Auth.AuthResponse
+	(*Generation_Resp)(nil),                  // 57: hashicorp.waypoint.sdk.Generation.Resp
+	(*Framework_ResourceManagerState)(nil),   // 58: hashicorp.waypoint.sdk.Framework.ResourceManagerState
+	(*Framework_ResourceState)(nil),          // 59: hashicorp.waypoint.sdk.Framework.ResourceState
+	(*Ref_DeclaredResource)(nil),             // 60: hashicorp.waypoint.sdk.Ref.DeclaredResource
+	(*StatusReport_Resource)(nil),            // 61: hashicorp.waypoint.sdk.StatusReport.Resource
+	(*ExecSession_OutputRequest)(nil),        // 62: hashicorp.waypoint.sdk.ExecSession.OutputRequest
+	(*ExecSession_InputRequest)(nil),         // 63: hashicorp.waypoint.sdk.ExecSession.InputRequest
+	(*Logs_Resp)(nil),                        // 64: hashicorp.waypoint.sdk.Logs.Resp
+	(*Logs_NextBatchResp)(nil),               // 65: hashicorp.waypoint.sdk.Logs.NextBatchResp
+	(*Logs_Event)(nil),                       // 66: hashicorp.waypoint.sdk.Logs.Event
+	(*TerminalUI_IsInteractiveResponse)(nil), // 67: hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
+	(*TerminalUI_OutputRequest)(nil),         // 68: hashicorp.waypoint.sdk.TerminalUI.OutputRequest
+	(*TerminalUI_Response)(nil),              // 69: hashicorp.waypoint.sdk.TerminalUI.Response
+	(*TerminalUI_Event)(nil),                 // 70: hashicorp.waypoint.sdk.TerminalUI.Event
+	(*TerminalUI_Event_Input)(nil),           // 71: hashicorp.waypoint.sdk.TerminalUI.Event.Input
+	(*TerminalUI_Event_InputResp)(nil),       // 72: hashicorp.waypoint.sdk.TerminalUI.Event.InputResp
+	(*TerminalUI_Event_Status)(nil),          // 73: hashicorp.waypoint.sdk.TerminalUI.Event.Status
+	(*TerminalUI_Event_Line)(nil),            // 74: hashicorp.waypoint.sdk.TerminalUI.Event.Line
+	(*TerminalUI_Event_Raw)(nil),             // 75: hashicorp.waypoint.sdk.TerminalUI.Event.Raw
+	(*TerminalUI_Event_NamedValue)(nil),      // 76: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValue
+	(*TerminalUI_Event_NamedValues)(nil),     // 77: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues
+	(*TerminalUI_Event_TableEntry)(nil),      // 78: hashicorp.waypoint.sdk.TerminalUI.Event.TableEntry
+	(*TerminalUI_Event_TableRow)(nil),        // 79: hashicorp.waypoint.sdk.TerminalUI.Event.TableRow
+	(*TerminalUI_Event_Table)(nil),           // 80: hashicorp.waypoint.sdk.TerminalUI.Event.Table
+	(*TerminalUI_Event_StepGroup)(nil),       // 81: hashicorp.waypoint.sdk.TerminalUI.Event.StepGroup
+	(*TerminalUI_Event_Step)(nil),            // 82: hashicorp.waypoint.sdk.TerminalUI.Event.Step
+	(*Map_Request)(nil),                      // 83: hashicorp.waypoint.sdk.Map.Request
+	(*Map_Response)(nil),                     // 84: hashicorp.waypoint.sdk.Map.Response
+	(*Map_ListResponse)(nil),                 // 85: hashicorp.waypoint.sdk.Map.ListResponse
+	(*Build_Resp)(nil),                       // 86: hashicorp.waypoint.sdk.Build.Resp
+	nil,                                      // 87: hashicorp.waypoint.sdk.Build.Resp.LabelsEntry
+	(*DefaultReleaser_Resp)(nil),             // 88: hashicorp.waypoint.sdk.DefaultReleaser.Resp
+	(*Deploy_Resp)(nil),                      // 89: hashicorp.waypoint.sdk.Deploy.Resp
+	(*Push_Resp)(nil),                        // 90: hashicorp.waypoint.sdk.Push.Resp
+	(*Access_Resp)(nil),                      // 91: hashicorp.waypoint.sdk.Access.Resp
+	(*Release_Resp)(nil),                     // 92: hashicorp.waypoint.sdk.Release.Resp
+	(*ConfigSource_ReadResponse)(nil),        // 93: hashicorp.waypoint.sdk.ConfigSource.ReadResponse
+	(*ConfigSource_Value)(nil),               // 94: hashicorp.waypoint.sdk.ConfigSource.Value
+	(*TaskLaunch_Resp)(nil),                  // 95: hashicorp.waypoint.sdk.TaskLaunch.Resp
+	(*TaskRun_Resp)(nil),                     // 96: hashicorp.waypoint.sdk.TaskRun.Resp
+	(*timestamppb.Timestamp)(nil),            // 97: google.protobuf.Timestamp
+	(*opaqueany.Any)(nil),                    // 98: opaqueany.Any
+	(*protostructure.Struct)(nil),            // 99: protostructure.Struct
+	(*status.Status)(nil),                    // 100: google.rpc.Status
+	(*emptypb.Empty)(nil),                    // 101: google.protobuf.Empty
 }
 var file_plugin_proto_depIdxs = []int32{
-	45,  // 0: hashicorp.waypoint.sdk.FuncSpec.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
-	45,  // 1: hashicorp.waypoint.sdk.FuncSpec.result:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
-	60,  // 2: hashicorp.waypoint.sdk.StatusReport.resources:type_name -> hashicorp.waypoint.sdk.StatusReport.Resource
+	46,  // 0: hashicorp.waypoint.sdk.FuncSpec.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
+	46,  // 1: hashicorp.waypoint.sdk.FuncSpec.result:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
+	61,  // 2: hashicorp.waypoint.sdk.StatusReport.resources:type_name -> hashicorp.waypoint.sdk.StatusReport.Resource
 	2,   // 3: hashicorp.waypoint.sdk.StatusReport.health:type_name -> hashicorp.waypoint.sdk.StatusReport.Health
-	95,  // 4: hashicorp.waypoint.sdk.StatusReport.generated_time:type_name -> google.protobuf.Timestamp
-	96,  // 5: hashicorp.waypoint.sdk.DeclaredResource.state:type_name -> opaqueany.Any
+	97,  // 4: hashicorp.waypoint.sdk.StatusReport.generated_time:type_name -> google.protobuf.Timestamp
+	98,  // 5: hashicorp.waypoint.sdk.DeclaredResource.state:type_name -> opaqueany.Any
 	0,   // 6: hashicorp.waypoint.sdk.DeclaredResource.category_display_hint:type_name -> hashicorp.waypoint.sdk.ResourceCategoryDisplayHint
 	21,  // 7: hashicorp.waypoint.sdk.DeclaredResources.resources:type_name -> hashicorp.waypoint.sdk.DeclaredResource
-	42,  // 8: hashicorp.waypoint.sdk.Args.ReleaseTargets.targets:type_name -> hashicorp.waypoint.sdk.Args.ReleaseTargets.Target
-	43,  // 9: hashicorp.waypoint.sdk.Args.LabelSet.labels:type_name -> hashicorp.waypoint.sdk.Args.LabelSet.LabelsEntry
+	43,  // 8: hashicorp.waypoint.sdk.Args.ReleaseTargets.targets:type_name -> hashicorp.waypoint.sdk.Args.ReleaseTargets.Target
+	44,  // 9: hashicorp.waypoint.sdk.Args.LabelSet.labels:type_name -> hashicorp.waypoint.sdk.Args.LabelSet.LabelsEntry
 	12,  // 10: hashicorp.waypoint.sdk.Args.ExecSessionInfo.initial_window:type_name -> hashicorp.waypoint.sdk.WindowSize
-	95,  // 11: hashicorp.waypoint.sdk.Args.LogViewer.starting_at:type_name -> google.protobuf.Timestamp
-	44,  // 12: hashicorp.waypoint.sdk.Args.TaskLaunchInfo.environment_variables:type_name -> hashicorp.waypoint.sdk.Args.TaskLaunchInfo.EnvironmentVariablesEntry
-	96,  // 13: hashicorp.waypoint.sdk.Args.ReleaseTargets.Target.deployment:type_name -> opaqueany.Any
+	97,  // 11: hashicorp.waypoint.sdk.Args.LogViewer.starting_at:type_name -> google.protobuf.Timestamp
+	45,  // 12: hashicorp.waypoint.sdk.Args.TaskLaunchInfo.environment_variables:type_name -> hashicorp.waypoint.sdk.Args.TaskLaunchInfo.EnvironmentVariablesEntry
+	98,  // 13: hashicorp.waypoint.sdk.Args.ReleaseTargets.Target.deployment:type_name -> opaqueany.Any
 	1,   // 14: hashicorp.waypoint.sdk.FuncSpec.Value.primitive_type:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value.PrimitiveType
-	96,  // 15: hashicorp.waypoint.sdk.FuncSpec.Value.proto_any:type_name -> opaqueany.Any
-	45,  // 16: hashicorp.waypoint.sdk.FuncSpec.Args.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
-	97,  // 17: hashicorp.waypoint.sdk.Config.StructResp.struct:type_name -> protostructure.Struct
-	49,  // 18: hashicorp.waypoint.sdk.Config.FieldDocumentation.sub_fields:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
-	52,  // 19: hashicorp.waypoint.sdk.Config.Documentation.fields:type_name -> hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry
-	53,  // 20: hashicorp.waypoint.sdk.Config.Documentation.template_fields:type_name -> hashicorp.waypoint.sdk.Config.Documentation.TemplateFieldsEntry
-	54,  // 21: hashicorp.waypoint.sdk.Config.Documentation.request_fields:type_name -> hashicorp.waypoint.sdk.Config.Documentation.RequestFieldsEntry
-	50,  // 22: hashicorp.waypoint.sdk.Config.Documentation.mappers:type_name -> hashicorp.waypoint.sdk.Config.MapperDocumentation
-	49,  // 23: hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry.value:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
-	49,  // 24: hashicorp.waypoint.sdk.Config.Documentation.TemplateFieldsEntry.value:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
-	49,  // 25: hashicorp.waypoint.sdk.Config.Documentation.RequestFieldsEntry.value:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
-	58,  // 26: hashicorp.waypoint.sdk.Framework.ResourceManagerState.resources:type_name -> hashicorp.waypoint.sdk.Framework.ResourceState
-	96,  // 27: hashicorp.waypoint.sdk.Framework.ResourceState.raw:type_name -> opaqueany.Any
-	59,  // 28: hashicorp.waypoint.sdk.StatusReport.Resource.declared_resource:type_name -> hashicorp.waypoint.sdk.Ref.DeclaredResource
+	98,  // 15: hashicorp.waypoint.sdk.FuncSpec.Value.proto_any:type_name -> opaqueany.Any
+	46,  // 16: hashicorp.waypoint.sdk.FuncSpec.Args.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Value
+	99,  // 17: hashicorp.waypoint.sdk.Config.StructResp.struct:type_name -> protostructure.Struct
+	50,  // 18: hashicorp.waypoint.sdk.Config.FieldDocumentation.sub_fields:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
+	53,  // 19: hashicorp.waypoint.sdk.Config.Documentation.fields:type_name -> hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry
+	54,  // 20: hashicorp.waypoint.sdk.Config.Documentation.template_fields:type_name -> hashicorp.waypoint.sdk.Config.Documentation.TemplateFieldsEntry
+	55,  // 21: hashicorp.waypoint.sdk.Config.Documentation.request_fields:type_name -> hashicorp.waypoint.sdk.Config.Documentation.RequestFieldsEntry
+	51,  // 22: hashicorp.waypoint.sdk.Config.Documentation.mappers:type_name -> hashicorp.waypoint.sdk.Config.MapperDocumentation
+	50,  // 23: hashicorp.waypoint.sdk.Config.Documentation.FieldsEntry.value:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
+	50,  // 24: hashicorp.waypoint.sdk.Config.Documentation.TemplateFieldsEntry.value:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
+	50,  // 25: hashicorp.waypoint.sdk.Config.Documentation.RequestFieldsEntry.value:type_name -> hashicorp.waypoint.sdk.Config.FieldDocumentation
+	59,  // 26: hashicorp.waypoint.sdk.Framework.ResourceManagerState.resources:type_name -> hashicorp.waypoint.sdk.Framework.ResourceState
+	98,  // 27: hashicorp.waypoint.sdk.Framework.ResourceState.raw:type_name -> opaqueany.Any
+	60,  // 28: hashicorp.waypoint.sdk.StatusReport.Resource.declared_resource:type_name -> hashicorp.waypoint.sdk.Ref.DeclaredResource
 	0,   // 29: hashicorp.waypoint.sdk.StatusReport.Resource.category_display_hint:type_name -> hashicorp.waypoint.sdk.ResourceCategoryDisplayHint
-	95,  // 30: hashicorp.waypoint.sdk.StatusReport.Resource.created_time:type_name -> google.protobuf.Timestamp
+	97,  // 30: hashicorp.waypoint.sdk.StatusReport.Resource.created_time:type_name -> google.protobuf.Timestamp
 	2,   // 31: hashicorp.waypoint.sdk.StatusReport.Resource.health:type_name -> hashicorp.waypoint.sdk.StatusReport.Health
 	12,  // 32: hashicorp.waypoint.sdk.ExecSession.InputRequest.window_size:type_name -> hashicorp.waypoint.sdk.WindowSize
-	65,  // 33: hashicorp.waypoint.sdk.Logs.NextBatchResp.events:type_name -> hashicorp.waypoint.sdk.Logs.Event
-	95,  // 34: hashicorp.waypoint.sdk.Logs.Event.timestamp:type_name -> google.protobuf.Timestamp
-	71,  // 35: hashicorp.waypoint.sdk.TerminalUI.Response.input:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.InputResp
-	73,  // 36: hashicorp.waypoint.sdk.TerminalUI.Event.line:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Line
-	72,  // 37: hashicorp.waypoint.sdk.TerminalUI.Event.status:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Status
-	76,  // 38: hashicorp.waypoint.sdk.TerminalUI.Event.named_values:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues
-	74,  // 39: hashicorp.waypoint.sdk.TerminalUI.Event.raw:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Raw
-	79,  // 40: hashicorp.waypoint.sdk.TerminalUI.Event.table:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Table
-	80,  // 41: hashicorp.waypoint.sdk.TerminalUI.Event.step_group:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.StepGroup
-	81,  // 42: hashicorp.waypoint.sdk.TerminalUI.Event.step:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Step
-	70,  // 43: hashicorp.waypoint.sdk.TerminalUI.Event.input:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Input
-	98,  // 44: hashicorp.waypoint.sdk.TerminalUI.Event.InputResp.error:type_name -> google.rpc.Status
-	75,  // 45: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues.values:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.NamedValue
-	77,  // 46: hashicorp.waypoint.sdk.TerminalUI.Event.TableRow.entries:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.TableEntry
-	78,  // 47: hashicorp.waypoint.sdk.TerminalUI.Event.Table.rows:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.TableRow
-	46,  // 48: hashicorp.waypoint.sdk.Map.Request.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Args
-	96,  // 49: hashicorp.waypoint.sdk.Map.Response.result:type_name -> opaqueany.Any
+	66,  // 33: hashicorp.waypoint.sdk.Logs.NextBatchResp.events:type_name -> hashicorp.waypoint.sdk.Logs.Event
+	97,  // 34: hashicorp.waypoint.sdk.Logs.Event.timestamp:type_name -> google.protobuf.Timestamp
+	72,  // 35: hashicorp.waypoint.sdk.TerminalUI.Response.input:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.InputResp
+	74,  // 36: hashicorp.waypoint.sdk.TerminalUI.Event.line:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Line
+	73,  // 37: hashicorp.waypoint.sdk.TerminalUI.Event.status:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Status
+	77,  // 38: hashicorp.waypoint.sdk.TerminalUI.Event.named_values:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues
+	75,  // 39: hashicorp.waypoint.sdk.TerminalUI.Event.raw:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Raw
+	80,  // 40: hashicorp.waypoint.sdk.TerminalUI.Event.table:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Table
+	81,  // 41: hashicorp.waypoint.sdk.TerminalUI.Event.step_group:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.StepGroup
+	82,  // 42: hashicorp.waypoint.sdk.TerminalUI.Event.step:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Step
+	71,  // 43: hashicorp.waypoint.sdk.TerminalUI.Event.input:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.Input
+	100, // 44: hashicorp.waypoint.sdk.TerminalUI.Event.InputResp.error:type_name -> google.rpc.Status
+	76,  // 45: hashicorp.waypoint.sdk.TerminalUI.Event.NamedValues.values:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.NamedValue
+	78,  // 46: hashicorp.waypoint.sdk.TerminalUI.Event.TableRow.entries:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.TableEntry
+	79,  // 47: hashicorp.waypoint.sdk.TerminalUI.Event.Table.rows:type_name -> hashicorp.waypoint.sdk.TerminalUI.Event.TableRow
+	47,  // 48: hashicorp.waypoint.sdk.Map.Request.args:type_name -> hashicorp.waypoint.sdk.FuncSpec.Args
+	98,  // 49: hashicorp.waypoint.sdk.Map.Response.result:type_name -> opaqueany.Any
 	4,   // 50: hashicorp.waypoint.sdk.Map.ListResponse.funcs:type_name -> hashicorp.waypoint.sdk.FuncSpec
-	96,  // 51: hashicorp.waypoint.sdk.Build.Resp.result:type_name -> opaqueany.Any
-	86,  // 52: hashicorp.waypoint.sdk.Build.Resp.labels:type_name -> hashicorp.waypoint.sdk.Build.Resp.LabelsEntry
-	96,  // 53: hashicorp.waypoint.sdk.Deploy.Resp.result:type_name -> opaqueany.Any
+	98,  // 51: hashicorp.waypoint.sdk.Build.Resp.result:type_name -> opaqueany.Any
+	87,  // 52: hashicorp.waypoint.sdk.Build.Resp.labels:type_name -> hashicorp.waypoint.sdk.Build.Resp.LabelsEntry
+	98,  // 53: hashicorp.waypoint.sdk.Deploy.Resp.result:type_name -> opaqueany.Any
 	20,  // 54: hashicorp.waypoint.sdk.Deploy.Resp.deployment:type_name -> hashicorp.waypoint.sdk.Deploy
 	22,  // 55: hashicorp.waypoint.sdk.Deploy.Resp.declared_resources:type_name -> hashicorp.waypoint.sdk.DeclaredResources
-	96,  // 56: hashicorp.waypoint.sdk.Push.Resp.result:type_name -> opaqueany.Any
-	96,  // 57: hashicorp.waypoint.sdk.Access.Resp.result:type_name -> opaqueany.Any
-	96,  // 58: hashicorp.waypoint.sdk.Release.Resp.result:type_name -> opaqueany.Any
+	98,  // 56: hashicorp.waypoint.sdk.Push.Resp.result:type_name -> opaqueany.Any
+	98,  // 57: hashicorp.waypoint.sdk.Access.Resp.result:type_name -> opaqueany.Any
+	98,  // 58: hashicorp.waypoint.sdk.Release.Resp.result:type_name -> opaqueany.Any
 	25,  // 59: hashicorp.waypoint.sdk.Release.Resp.release:type_name -> hashicorp.waypoint.sdk.Release
 	22,  // 60: hashicorp.waypoint.sdk.Release.Resp.declared_resources:type_name -> hashicorp.waypoint.sdk.DeclaredResources
-	93,  // 61: hashicorp.waypoint.sdk.ConfigSource.ReadResponse.values:type_name -> hashicorp.waypoint.sdk.ConfigSource.Value
-	98,  // 62: hashicorp.waypoint.sdk.ConfigSource.Value.error:type_name -> google.rpc.Status
-	96,  // 63: hashicorp.waypoint.sdk.TaskLaunch.Resp.result:type_name -> opaqueany.Any
-	61,  // 64: hashicorp.waypoint.sdk.ExecSessionService.Output:input_type -> hashicorp.waypoint.sdk.ExecSession.OutputRequest
-	99,  // 65: hashicorp.waypoint.sdk.ExecSessionService.Input:input_type -> google.protobuf.Empty
-	64,  // 66: hashicorp.waypoint.sdk.LogViewer.NextLogBatch:input_type -> hashicorp.waypoint.sdk.Logs.NextBatchResp
-	67,  // 67: hashicorp.waypoint.sdk.TerminalUIService.Output:input_type -> hashicorp.waypoint.sdk.TerminalUI.OutputRequest
-	69,  // 68: hashicorp.waypoint.sdk.TerminalUIService.Events:input_type -> hashicorp.waypoint.sdk.TerminalUI.Event
-	99,  // 69: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:input_type -> google.protobuf.Empty
-	99,  // 70: hashicorp.waypoint.sdk.Mapper.ListMappers:input_type -> google.protobuf.Empty
-	82,  // 71: hashicorp.waypoint.sdk.Mapper.Map:input_type -> hashicorp.waypoint.sdk.Map.Request
-	99,  // 72: hashicorp.waypoint.sdk.Builder.IsAuthenticator:input_type -> google.protobuf.Empty
-	46,  // 73: hashicorp.waypoint.sdk.Builder.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 74: hashicorp.waypoint.sdk.Builder.AuthSpec:input_type -> google.protobuf.Empty
-	46,  // 75: hashicorp.waypoint.sdk.Builder.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 76: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:input_type -> google.protobuf.Empty
-	99,  // 77: hashicorp.waypoint.sdk.Builder.ConfigStruct:input_type -> google.protobuf.Empty
-	47,  // 78: hashicorp.waypoint.sdk.Builder.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
-	99,  // 79: hashicorp.waypoint.sdk.Builder.Documentation:input_type -> google.protobuf.Empty
-	99,  // 80: hashicorp.waypoint.sdk.Builder.BuildSpec:input_type -> google.protobuf.Empty
-	46,  // 81: hashicorp.waypoint.sdk.Builder.Build:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	46,  // 82: hashicorp.waypoint.sdk.Builder.BuildODR:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 83: hashicorp.waypoint.sdk.Builder.BuildSpecODR:input_type -> google.protobuf.Empty
-	99,  // 84: hashicorp.waypoint.sdk.Platform.IsAuthenticator:input_type -> google.protobuf.Empty
-	46,  // 85: hashicorp.waypoint.sdk.Platform.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 86: hashicorp.waypoint.sdk.Platform.AuthSpec:input_type -> google.protobuf.Empty
-	46,  // 87: hashicorp.waypoint.sdk.Platform.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 88: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:input_type -> google.protobuf.Empty
-	99,  // 89: hashicorp.waypoint.sdk.Platform.ConfigStruct:input_type -> google.protobuf.Empty
-	47,  // 90: hashicorp.waypoint.sdk.Platform.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
-	99,  // 91: hashicorp.waypoint.sdk.Platform.Documentation:input_type -> google.protobuf.Empty
-	99,  // 92: hashicorp.waypoint.sdk.Platform.DeploySpec:input_type -> google.protobuf.Empty
-	46,  // 93: hashicorp.waypoint.sdk.Platform.Deploy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 94: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:input_type -> google.protobuf.Empty
-	46,  // 95: hashicorp.waypoint.sdk.Platform.DefaultReleaser:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 96: hashicorp.waypoint.sdk.Platform.IsDestroyer:input_type -> google.protobuf.Empty
-	99,  // 97: hashicorp.waypoint.sdk.Platform.DestroySpec:input_type -> google.protobuf.Empty
-	46,  // 98: hashicorp.waypoint.sdk.Platform.Destroy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 99: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:input_type -> google.protobuf.Empty
-	99,  // 100: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:input_type -> google.protobuf.Empty
-	46,  // 101: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 102: hashicorp.waypoint.sdk.Platform.IsExecer:input_type -> google.protobuf.Empty
-	99,  // 103: hashicorp.waypoint.sdk.Platform.ExecSpec:input_type -> google.protobuf.Empty
-	46,  // 104: hashicorp.waypoint.sdk.Platform.Exec:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 105: hashicorp.waypoint.sdk.Platform.IsLogPlatform:input_type -> google.protobuf.Empty
-	99,  // 106: hashicorp.waypoint.sdk.Platform.LogsSpec:input_type -> google.protobuf.Empty
-	46,  // 107: hashicorp.waypoint.sdk.Platform.Logs:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 108: hashicorp.waypoint.sdk.Platform.IsGeneration:input_type -> google.protobuf.Empty
-	99,  // 109: hashicorp.waypoint.sdk.Platform.GenerationSpec:input_type -> google.protobuf.Empty
-	46,  // 110: hashicorp.waypoint.sdk.Platform.Generation:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 111: hashicorp.waypoint.sdk.Platform.IsStatus:input_type -> google.protobuf.Empty
-	99,  // 112: hashicorp.waypoint.sdk.Platform.StatusSpec:input_type -> google.protobuf.Empty
-	46,  // 113: hashicorp.waypoint.sdk.Platform.Status:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 114: hashicorp.waypoint.sdk.Registry.IsAuthenticator:input_type -> google.protobuf.Empty
-	46,  // 115: hashicorp.waypoint.sdk.Registry.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 116: hashicorp.waypoint.sdk.Registry.AuthSpec:input_type -> google.protobuf.Empty
-	46,  // 117: hashicorp.waypoint.sdk.Registry.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 118: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:input_type -> google.protobuf.Empty
-	99,  // 119: hashicorp.waypoint.sdk.Registry.ConfigStruct:input_type -> google.protobuf.Empty
-	47,  // 120: hashicorp.waypoint.sdk.Registry.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
-	99,  // 121: hashicorp.waypoint.sdk.Registry.Documentation:input_type -> google.protobuf.Empty
-	99,  // 122: hashicorp.waypoint.sdk.Registry.PushSpec:input_type -> google.protobuf.Empty
-	46,  // 123: hashicorp.waypoint.sdk.Registry.Push:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 124: hashicorp.waypoint.sdk.Registry.AccessSpec:input_type -> google.protobuf.Empty
-	46,  // 125: hashicorp.waypoint.sdk.Registry.Access:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 126: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:input_type -> google.protobuf.Empty
-	46,  // 127: hashicorp.waypoint.sdk.ReleaseManager.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 128: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:input_type -> google.protobuf.Empty
-	46,  // 129: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 130: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:input_type -> google.protobuf.Empty
-	99,  // 131: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:input_type -> google.protobuf.Empty
-	47,  // 132: hashicorp.waypoint.sdk.ReleaseManager.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
-	99,  // 133: hashicorp.waypoint.sdk.ReleaseManager.Documentation:input_type -> google.protobuf.Empty
-	99,  // 134: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:input_type -> google.protobuf.Empty
-	99,  // 135: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:input_type -> google.protobuf.Empty
-	46,  // 136: hashicorp.waypoint.sdk.ReleaseManager.Destroy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 137: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:input_type -> google.protobuf.Empty
-	99,  // 138: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:input_type -> google.protobuf.Empty
-	46,  // 139: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 140: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:input_type -> google.protobuf.Empty
-	46,  // 141: hashicorp.waypoint.sdk.ReleaseManager.Release:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 142: hashicorp.waypoint.sdk.ReleaseManager.IsStatus:input_type -> google.protobuf.Empty
-	99,  // 143: hashicorp.waypoint.sdk.ReleaseManager.StatusSpec:input_type -> google.protobuf.Empty
-	46,  // 144: hashicorp.waypoint.sdk.ReleaseManager.Status:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 145: hashicorp.waypoint.sdk.ConfigSourcer.ConfigStruct:input_type -> google.protobuf.Empty
-	47,  // 146: hashicorp.waypoint.sdk.ConfigSourcer.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
-	99,  // 147: hashicorp.waypoint.sdk.ConfigSourcer.Documentation:input_type -> google.protobuf.Empty
-	99,  // 148: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:input_type -> google.protobuf.Empty
-	46,  // 149: hashicorp.waypoint.sdk.ConfigSourcer.Read:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 150: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:input_type -> google.protobuf.Empty
-	46,  // 151: hashicorp.waypoint.sdk.ConfigSourcer.Stop:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 152: hashicorp.waypoint.sdk.TaskLauncher.ConfigStruct:input_type -> google.protobuf.Empty
-	47,  // 153: hashicorp.waypoint.sdk.TaskLauncher.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
-	99,  // 154: hashicorp.waypoint.sdk.TaskLauncher.Documentation:input_type -> google.protobuf.Empty
-	99,  // 155: hashicorp.waypoint.sdk.TaskLauncher.StartSpec:input_type -> google.protobuf.Empty
-	99,  // 156: hashicorp.waypoint.sdk.TaskLauncher.StopSpec:input_type -> google.protobuf.Empty
-	46,  // 157: hashicorp.waypoint.sdk.TaskLauncher.StartTask:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	46,  // 158: hashicorp.waypoint.sdk.TaskLauncher.StopTask:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
-	99,  // 159: hashicorp.waypoint.sdk.ExecSessionService.Output:output_type -> google.protobuf.Empty
-	62,  // 160: hashicorp.waypoint.sdk.ExecSessionService.Input:output_type -> hashicorp.waypoint.sdk.ExecSession.InputRequest
-	99,  // 161: hashicorp.waypoint.sdk.LogViewer.NextLogBatch:output_type -> google.protobuf.Empty
-	99,  // 162: hashicorp.waypoint.sdk.TerminalUIService.Output:output_type -> google.protobuf.Empty
-	68,  // 163: hashicorp.waypoint.sdk.TerminalUIService.Events:output_type -> hashicorp.waypoint.sdk.TerminalUI.Response
-	66,  // 164: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:output_type -> hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
-	84,  // 165: hashicorp.waypoint.sdk.Mapper.ListMappers:output_type -> hashicorp.waypoint.sdk.Map.ListResponse
-	83,  // 166: hashicorp.waypoint.sdk.Mapper.Map:output_type -> hashicorp.waypoint.sdk.Map.Response
-	8,   // 167: hashicorp.waypoint.sdk.Builder.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	55,  // 168: hashicorp.waypoint.sdk.Builder.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	4,   // 169: hashicorp.waypoint.sdk.Builder.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 170: hashicorp.waypoint.sdk.Builder.ValidateAuth:output_type -> google.protobuf.Empty
-	4,   // 171: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	48,  // 172: hashicorp.waypoint.sdk.Builder.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	99,  // 173: hashicorp.waypoint.sdk.Builder.Configure:output_type -> google.protobuf.Empty
-	51,  // 174: hashicorp.waypoint.sdk.Builder.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	4,   // 175: hashicorp.waypoint.sdk.Builder.BuildSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	85,  // 176: hashicorp.waypoint.sdk.Builder.Build:output_type -> hashicorp.waypoint.sdk.Build.Resp
-	85,  // 177: hashicorp.waypoint.sdk.Builder.BuildODR:output_type -> hashicorp.waypoint.sdk.Build.Resp
-	4,   // 178: hashicorp.waypoint.sdk.Builder.BuildSpecODR:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	8,   // 179: hashicorp.waypoint.sdk.Platform.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	55,  // 180: hashicorp.waypoint.sdk.Platform.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	4,   // 181: hashicorp.waypoint.sdk.Platform.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 182: hashicorp.waypoint.sdk.Platform.ValidateAuth:output_type -> google.protobuf.Empty
-	4,   // 183: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	48,  // 184: hashicorp.waypoint.sdk.Platform.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	99,  // 185: hashicorp.waypoint.sdk.Platform.Configure:output_type -> google.protobuf.Empty
-	51,  // 186: hashicorp.waypoint.sdk.Platform.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	4,   // 187: hashicorp.waypoint.sdk.Platform.DeploySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	88,  // 188: hashicorp.waypoint.sdk.Platform.Deploy:output_type -> hashicorp.waypoint.sdk.Deploy.Resp
-	4,   // 189: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	87,  // 190: hashicorp.waypoint.sdk.Platform.DefaultReleaser:output_type -> hashicorp.waypoint.sdk.DefaultReleaser.Resp
-	8,   // 191: hashicorp.waypoint.sdk.Platform.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 192: hashicorp.waypoint.sdk.Platform.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 193: hashicorp.waypoint.sdk.Platform.Destroy:output_type -> google.protobuf.Empty
-	8,   // 194: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 195: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 196: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:output_type -> google.protobuf.Empty
-	8,   // 197: hashicorp.waypoint.sdk.Platform.IsExecer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 198: hashicorp.waypoint.sdk.Platform.ExecSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	14,  // 199: hashicorp.waypoint.sdk.Platform.Exec:output_type -> hashicorp.waypoint.sdk.ExecResult
-	8,   // 200: hashicorp.waypoint.sdk.Platform.IsLogPlatform:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 201: hashicorp.waypoint.sdk.Platform.LogsSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 202: hashicorp.waypoint.sdk.Platform.Logs:output_type -> google.protobuf.Empty
-	8,   // 203: hashicorp.waypoint.sdk.Platform.IsGeneration:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 204: hashicorp.waypoint.sdk.Platform.GenerationSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	56,  // 205: hashicorp.waypoint.sdk.Platform.Generation:output_type -> hashicorp.waypoint.sdk.Generation.Resp
-	8,   // 206: hashicorp.waypoint.sdk.Platform.IsStatus:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 207: hashicorp.waypoint.sdk.Platform.StatusSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	11,  // 208: hashicorp.waypoint.sdk.Platform.Status:output_type -> hashicorp.waypoint.sdk.StatusReport
-	8,   // 209: hashicorp.waypoint.sdk.Registry.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	55,  // 210: hashicorp.waypoint.sdk.Registry.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	4,   // 211: hashicorp.waypoint.sdk.Registry.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 212: hashicorp.waypoint.sdk.Registry.ValidateAuth:output_type -> google.protobuf.Empty
-	4,   // 213: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	48,  // 214: hashicorp.waypoint.sdk.Registry.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	99,  // 215: hashicorp.waypoint.sdk.Registry.Configure:output_type -> google.protobuf.Empty
-	51,  // 216: hashicorp.waypoint.sdk.Registry.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	4,   // 217: hashicorp.waypoint.sdk.Registry.PushSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	89,  // 218: hashicorp.waypoint.sdk.Registry.Push:output_type -> hashicorp.waypoint.sdk.Push.Resp
-	4,   // 219: hashicorp.waypoint.sdk.Registry.AccessSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	90,  // 220: hashicorp.waypoint.sdk.Registry.Access:output_type -> hashicorp.waypoint.sdk.Access.Resp
-	8,   // 221: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	55,  // 222: hashicorp.waypoint.sdk.ReleaseManager.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
-	4,   // 223: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 224: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:output_type -> google.protobuf.Empty
-	4,   // 225: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	48,  // 226: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	99,  // 227: hashicorp.waypoint.sdk.ReleaseManager.Configure:output_type -> google.protobuf.Empty
-	51,  // 228: hashicorp.waypoint.sdk.ReleaseManager.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	8,   // 229: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 230: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 231: hashicorp.waypoint.sdk.ReleaseManager.Destroy:output_type -> google.protobuf.Empty
-	8,   // 232: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 233: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 234: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:output_type -> google.protobuf.Empty
-	4,   // 235: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	91,  // 236: hashicorp.waypoint.sdk.ReleaseManager.Release:output_type -> hashicorp.waypoint.sdk.Release.Resp
-	8,   // 237: hashicorp.waypoint.sdk.ReleaseManager.IsStatus:output_type -> hashicorp.waypoint.sdk.ImplementsResp
-	4,   // 238: hashicorp.waypoint.sdk.ReleaseManager.StatusSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	11,  // 239: hashicorp.waypoint.sdk.ReleaseManager.Status:output_type -> hashicorp.waypoint.sdk.StatusReport
-	48,  // 240: hashicorp.waypoint.sdk.ConfigSourcer.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	99,  // 241: hashicorp.waypoint.sdk.ConfigSourcer.Configure:output_type -> google.protobuf.Empty
-	51,  // 242: hashicorp.waypoint.sdk.ConfigSourcer.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	4,   // 243: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	92,  // 244: hashicorp.waypoint.sdk.ConfigSourcer.Read:output_type -> hashicorp.waypoint.sdk.ConfigSource.ReadResponse
-	4,   // 245: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	99,  // 246: hashicorp.waypoint.sdk.ConfigSourcer.Stop:output_type -> google.protobuf.Empty
-	48,  // 247: hashicorp.waypoint.sdk.TaskLauncher.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
-	99,  // 248: hashicorp.waypoint.sdk.TaskLauncher.Configure:output_type -> google.protobuf.Empty
-	51,  // 249: hashicorp.waypoint.sdk.TaskLauncher.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
-	4,   // 250: hashicorp.waypoint.sdk.TaskLauncher.StartSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	4,   // 251: hashicorp.waypoint.sdk.TaskLauncher.StopSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
-	94,  // 252: hashicorp.waypoint.sdk.TaskLauncher.StartTask:output_type -> hashicorp.waypoint.sdk.TaskLaunch.Resp
-	99,  // 253: hashicorp.waypoint.sdk.TaskLauncher.StopTask:output_type -> google.protobuf.Empty
-	159, // [159:254] is the sub-list for method output_type
-	64,  // [64:159] is the sub-list for method input_type
+	94,  // 61: hashicorp.waypoint.sdk.ConfigSource.ReadResponse.values:type_name -> hashicorp.waypoint.sdk.ConfigSource.Value
+	100, // 62: hashicorp.waypoint.sdk.ConfigSource.Value.error:type_name -> google.rpc.Status
+	98,  // 63: hashicorp.waypoint.sdk.TaskLaunch.Resp.result:type_name -> opaqueany.Any
+	62,  // 64: hashicorp.waypoint.sdk.ExecSessionService.Output:input_type -> hashicorp.waypoint.sdk.ExecSession.OutputRequest
+	101, // 65: hashicorp.waypoint.sdk.ExecSessionService.Input:input_type -> google.protobuf.Empty
+	65,  // 66: hashicorp.waypoint.sdk.LogViewer.NextLogBatch:input_type -> hashicorp.waypoint.sdk.Logs.NextBatchResp
+	68,  // 67: hashicorp.waypoint.sdk.TerminalUIService.Output:input_type -> hashicorp.waypoint.sdk.TerminalUI.OutputRequest
+	70,  // 68: hashicorp.waypoint.sdk.TerminalUIService.Events:input_type -> hashicorp.waypoint.sdk.TerminalUI.Event
+	101, // 69: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:input_type -> google.protobuf.Empty
+	101, // 70: hashicorp.waypoint.sdk.Mapper.ListMappers:input_type -> google.protobuf.Empty
+	83,  // 71: hashicorp.waypoint.sdk.Mapper.Map:input_type -> hashicorp.waypoint.sdk.Map.Request
+	101, // 72: hashicorp.waypoint.sdk.Builder.IsAuthenticator:input_type -> google.protobuf.Empty
+	47,  // 73: hashicorp.waypoint.sdk.Builder.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 74: hashicorp.waypoint.sdk.Builder.AuthSpec:input_type -> google.protobuf.Empty
+	47,  // 75: hashicorp.waypoint.sdk.Builder.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 76: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	101, // 77: hashicorp.waypoint.sdk.Builder.ConfigStruct:input_type -> google.protobuf.Empty
+	48,  // 78: hashicorp.waypoint.sdk.Builder.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	101, // 79: hashicorp.waypoint.sdk.Builder.Documentation:input_type -> google.protobuf.Empty
+	101, // 80: hashicorp.waypoint.sdk.Builder.BuildSpec:input_type -> google.protobuf.Empty
+	47,  // 81: hashicorp.waypoint.sdk.Builder.Build:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	47,  // 82: hashicorp.waypoint.sdk.Builder.BuildODR:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 83: hashicorp.waypoint.sdk.Builder.BuildSpecODR:input_type -> google.protobuf.Empty
+	101, // 84: hashicorp.waypoint.sdk.Platform.IsAuthenticator:input_type -> google.protobuf.Empty
+	47,  // 85: hashicorp.waypoint.sdk.Platform.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 86: hashicorp.waypoint.sdk.Platform.AuthSpec:input_type -> google.protobuf.Empty
+	47,  // 87: hashicorp.waypoint.sdk.Platform.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 88: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	101, // 89: hashicorp.waypoint.sdk.Platform.ConfigStruct:input_type -> google.protobuf.Empty
+	48,  // 90: hashicorp.waypoint.sdk.Platform.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	101, // 91: hashicorp.waypoint.sdk.Platform.Documentation:input_type -> google.protobuf.Empty
+	101, // 92: hashicorp.waypoint.sdk.Platform.DeploySpec:input_type -> google.protobuf.Empty
+	47,  // 93: hashicorp.waypoint.sdk.Platform.Deploy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 94: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:input_type -> google.protobuf.Empty
+	47,  // 95: hashicorp.waypoint.sdk.Platform.DefaultReleaser:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 96: hashicorp.waypoint.sdk.Platform.IsDestroyer:input_type -> google.protobuf.Empty
+	101, // 97: hashicorp.waypoint.sdk.Platform.DestroySpec:input_type -> google.protobuf.Empty
+	47,  // 98: hashicorp.waypoint.sdk.Platform.Destroy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 99: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:input_type -> google.protobuf.Empty
+	101, // 100: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:input_type -> google.protobuf.Empty
+	47,  // 101: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 102: hashicorp.waypoint.sdk.Platform.IsExecer:input_type -> google.protobuf.Empty
+	101, // 103: hashicorp.waypoint.sdk.Platform.ExecSpec:input_type -> google.protobuf.Empty
+	47,  // 104: hashicorp.waypoint.sdk.Platform.Exec:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 105: hashicorp.waypoint.sdk.Platform.IsLogPlatform:input_type -> google.protobuf.Empty
+	101, // 106: hashicorp.waypoint.sdk.Platform.LogsSpec:input_type -> google.protobuf.Empty
+	47,  // 107: hashicorp.waypoint.sdk.Platform.Logs:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 108: hashicorp.waypoint.sdk.Platform.IsGeneration:input_type -> google.protobuf.Empty
+	101, // 109: hashicorp.waypoint.sdk.Platform.GenerationSpec:input_type -> google.protobuf.Empty
+	47,  // 110: hashicorp.waypoint.sdk.Platform.Generation:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 111: hashicorp.waypoint.sdk.Platform.IsStatus:input_type -> google.protobuf.Empty
+	101, // 112: hashicorp.waypoint.sdk.Platform.StatusSpec:input_type -> google.protobuf.Empty
+	47,  // 113: hashicorp.waypoint.sdk.Platform.Status:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 114: hashicorp.waypoint.sdk.Registry.IsAuthenticator:input_type -> google.protobuf.Empty
+	47,  // 115: hashicorp.waypoint.sdk.Registry.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 116: hashicorp.waypoint.sdk.Registry.AuthSpec:input_type -> google.protobuf.Empty
+	47,  // 117: hashicorp.waypoint.sdk.Registry.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 118: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	101, // 119: hashicorp.waypoint.sdk.Registry.ConfigStruct:input_type -> google.protobuf.Empty
+	48,  // 120: hashicorp.waypoint.sdk.Registry.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	101, // 121: hashicorp.waypoint.sdk.Registry.Documentation:input_type -> google.protobuf.Empty
+	101, // 122: hashicorp.waypoint.sdk.Registry.PushSpec:input_type -> google.protobuf.Empty
+	47,  // 123: hashicorp.waypoint.sdk.Registry.Push:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 124: hashicorp.waypoint.sdk.Registry.AccessSpec:input_type -> google.protobuf.Empty
+	47,  // 125: hashicorp.waypoint.sdk.Registry.Access:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 126: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:input_type -> google.protobuf.Empty
+	47,  // 127: hashicorp.waypoint.sdk.ReleaseManager.Auth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 128: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:input_type -> google.protobuf.Empty
+	47,  // 129: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 130: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:input_type -> google.protobuf.Empty
+	101, // 131: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:input_type -> google.protobuf.Empty
+	48,  // 132: hashicorp.waypoint.sdk.ReleaseManager.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	101, // 133: hashicorp.waypoint.sdk.ReleaseManager.Documentation:input_type -> google.protobuf.Empty
+	101, // 134: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:input_type -> google.protobuf.Empty
+	101, // 135: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:input_type -> google.protobuf.Empty
+	47,  // 136: hashicorp.waypoint.sdk.ReleaseManager.Destroy:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 137: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:input_type -> google.protobuf.Empty
+	101, // 138: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:input_type -> google.protobuf.Empty
+	47,  // 139: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 140: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:input_type -> google.protobuf.Empty
+	47,  // 141: hashicorp.waypoint.sdk.ReleaseManager.Release:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 142: hashicorp.waypoint.sdk.ReleaseManager.IsStatus:input_type -> google.protobuf.Empty
+	101, // 143: hashicorp.waypoint.sdk.ReleaseManager.StatusSpec:input_type -> google.protobuf.Empty
+	47,  // 144: hashicorp.waypoint.sdk.ReleaseManager.Status:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 145: hashicorp.waypoint.sdk.ConfigSourcer.ConfigStruct:input_type -> google.protobuf.Empty
+	48,  // 146: hashicorp.waypoint.sdk.ConfigSourcer.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	101, // 147: hashicorp.waypoint.sdk.ConfigSourcer.Documentation:input_type -> google.protobuf.Empty
+	101, // 148: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:input_type -> google.protobuf.Empty
+	47,  // 149: hashicorp.waypoint.sdk.ConfigSourcer.Read:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 150: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:input_type -> google.protobuf.Empty
+	47,  // 151: hashicorp.waypoint.sdk.ConfigSourcer.Stop:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 152: hashicorp.waypoint.sdk.TaskLauncher.ConfigStruct:input_type -> google.protobuf.Empty
+	48,  // 153: hashicorp.waypoint.sdk.TaskLauncher.Configure:input_type -> hashicorp.waypoint.sdk.Config.ConfigureRequest
+	101, // 154: hashicorp.waypoint.sdk.TaskLauncher.Documentation:input_type -> google.protobuf.Empty
+	101, // 155: hashicorp.waypoint.sdk.TaskLauncher.StartSpec:input_type -> google.protobuf.Empty
+	101, // 156: hashicorp.waypoint.sdk.TaskLauncher.StopSpec:input_type -> google.protobuf.Empty
+	101, // 157: hashicorp.waypoint.sdk.TaskLauncher.RunSpec:input_type -> google.protobuf.Empty
+	47,  // 158: hashicorp.waypoint.sdk.TaskLauncher.StartTask:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	47,  // 159: hashicorp.waypoint.sdk.TaskLauncher.StopTask:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	47,  // 160: hashicorp.waypoint.sdk.TaskLauncher.RunTask:input_type -> hashicorp.waypoint.sdk.FuncSpec.Args
+	101, // 161: hashicorp.waypoint.sdk.ExecSessionService.Output:output_type -> google.protobuf.Empty
+	63,  // 162: hashicorp.waypoint.sdk.ExecSessionService.Input:output_type -> hashicorp.waypoint.sdk.ExecSession.InputRequest
+	101, // 163: hashicorp.waypoint.sdk.LogViewer.NextLogBatch:output_type -> google.protobuf.Empty
+	101, // 164: hashicorp.waypoint.sdk.TerminalUIService.Output:output_type -> google.protobuf.Empty
+	69,  // 165: hashicorp.waypoint.sdk.TerminalUIService.Events:output_type -> hashicorp.waypoint.sdk.TerminalUI.Response
+	67,  // 166: hashicorp.waypoint.sdk.TerminalUIService.IsInteractive:output_type -> hashicorp.waypoint.sdk.TerminalUI.IsInteractiveResponse
+	85,  // 167: hashicorp.waypoint.sdk.Mapper.ListMappers:output_type -> hashicorp.waypoint.sdk.Map.ListResponse
+	84,  // 168: hashicorp.waypoint.sdk.Mapper.Map:output_type -> hashicorp.waypoint.sdk.Map.Response
+	8,   // 169: hashicorp.waypoint.sdk.Builder.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	56,  // 170: hashicorp.waypoint.sdk.Builder.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	4,   // 171: hashicorp.waypoint.sdk.Builder.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 172: hashicorp.waypoint.sdk.Builder.ValidateAuth:output_type -> google.protobuf.Empty
+	4,   // 173: hashicorp.waypoint.sdk.Builder.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	49,  // 174: hashicorp.waypoint.sdk.Builder.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	101, // 175: hashicorp.waypoint.sdk.Builder.Configure:output_type -> google.protobuf.Empty
+	52,  // 176: hashicorp.waypoint.sdk.Builder.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	4,   // 177: hashicorp.waypoint.sdk.Builder.BuildSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	86,  // 178: hashicorp.waypoint.sdk.Builder.Build:output_type -> hashicorp.waypoint.sdk.Build.Resp
+	86,  // 179: hashicorp.waypoint.sdk.Builder.BuildODR:output_type -> hashicorp.waypoint.sdk.Build.Resp
+	4,   // 180: hashicorp.waypoint.sdk.Builder.BuildSpecODR:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	8,   // 181: hashicorp.waypoint.sdk.Platform.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	56,  // 182: hashicorp.waypoint.sdk.Platform.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	4,   // 183: hashicorp.waypoint.sdk.Platform.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 184: hashicorp.waypoint.sdk.Platform.ValidateAuth:output_type -> google.protobuf.Empty
+	4,   // 185: hashicorp.waypoint.sdk.Platform.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	49,  // 186: hashicorp.waypoint.sdk.Platform.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	101, // 187: hashicorp.waypoint.sdk.Platform.Configure:output_type -> google.protobuf.Empty
+	52,  // 188: hashicorp.waypoint.sdk.Platform.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	4,   // 189: hashicorp.waypoint.sdk.Platform.DeploySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	89,  // 190: hashicorp.waypoint.sdk.Platform.Deploy:output_type -> hashicorp.waypoint.sdk.Deploy.Resp
+	4,   // 191: hashicorp.waypoint.sdk.Platform.DefaultReleaserSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	88,  // 192: hashicorp.waypoint.sdk.Platform.DefaultReleaser:output_type -> hashicorp.waypoint.sdk.DefaultReleaser.Resp
+	8,   // 193: hashicorp.waypoint.sdk.Platform.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 194: hashicorp.waypoint.sdk.Platform.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 195: hashicorp.waypoint.sdk.Platform.Destroy:output_type -> google.protobuf.Empty
+	8,   // 196: hashicorp.waypoint.sdk.Platform.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 197: hashicorp.waypoint.sdk.Platform.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 198: hashicorp.waypoint.sdk.Platform.DestroyWorkspace:output_type -> google.protobuf.Empty
+	8,   // 199: hashicorp.waypoint.sdk.Platform.IsExecer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 200: hashicorp.waypoint.sdk.Platform.ExecSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	14,  // 201: hashicorp.waypoint.sdk.Platform.Exec:output_type -> hashicorp.waypoint.sdk.ExecResult
+	8,   // 202: hashicorp.waypoint.sdk.Platform.IsLogPlatform:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 203: hashicorp.waypoint.sdk.Platform.LogsSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 204: hashicorp.waypoint.sdk.Platform.Logs:output_type -> google.protobuf.Empty
+	8,   // 205: hashicorp.waypoint.sdk.Platform.IsGeneration:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 206: hashicorp.waypoint.sdk.Platform.GenerationSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	57,  // 207: hashicorp.waypoint.sdk.Platform.Generation:output_type -> hashicorp.waypoint.sdk.Generation.Resp
+	8,   // 208: hashicorp.waypoint.sdk.Platform.IsStatus:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 209: hashicorp.waypoint.sdk.Platform.StatusSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	11,  // 210: hashicorp.waypoint.sdk.Platform.Status:output_type -> hashicorp.waypoint.sdk.StatusReport
+	8,   // 211: hashicorp.waypoint.sdk.Registry.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	56,  // 212: hashicorp.waypoint.sdk.Registry.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	4,   // 213: hashicorp.waypoint.sdk.Registry.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 214: hashicorp.waypoint.sdk.Registry.ValidateAuth:output_type -> google.protobuf.Empty
+	4,   // 215: hashicorp.waypoint.sdk.Registry.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	49,  // 216: hashicorp.waypoint.sdk.Registry.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	101, // 217: hashicorp.waypoint.sdk.Registry.Configure:output_type -> google.protobuf.Empty
+	52,  // 218: hashicorp.waypoint.sdk.Registry.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	4,   // 219: hashicorp.waypoint.sdk.Registry.PushSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	90,  // 220: hashicorp.waypoint.sdk.Registry.Push:output_type -> hashicorp.waypoint.sdk.Push.Resp
+	4,   // 221: hashicorp.waypoint.sdk.Registry.AccessSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	91,  // 222: hashicorp.waypoint.sdk.Registry.Access:output_type -> hashicorp.waypoint.sdk.Access.Resp
+	8,   // 223: hashicorp.waypoint.sdk.ReleaseManager.IsAuthenticator:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	56,  // 224: hashicorp.waypoint.sdk.ReleaseManager.Auth:output_type -> hashicorp.waypoint.sdk.Auth.AuthResponse
+	4,   // 225: hashicorp.waypoint.sdk.ReleaseManager.AuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 226: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuth:output_type -> google.protobuf.Empty
+	4,   // 227: hashicorp.waypoint.sdk.ReleaseManager.ValidateAuthSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	49,  // 228: hashicorp.waypoint.sdk.ReleaseManager.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	101, // 229: hashicorp.waypoint.sdk.ReleaseManager.Configure:output_type -> google.protobuf.Empty
+	52,  // 230: hashicorp.waypoint.sdk.ReleaseManager.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	8,   // 231: hashicorp.waypoint.sdk.ReleaseManager.IsDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 232: hashicorp.waypoint.sdk.ReleaseManager.DestroySpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 233: hashicorp.waypoint.sdk.ReleaseManager.Destroy:output_type -> google.protobuf.Empty
+	8,   // 234: hashicorp.waypoint.sdk.ReleaseManager.IsWorkspaceDestroyer:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 235: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspaceSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 236: hashicorp.waypoint.sdk.ReleaseManager.DestroyWorkspace:output_type -> google.protobuf.Empty
+	4,   // 237: hashicorp.waypoint.sdk.ReleaseManager.ReleaseSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	92,  // 238: hashicorp.waypoint.sdk.ReleaseManager.Release:output_type -> hashicorp.waypoint.sdk.Release.Resp
+	8,   // 239: hashicorp.waypoint.sdk.ReleaseManager.IsStatus:output_type -> hashicorp.waypoint.sdk.ImplementsResp
+	4,   // 240: hashicorp.waypoint.sdk.ReleaseManager.StatusSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	11,  // 241: hashicorp.waypoint.sdk.ReleaseManager.Status:output_type -> hashicorp.waypoint.sdk.StatusReport
+	49,  // 242: hashicorp.waypoint.sdk.ConfigSourcer.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	101, // 243: hashicorp.waypoint.sdk.ConfigSourcer.Configure:output_type -> google.protobuf.Empty
+	52,  // 244: hashicorp.waypoint.sdk.ConfigSourcer.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	4,   // 245: hashicorp.waypoint.sdk.ConfigSourcer.ReadSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	93,  // 246: hashicorp.waypoint.sdk.ConfigSourcer.Read:output_type -> hashicorp.waypoint.sdk.ConfigSource.ReadResponse
+	4,   // 247: hashicorp.waypoint.sdk.ConfigSourcer.StopSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	101, // 248: hashicorp.waypoint.sdk.ConfigSourcer.Stop:output_type -> google.protobuf.Empty
+	49,  // 249: hashicorp.waypoint.sdk.TaskLauncher.ConfigStruct:output_type -> hashicorp.waypoint.sdk.Config.StructResp
+	101, // 250: hashicorp.waypoint.sdk.TaskLauncher.Configure:output_type -> google.protobuf.Empty
+	52,  // 251: hashicorp.waypoint.sdk.TaskLauncher.Documentation:output_type -> hashicorp.waypoint.sdk.Config.Documentation
+	4,   // 252: hashicorp.waypoint.sdk.TaskLauncher.StartSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	4,   // 253: hashicorp.waypoint.sdk.TaskLauncher.StopSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	4,   // 254: hashicorp.waypoint.sdk.TaskLauncher.RunSpec:output_type -> hashicorp.waypoint.sdk.FuncSpec
+	95,  // 255: hashicorp.waypoint.sdk.TaskLauncher.StartTask:output_type -> hashicorp.waypoint.sdk.TaskLaunch.Resp
+	101, // 256: hashicorp.waypoint.sdk.TaskLauncher.StopTask:output_type -> google.protobuf.Empty
+	96,  // 257: hashicorp.waypoint.sdk.TaskLauncher.RunTask:output_type -> hashicorp.waypoint.sdk.TaskRun.Resp
+	161, // [161:258] is the sub-list for method output_type
+	64,  // [64:161] is the sub-list for method input_type
 	64,  // [64:64] is the sub-list for extension type_name
 	64,  // [64:64] is the sub-list for extension extendee
 	0,   // [0:64] is the sub-list for field type_name
@@ -7207,7 +7312,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_Source); i {
+			switch v := v.(*TaskRun); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7219,7 +7324,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_JobInfo); i {
+			switch v := v.(*Args_Source); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7231,7 +7336,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DeploymentConfig); i {
+			switch v := v.(*Args_JobInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7243,7 +7348,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir); i {
+			switch v := v.(*Args_DeploymentConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7255,7 +7360,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_Logger); i {
+			switch v := v.(*Args_DataDir); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7267,7 +7372,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_TerminalUI); i {
+			switch v := v.(*Args_Logger); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7279,7 +7384,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_ReleaseTargets); i {
+			switch v := v.(*Args_TerminalUI); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7291,7 +7396,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_LabelSet); i {
+			switch v := v.(*Args_ReleaseTargets); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7303,7 +7408,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_ExecSessionInfo); i {
+			switch v := v.(*Args_LabelSet); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7315,7 +7420,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_LogViewer); i {
+			switch v := v.(*Args_ExecSessionInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7327,7 +7432,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_TaskLaunchInfo); i {
+			switch v := v.(*Args_LogViewer); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7339,7 +7444,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir_Project); i {
+			switch v := v.(*Args_TaskLaunchInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7351,7 +7456,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir_App); i {
+			switch v := v.(*Args_DataDir_Project); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7363,7 +7468,7 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Args_DataDir_Component); i {
+			switch v := v.(*Args_DataDir_App); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7375,6 +7480,18 @@ func file_plugin_proto_init() {
 			}
 		}
 		file_plugin_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Args_DataDir_Component); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_plugin_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Args_ReleaseTargets_Target); i {
 			case 0:
 				return &v.state
@@ -7386,7 +7503,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*FuncSpec_Value); i {
 			case 0:
 				return &v.state
@@ -7398,7 +7515,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*FuncSpec_Args); i {
 			case 0:
 				return &v.state
@@ -7410,7 +7527,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Config_ConfigureRequest); i {
 			case 0:
 				return &v.state
@@ -7422,7 +7539,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Config_StructResp); i {
 			case 0:
 				return &v.state
@@ -7434,7 +7551,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Config_FieldDocumentation); i {
 			case 0:
 				return &v.state
@@ -7446,7 +7563,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Config_MapperDocumentation); i {
 			case 0:
 				return &v.state
@@ -7458,7 +7575,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Config_Documentation); i {
 			case 0:
 				return &v.state
@@ -7470,7 +7587,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Auth_AuthResponse); i {
 			case 0:
 				return &v.state
@@ -7482,7 +7599,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[54].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Generation_Resp); i {
 			case 0:
 				return &v.state
@@ -7494,7 +7611,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[54].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Framework_ResourceManagerState); i {
 			case 0:
 				return &v.state
@@ -7506,7 +7623,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Framework_ResourceState); i {
 			case 0:
 				return &v.state
@@ -7518,7 +7635,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Ref_DeclaredResource); i {
 			case 0:
 				return &v.state
@@ -7530,7 +7647,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*StatusReport_Resource); i {
 			case 0:
 				return &v.state
@@ -7542,7 +7659,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[59].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ExecSession_OutputRequest); i {
 			case 0:
 				return &v.state
@@ -7554,7 +7671,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[59].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[60].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ExecSession_InputRequest); i {
 			case 0:
 				return &v.state
@@ -7566,7 +7683,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[60].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[61].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Logs_Resp); i {
 			case 0:
 				return &v.state
@@ -7578,7 +7695,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[61].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[62].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Logs_NextBatchResp); i {
 			case 0:
 				return &v.state
@@ -7590,7 +7707,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[62].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[63].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Logs_Event); i {
 			case 0:
 				return &v.state
@@ -7602,7 +7719,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[63].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[64].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_IsInteractiveResponse); i {
 			case 0:
 				return &v.state
@@ -7614,7 +7731,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[64].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[65].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_OutputRequest); i {
 			case 0:
 				return &v.state
@@ -7626,7 +7743,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[65].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[66].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Response); i {
 			case 0:
 				return &v.state
@@ -7638,7 +7755,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[66].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[67].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event); i {
 			case 0:
 				return &v.state
@@ -7650,7 +7767,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[67].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[68].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_Input); i {
 			case 0:
 				return &v.state
@@ -7662,7 +7779,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[68].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[69].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_InputResp); i {
 			case 0:
 				return &v.state
@@ -7674,7 +7791,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[69].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[70].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_Status); i {
 			case 0:
 				return &v.state
@@ -7686,7 +7803,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[70].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[71].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_Line); i {
 			case 0:
 				return &v.state
@@ -7698,7 +7815,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[71].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[72].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_Raw); i {
 			case 0:
 				return &v.state
@@ -7710,7 +7827,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[72].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[73].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_NamedValue); i {
 			case 0:
 				return &v.state
@@ -7722,7 +7839,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[73].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[74].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_NamedValues); i {
 			case 0:
 				return &v.state
@@ -7734,7 +7851,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[74].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[75].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_TableEntry); i {
 			case 0:
 				return &v.state
@@ -7746,7 +7863,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[75].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[76].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_TableRow); i {
 			case 0:
 				return &v.state
@@ -7758,7 +7875,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[76].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[77].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_Table); i {
 			case 0:
 				return &v.state
@@ -7770,7 +7887,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[77].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[78].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_StepGroup); i {
 			case 0:
 				return &v.state
@@ -7782,7 +7899,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[78].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[79].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TerminalUI_Event_Step); i {
 			case 0:
 				return &v.state
@@ -7794,7 +7911,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[79].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[80].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Map_Request); i {
 			case 0:
 				return &v.state
@@ -7806,7 +7923,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[80].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[81].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Map_Response); i {
 			case 0:
 				return &v.state
@@ -7818,7 +7935,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[81].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[82].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Map_ListResponse); i {
 			case 0:
 				return &v.state
@@ -7830,7 +7947,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[82].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[83].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Build_Resp); i {
 			case 0:
 				return &v.state
@@ -7842,7 +7959,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[84].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[85].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DefaultReleaser_Resp); i {
 			case 0:
 				return &v.state
@@ -7854,7 +7971,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[85].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[86].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Deploy_Resp); i {
 			case 0:
 				return &v.state
@@ -7866,7 +7983,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[86].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[87].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Push_Resp); i {
 			case 0:
 				return &v.state
@@ -7878,7 +7995,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[87].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[88].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Access_Resp); i {
 			case 0:
 				return &v.state
@@ -7890,7 +8007,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[88].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[89].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Release_Resp); i {
 			case 0:
 				return &v.state
@@ -7902,7 +8019,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[89].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[90].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ConfigSource_ReadResponse); i {
 			case 0:
 				return &v.state
@@ -7914,7 +8031,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[90].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[91].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ConfigSource_Value); i {
 			case 0:
 				return &v.state
@@ -7926,7 +8043,7 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
-		file_plugin_proto_msgTypes[91].Exporter = func(v interface{}, i int) interface{} {
+		file_plugin_proto_msgTypes[92].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TaskLaunch_Resp); i {
 			case 0:
 				return &v.state
@@ -7938,23 +8055,35 @@ func file_plugin_proto_init() {
 				return nil
 			}
 		}
+		file_plugin_proto_msgTypes[93].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TaskRun_Resp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
-	file_plugin_proto_msgTypes[42].OneofWrappers = []interface{}{
+	file_plugin_proto_msgTypes[43].OneofWrappers = []interface{}{
 		(*FuncSpec_Value_ProtoAny)(nil),
 		(*FuncSpec_Value_Bool)(nil),
 		(*FuncSpec_Value_Int)(nil),
 		(*FuncSpec_Value_Uint)(nil),
 		(*FuncSpec_Value_String_)(nil),
 	}
-	file_plugin_proto_msgTypes[59].OneofWrappers = []interface{}{
+	file_plugin_proto_msgTypes[60].OneofWrappers = []interface{}{
 		(*ExecSession_InputRequest_Data)(nil),
 		(*ExecSession_InputRequest_WindowSize)(nil),
 		(*ExecSession_InputRequest_InputClosed)(nil),
 	}
-	file_plugin_proto_msgTypes[65].OneofWrappers = []interface{}{
+	file_plugin_proto_msgTypes[66].OneofWrappers = []interface{}{
 		(*TerminalUI_Response_Input)(nil),
 	}
-	file_plugin_proto_msgTypes[66].OneofWrappers = []interface{}{
+	file_plugin_proto_msgTypes[67].OneofWrappers = []interface{}{
 		(*TerminalUI_Event_Line_)(nil),
 		(*TerminalUI_Event_Status_)(nil),
 		(*TerminalUI_Event_NamedValues_)(nil),
@@ -7964,7 +8093,7 @@ func file_plugin_proto_init() {
 		(*TerminalUI_Event_Step_)(nil),
 		(*TerminalUI_Event_Input_)(nil),
 	}
-	file_plugin_proto_msgTypes[90].OneofWrappers = []interface{}{
+	file_plugin_proto_msgTypes[91].OneofWrappers = []interface{}{
 		(*ConfigSource_Value_Error)(nil),
 		(*ConfigSource_Value_Value)(nil),
 	}
@@ -7974,7 +8103,7 @@ func file_plugin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_plugin_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   92,
+			NumMessages:   94,
 			NumExtensions: 0,
 			NumServices:   10,
 		},

@@ -9,6 +9,22 @@ type TaskLauncher struct {
 	mock.Mock
 }
 
+// RunTaskFunc provides a mock function with given fields:
+func (_m *TaskLauncher) RunTaskFunc() interface{} {
+	ret := _m.Called()
+
+	var r0 interface{}
+	if rf, ok := ret.Get(0).(func() interface{}); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(interface{})
+		}
+	}
+
+	return r0
+}
+
 // StartTaskFunc provides a mock function with given fields:
 func (_m *TaskLauncher) StartTaskFunc() interface{} {
 	ret := _m.Called()
