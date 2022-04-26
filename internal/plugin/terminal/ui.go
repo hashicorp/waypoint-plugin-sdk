@@ -127,13 +127,6 @@ func (s *uiServer) Events(stream pb.TerminalUIService_EventsServer) error {
 		switch ev := ev.Event.(type) {
 		case *pb.TerminalUI_Event_Line_:
 			s.Impl.Output(ev.Line.Msg, terminal.WithStyle(ev.Line.Style))
-			stream.Send(&pb.TerminalUI_Response{
-				Event: &pb.TerminalUI_Response_Input{
-					Input: &pb.TerminalUI_Event_InputResp{
-						Input: "complete",
-					},
-				},
-			})
 		case *pb.TerminalUI_Event_NamedValues_:
 			var values []terminal.NamedValue
 
@@ -367,10 +360,7 @@ func (u *uiBridge) Output(msg string, raw ...interface{}) {
 
 	err := u.evc.Send(ev)
 	if err != nil {
-		panic(err)
-	}
-	_, err = u.evc.Recv()
-	if err != nil {
+		// This should never return an error, but we panic because this function does not return an error
 		panic(err)
 	}
 }

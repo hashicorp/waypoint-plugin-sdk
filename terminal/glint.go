@@ -116,7 +116,6 @@ func (ui *glintUI) Output(msg string, raw ...interface{}) {
 			cs...,
 		),
 	))
-	ui.d.RenderFrame()
 }
 
 // NamedValues implements UI
