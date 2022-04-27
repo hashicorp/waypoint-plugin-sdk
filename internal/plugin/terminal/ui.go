@@ -358,7 +358,11 @@ func (u *uiBridge) Output(msg string, raw ...interface{}) {
 		return
 	}
 
-	u.evc.Send(ev)
+	err := u.evc.Send(ev)
+	if err != nil {
+		// This should never return an error, but we panic because this function does not return an error
+		panic(err)
+	}
 }
 
 // Output data as a table of data. Each entry is a row which will be output

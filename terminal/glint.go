@@ -1,6 +1,7 @@
 package terminal
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
@@ -32,15 +33,25 @@ func (ui *glintUI) Close() error {
 }
 
 func (ui *glintUI) Input(input *Input) (string, error) {
-	return "", ErrNonInteractive
+	//return "", ErrNonInteractive
+	ui.Output(input.Prompt)
+	// Render the last frame
+	ui.d.RenderFrame()
+	// Pause so that input can be read
+	ui.d.Pause()
+	defer ui.d.Resume()
+
+	reader := bufio.NewReader(os.Stdin)
+	text, _ := reader.ReadString('\n')
+	// convert CRLF to LF
+	text = strings.TrimSpace(text)
+
+	return text, nil
 }
 
 // Interactive implements UI
 func (ui *glintUI) Interactive() bool {
-	// TODO(mitchellh): We can make this interactive later but Glint itself
-	// doesn't support input yet. We can pause the document, do some input,
-	// then resume potentially.
-	return false
+	return true
 }
 
 // Output implements UI
