@@ -951,13 +951,23 @@ service TaskLauncher {
 
   rpc StartSpec(google.protobuf.Empty) returns (FuncSpec);
   rpc StopSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc WatchSpec(google.protobuf.Empty) returns (FuncSpec);
+
   rpc StartTask(FuncSpec.Args) returns (TaskLaunch.Resp);
   rpc StopTask(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc WatchTask(FuncSpec.Args) returns (TaskWatch.Resp);
 }
 
 message TaskLaunch {
   message Resp {
     opaqueany.Any result = 1;
     string result_json = 2;
+  }
+}
+
+message TaskWatch {
+  message Resp {
+    // exit code of the task process
+    int32 exit_code = 1;
   }
 }

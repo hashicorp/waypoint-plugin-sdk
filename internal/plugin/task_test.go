@@ -59,6 +59,48 @@ func TestTaskLauncherStart(t *testing.T) {
 	require.True(called)
 }
 
+func TestTaskLauncherWatch(t *testing.T) {
+	require := require.New(t)
+	assert := assert.New(t)
+
+	called := false
+	watchFunc := func(ctx context.Context, args *component.Source) (*component.TaskResult, error) {
+		called = true
+		assert.NotNil(ctx)
+		assert.Equal("foo", args.App)
+		return &component.TaskResult{ExitCode: 42}, nil
+	}
+
+	mockB := &mocks.TaskLauncher{}
+	mockB.On("WatchTaskFunc").Return(watchFunc)
+
+	plugins := Plugins(WithComponents(mockB), WithMappers(testDefaultMappers(t)...))
+	client, server := plugin.TestPluginGRPCConn(t, plugins[1])
+	defer client.Close()
+	defer server.Stop()
+
+	raw, err := client.Dispense("tasklauncher")
+	require.NoError(err)
+	fmt.Printf("=> %T\n", raw)
+	bt := raw.(component.TaskLauncher)
+	f := bt.WatchTaskFunc().(*argmapper.Func)
+	require.NotNil(f)
+
+	result := f.Call(
+		argmapper.Typed(context.Background()),
+		argmapper.Typed(&pb.Args_Source{App: "foo"}),
+	)
+	require.NoError(result.Err())
+
+	raw = result.Out(0)
+	require.NotNil(raw)
+
+	taskResult, ok := raw.(*component.TaskResult)
+	require.True(ok)
+	require.True(called)
+	require.Equal(int(42), taskResult.ExitCode)
+}
+
 func TestTaskLauncherConfig(t *testing.T) {
 	mockV := &mockTaskLauncherConfigurable{}
 	testConfigurable(t, "tasklauncher", mockV, &mockV.Configurable)
