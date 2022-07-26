@@ -374,10 +374,11 @@ func TestManagerDestroyAll_destroyedResources(t *testing.T) {
 	expectedState := State{InternalId: "a_id"}
 	expectedStateJson, _ := json.Marshal(expectedState)
 	expectedDr := pb.DeclaredResource{
-		Name:      "A",
-		Type:      "T",
-		Platform:  "test",
-		StateJson: string(expectedStateJson),
+		Name:                "A",
+		Type:                "T",
+		Platform:            "test",
+		CategoryDisplayHint: pb.ResourceCategoryDisplayHint_OTHER,
+		StateJson:           string(expectedStateJson),
 	}
 
 	var dcr component.DeclaredResourcesResp
@@ -402,7 +403,7 @@ func TestManagerDestroyAll_destroyedResources(t *testing.T) {
 
 	// Ensure we populated the declared resource
 	require.NotEmpty(dcr.DeclaredResources)
-	_ = dcr.DeclaredResources[0]
+	declaredResource := dcr.DeclaredResources[0]
 
 	// Destroy
 	require.NoError(m.DestroyAll(&state))
@@ -412,9 +413,9 @@ func TestManagerDestroyAll_destroyedResources(t *testing.T) {
 	destroyedResource := dtr.DestroyedResources[0]
 
 	require.NotEmpty(destroyedResource.Name)
-	require.Equal(destroyedResource.Name, expectedDr.Name)
-	require.Equal(destroyedResource.Type, expectedDr.Type)
-	require.Equal(destroyedResource.StateJson, expectedDr.StateJson)
+	require.Equal(destroyedResource.Name, declaredResource.Name)
+	require.Equal(destroyedResource.Type, declaredResource.Type)
+	require.Equal(destroyedResource.StateJson, declaredResource.StateJson)
 }
 
 // TestStatus_Manager tests the Manager's ability to call resource status
