@@ -373,7 +373,7 @@ func TestManagerDestroyAll_destroyedResources(t *testing.T) {
 	// Declare our expected results
 	expectedState := State{InternalId: "a_id"}
 	expectedStateJson, _ := json.Marshal(expectedState)
-	expectedDr := pb.DestroyedResource{
+	expectedDr := pb.DeclaredResource{
 		Name:      "A",
 		Type:      "T",
 		Platform:  "test",
