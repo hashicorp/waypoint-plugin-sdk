@@ -201,6 +201,28 @@ func (r *Resource) DeclaredResource() (*pb.DeclaredResource, error) {
 	}, nil
 }
 
+// DestroyedResource converts a resource to a DestroyedResource protobuf, which
+// can be used in a component.DestroyedResourcesResp
+func (r *Resource) DestroyedResource() (*pb.DestroyedResource, error) {
+	stateJson, err := json.Marshal(r.State())
+	if err != nil {
+		return nil, fmt.Errorf("state for resource is not serializable to json: %w", err)
+	}
+
+	stateProtoAny, err := component.ProtoAny(r.State())
+	if err != nil {
+		return nil, fmt.Errorf("state for resource is not serializable to protobuf: %w", err)
+	}
+
+	return &pb.DestroyedResource{
+		Name:      r.name,
+		Type:      r.resourceType,
+		Platform:  r.platform,
+		State:     stateProtoAny,
+		StateJson: string(stateJson),
+	}, nil
+}
+
 // Status returns a copy of this resources' internal status response, or nil if
 // no status exists.
 func (r *Resource) Status() *StatusResponse {
