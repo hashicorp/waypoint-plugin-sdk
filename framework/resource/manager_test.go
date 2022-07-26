@@ -139,61 +139,6 @@ func TestManagerCreateAll(t *testing.T) {
 		require.Equal(declaredResource.CategoryDisplayHint, expectedDr.CategoryDisplayHint)
 	})
 
-	t.Run("With one resource and a destroyed resource response to populate", func(t *testing.T) {
-		require := require.New(t)
-
-		type State struct {
-			InternalId string `json:"internalId"`
-		}
-
-		// Declare our expected results
-		expectedState := State{InternalId: "a_id"}
-		expectedStateJson, _ := json.Marshal(expectedState)
-		expectedDr := pb.DestroyedResource{
-			Name:      "A",
-			Type:      "T",
-			Platform:  "test",
-			StateJson: string(expectedStateJson),
-		}
-
-		var dcr component.DeclaredResourcesResp
-		var dtr component.DestroyedResourcesResp
-		m := NewManager(
-			WithDeclaredResourcesResp(&dcr),
-			WithDestroyedResourcesResp(&dtr),
-			WithResource(NewResource(
-				WithName(expectedDr.Name),
-				WithType(expectedDr.Type),
-				WithCreate(func(state *State) error {
-					state.InternalId = expectedState.InternalId
-					return nil
-				}),
-				WithState(&State{}),
-				WithPlatform(expectedDr.Platform),
-			)),
-		)
-
-		// TBD - create first?
-		var state State
-		require.NoError(m.CreateAll(&state))
-
-		// Ensure we populated the declared resource
-		require.NotEmpty(dcr.DeclaredResources)
-		_ = dcr.DeclaredResources[0]
-
-		// Destroy
-		require.NoError(m.DestroyAll(&state))
-
-		// Ensure we populated the destroyed resource
-		require.NotEmpty(dtr.DestroyedResources)
-		destroyedResource := dtr.DestroyedResources[0]
-
-		require.NotEmpty(destroyedResource.Name)
-		require.Equal(destroyedResource.Name, expectedDr.Name)
-		require.Equal(destroyedResource.Type, expectedDr.Type)
-		require.Equal(destroyedResource.StateJson, expectedDr.StateJson)
-	})
-
 	t.Run("rollback on error", func(t *testing.T) {
 		require := require.New(t)
 
@@ -416,6 +361,60 @@ func TestManagerDestroyAll_loadState(t *testing.T) {
 	// Ensure we destroyed
 	require.Equal([]string{"B", "A"}, destroyOrder)
 	require.Equal(destroyState, int32(42))
+}
+
+func TestManagerDestroyAll_destroyedResources(t *testing.T) {
+	require := require.New(t)
+
+	type State struct {
+		InternalId string `json:"internalId"`
+	}
+
+	// Declare our expected results
+	expectedState := State{InternalId: "a_id"}
+	expectedStateJson, _ := json.Marshal(expectedState)
+	expectedDr := pb.DestroyedResource{
+		Name:      "A",
+		Type:      "T",
+		Platform:  "test",
+		StateJson: string(expectedStateJson),
+	}
+
+	var dcr component.DeclaredResourcesResp
+	var dtr component.DestroyedResourcesResp
+	m := NewManager(
+		WithDeclaredResourcesResp(&dcr),
+		WithDestroyedResourcesResp(&dtr),
+		WithResource(NewResource(
+			WithName(expectedDr.Name),
+			WithType(expectedDr.Type),
+			WithCreate(func(state *State) error {
+				state.InternalId = expectedState.InternalId
+				return nil
+			}),
+			WithState(&State{}),
+			WithPlatform(expectedDr.Platform),
+		)),
+	)
+
+	var state State
+	require.NoError(m.CreateAll(&state))
+
+	// Ensure we populated the declared resource
+	require.NotEmpty(dcr.DeclaredResources)
+	_ = dcr.DeclaredResources[0]
+
+	// Destroy
+	require.NoError(m.DestroyAll(&state))
+
+	// Ensure we populated the destroyed resource
+	require.NotEmpty(dtr.DestroyedResources)
+	destroyedResource := dtr.DestroyedResources[0]
+
+	require.NotEmpty(destroyedResource.Name)
+	require.Equal(destroyedResource.Name, expectedDr.Name)
+	require.Equal(destroyedResource.Type, expectedDr.Type)
+	require.Equal(destroyedResource.StateJson, expectedDr.StateJson)
 }
 
 // TestStatus_Manager tests the Manager's ability to call resource status
