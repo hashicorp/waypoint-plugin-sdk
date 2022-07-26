@@ -29,6 +29,7 @@ type Manager struct {
 	logger         hclog.Logger
 	valueProviders []interface{}
 	dcr            *component.DeclaredResourcesResp
+	dtr            *component.DestroyedResourcesResp
 }
 
 // NewManager creates a new resource manager.
@@ -353,6 +354,23 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 		m.createState = nil
 	}
 
+	// Now that resource state has been destroyed, populate the destroyed resource response if available.
+	if m.dtr != nil {
+		for name, resource := range m.resources {
+			destroyedResource, err := resource.DestroyedResource()
+			if err != nil {
+				// Will likely only occur when developing plugins.
+				m.logger.Debug("Failed to destroy declared resource",
+					"resource name", name,
+					"platform", resource.platform,
+					"error", err,
+				)
+				continue
+			}
+			m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
+		}
+	}
+
 	return result.Err()
 }
 
@@ -598,5 +616,15 @@ func WithValueProvider(f interface{}) ManagerOption {
 func WithDeclaredResourcesResp(dcr *component.DeclaredResourcesResp) ManagerOption {
 	return func(m *Manager) {
 		m.dcr = dcr
+	}
+}
+
+// WithDestroyedResourcesResp specifies a destroyed resource response that
+// ResourceManager will automatically populate after creating resources. It will
+// add one DestroyedResource per resource being destroyed. For most plugins,
+// this will be their only interaction with the DeclaredResourcesResponse.
+func WithDestroyedResourcesResp(dtr *component.DestroyedResourcesResp) ManagerOption {
+	return func(m *Manager) {
+		m.dtr = dtr
 	}
 }
