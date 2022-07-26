@@ -756,6 +756,13 @@ message Deploy {
   }
 }
 
+message Destroy {
+  message Resp {
+    DeclaredResources declared_resources = 1;
+    DestroyedResources destroyed_resources = 2;
+  }
+}
+
 // A platform resource that an operation (release/deployment) has created, depends on, or manages.
 message DeclaredResource {
   // Unique name name for the resource. Usually derived from the platform. Required.
@@ -780,6 +787,28 @@ message DeclaredResource {
 
 message DeclaredResources {
   repeated DeclaredResource resources = 1;
+}
+
+message DestroyedResource {
+  // Unique name name for the resource. Usually derived from the platform. Required.
+  string name = 1;
+
+  // platform-specific type of the resource type. i.e. instance, pod, auto-scaling group, etc
+  string type = 2;
+
+  // The platform on which the resource should exist, i.e. docker, gcp, k8s, etc.
+  string platform = 3;
+
+  // Internal ResourceManager representation of the resource.
+  opaqueany.Any state = 4;
+
+  // Any additional information a plugin wants to expose on this resource.
+  // EX: Availability zones on a load balancer, concurrency limit on a lambda function, etc.
+  string state_json = 5;
+}
+
+message DestroyedResources {
+  repeated DestroyedResource destroyed_resources = 1;
 }
 
 enum ResourceCategoryDisplayHint {
