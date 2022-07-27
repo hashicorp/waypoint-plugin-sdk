@@ -96,6 +96,8 @@ func testDynamicFunc(
 		argmapper.Typed(&pb.Args_Source{App: "foo"}),
 
 		argmapper.Typed(&component.DeclaredResourcesResp{}),
+
+		argmapper.Typed(&component.DestroyedResourcesResp{}),
 	)
 	require.NoError(result.Err())
 

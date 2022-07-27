@@ -349,11 +349,6 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	// Call it
 	result := finalFunc.Call(mapperArgs...)
 
-	// If this was successful, then we clear out our creation state.
-	if result.Err() == nil {
-		m.createState = nil
-	}
-
 	// Now that resource state has been destroyed, populate the destroyed resource response if available.
 	if m.dtr != nil {
 		for name, resource := range m.resources {
@@ -369,6 +364,11 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 			}
 			m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
 		}
+	}
+
+	// If this was successful, then we clear out our creation state.
+	if result.Err() == nil {
+		m.createState = nil
 	}
 
 	return result.Err()

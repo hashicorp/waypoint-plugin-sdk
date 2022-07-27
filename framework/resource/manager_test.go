@@ -393,6 +393,9 @@ func TestManagerDestroyAll_destroyedResources(t *testing.T) {
 				state.InternalId = expectedState.InternalId
 				return nil
 			}),
+			WithDestroy(func() error {
+				return nil
+			}),
 			WithState(&State{}),
 			WithPlatform(expectedDr.Platform),
 		)),
@@ -413,9 +416,14 @@ func TestManagerDestroyAll_destroyedResources(t *testing.T) {
 	destroyedResource := dtr.DestroyedResources[0]
 
 	require.NotEmpty(destroyedResource.Name)
+
+	// the name and type of the destroyed resource should match
+	// that of what we created
 	require.Equal(destroyedResource.Name, declaredResource.Name)
 	require.Equal(destroyedResource.Type, declaredResource.Type)
-	require.Equal(destroyedResource.StateJson, declaredResource.StateJson)
+
+	// null is expected here because the resource is destroyed
+	require.Equal(destroyedResource.StateJson, "null")
 }
 
 // TestStatus_Manager tests the Manager's ability to call resource status
