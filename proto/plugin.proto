@@ -696,7 +696,7 @@ service Platform {
   // component.Destroyer optional implementation
   rpc IsDestroyer(google.protobuf.Empty) returns (ImplementsResp);
   rpc DestroySpec(google.protobuf.Empty) returns (FuncSpec);
-  rpc Destroy(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc Destroy(FuncSpec.Args) returns (Destroy.Resp);
 
   // component.WorkspaceDestroyer optional implementation
   rpc IsWorkspaceDestroyer(google.protobuf.Empty) returns (ImplementsResp);
@@ -891,7 +891,7 @@ service ReleaseManager {
   // component.Destroyer optional implementation
   rpc IsDestroyer(google.protobuf.Empty) returns (ImplementsResp);
   rpc DestroySpec(google.protobuf.Empty) returns (FuncSpec);
-  rpc Destroy(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc Destroy(FuncSpec.Args) returns (Destroy.Resp);
 
   // component.WorkspaceDestroyer optional implementation
   rpc IsWorkspaceDestroyer(google.protobuf.Empty) returns (ImplementsResp);
