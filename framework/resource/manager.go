@@ -349,20 +349,30 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	// Call it
 	result := finalFunc.Call(mapperArgs...)
 
-	// Now that resource state has been destroyed, populate the destroyed resource response if available.
-	if m.dtr != nil {
+	// Populate the declared/destroyed resources. The declared resources are the resources
+	// which remain after destroying, and the destroyed resources are the ones that have
+	// been destroyed (which implement WithDestroy)
+	if m.dcr != nil || m.dtr != nil {
 		for name, resource := range m.resources {
-			destroyedResource, err := resource.DestroyedResource()
-			if err != nil {
-				// Will likely only occur when developing plugins.
-				m.logger.Debug("Failed to destroy declared resource",
-					"resource name", name,
-					"platform", resource.platform,
-					"error", err,
-				)
-				continue
+			if resource.destroyFunc == nil {
+				declaredResource, err := resource.DeclaredResource()
+				if err != nil {
+					return err
+				}
+				m.dcr.DeclaredResources = append(m.dcr.DeclaredResources, declaredResource)
+			} else {
+				destroyedResource, err := resource.DestroyedResource()
+				if err != nil {
+					m.logger.Debug("Failed to destroy declared resource",
+						"resource name", name,
+						"platform", resource.platform,
+						"error", err,
+					)
+					return nil
+				}
+
+				m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
 			}
-			m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
 		}
 	}
 
