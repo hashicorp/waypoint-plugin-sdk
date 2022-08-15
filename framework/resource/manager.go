@@ -355,13 +355,7 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	// destroy function, then it is a declaredResource. If it does, it's a destroyedResource
 	if m.dcr != nil || m.dtr != nil {
 		for name, resource := range m.resources {
-			if resource.destroyFunc == nil {
-				declaredResource, err := resource.DeclaredResource()
-				if err != nil {
-					return err
-				}
-				m.dcr.DeclaredResources = append(m.dcr.DeclaredResources, declaredResource)
-			} else {
+			if resource.destroyFunc != nil {
 				destroyedResource, err := resource.DestroyedResource()
 				if err != nil {
 					m.logger.Debug("Failed to destroy declared resource",
@@ -373,6 +367,12 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 				}
 
 				m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
+			} else {
+				declaredResource, err := resource.DeclaredResource()
+				if err != nil {
+					return err
+				}
+				m.dcr.DeclaredResources = append(m.dcr.DeclaredResources, declaredResource)
 			}
 		}
 	}
