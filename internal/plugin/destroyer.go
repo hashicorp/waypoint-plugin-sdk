@@ -74,11 +74,14 @@ func (c *destroyerClient) destroy(
 
 	// Call our function
 	resp, err := c.Client.Destroy(ctx, &pb.FuncSpec_Args{Args: args})
+	if err != nil {
+		return err
+	}
 
 	declaredResourcesResp.DeclaredResources = resp.DeclaredResources.Resources
 	destroyedResourcesResp.DestroyedResources = resp.DestroyedResources.DestroyedResources
 
-	return err
+	return nil
 }
 
 // destroyerServer implements the common Destroyer-related RPC calls.

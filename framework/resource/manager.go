@@ -351,7 +351,8 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 
 	// Populate the declared/destroyed resources. The declared resources are the resources
 	// which remain after destroying, and the destroyed resources are the ones that have
-	// been destroyed (which implement WithDestroy)
+	// been destroyed (which implement WithDestroy). If a resource does not implement a
+	// destroy function, then it is a declaredResource. If it does, it's a destroyedResource
 	if m.dcr != nil || m.dtr != nil {
 		for name, resource := range m.resources {
 			if resource.destroyFunc == nil {
