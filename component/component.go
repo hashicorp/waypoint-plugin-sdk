@@ -394,6 +394,17 @@ type DeclaredResourcesResp struct {
 // will prevent it from being added as an arg to any plugin advertised dynamic function spec.
 func (d *DeclaredResourcesResp) isOutParameter() {}
 
+// DestroyedResourcesResp is a component used as a vehicle for plugins to communicate
+// the resources that they destroy back to core - an "OutParameter". It can be
+// accepted as an argument to a Platform's Destroy function
+type DestroyedResourcesResp struct {
+	DestroyedResources []*proto.DestroyedResource
+}
+
+// IsOutParameter causes DestroyedResourcesResp to implement the OutParameter interface, which
+// will prevent it from being added as an arg to any plugin advertised dynamic function spec.
+func (d *DestroyedResourcesResp) isOutParameter() {}
+
 // AccessInfo is the type of data returned by AccessInfoFunc and made available to the
 // build plugin.
 type AccessInfo interface{}

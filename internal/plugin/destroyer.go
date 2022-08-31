@@ -66,13 +66,22 @@ func (c *destroyerClient) destroy(
 	ctx context.Context,
 	args funcspec.Args,
 	internal *pluginargs.Internal,
+	declaredResourcesResp *component.DeclaredResourcesResp,
+	destroyedResourcesResp *component.DestroyedResourcesResp,
 ) error {
 	// Run the cleanup
 	defer internal.Cleanup.Close()
 
 	// Call our function
-	_, err := c.Client.Destroy(ctx, &pb.FuncSpec_Args{Args: args})
-	return err
+	resp, err := c.Client.Destroy(ctx, &pb.FuncSpec_Args{Args: args})
+	if err != nil {
+		return err
+	}
+
+	declaredResourcesResp.DeclaredResources = resp.DeclaredResources.Resources
+	destroyedResourcesResp.DestroyedResources = resp.DestroyedResources.DestroyedResources
+
+	return nil
 }
 
 // destroyerServer implements the common Destroyer-related RPC calls.
@@ -107,20 +116,33 @@ func (s *destroyerServer) DestroySpec(
 func (s *destroyerServer) Destroy(
 	ctx context.Context,
 	args *pb.FuncSpec_Args,
-) (*empty.Empty, error) {
+) (*pb.Destroy_Resp, error) {
 	internal := s.internal()
 	defer internal.Cleanup.Close()
+
+	// Inject our outparameters, so we can capture the response after invocation
+	declaredResourcesResp := &component.DeclaredResourcesResp{}
+	destroyedResourcesResp := &component.DestroyedResourcesResp{}
 
 	_, err := callDynamicFunc2(s.Impl.(component.Destroyer).DestroyFunc(), args.Args,
 		argmapper.ConverterFunc(s.Mappers...),
 		argmapper.Typed(internal),
 		argmapper.Typed(ctx),
+		argmapper.Typed(declaredResourcesResp),
+		argmapper.Typed(destroyedResourcesResp),
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &empty.Empty{}, nil
+	return &pb.Destroy_Resp{
+		DeclaredResources: &pb.DeclaredResources{
+			Resources: declaredResourcesResp.DeclaredResources,
+		},
+		DestroyedResources: &pb.DestroyedResources{
+			DestroyedResources: destroyedResourcesResp.DestroyedResources,
+		},
+	}, nil
 }
 
 // destroyerProtoClient is the interface we expect any gRPC service that
@@ -128,7 +150,7 @@ func (s *destroyerServer) Destroy(
 type destroyerProtoClient interface {
 	IsDestroyer(context.Context, *empty.Empty, ...grpc.CallOption) (*pb.ImplementsResp, error)
 	DestroySpec(context.Context, *empty.Empty, ...grpc.CallOption) (*pb.FuncSpec, error)
-	Destroy(context.Context, *pb.FuncSpec_Args, ...grpc.CallOption) (*empty.Empty, error)
+	Destroy(context.Context, *pb.FuncSpec_Args, ...grpc.CallOption) (*pb.Destroy_Resp, error)
 }
 
 var (

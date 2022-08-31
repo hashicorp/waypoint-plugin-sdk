@@ -29,6 +29,7 @@ type Manager struct {
 	logger         hclog.Logger
 	valueProviders []interface{}
 	dcr            *component.DeclaredResourcesResp
+	dtr            *component.DestroyedResourcesResp
 }
 
 // NewManager creates a new resource manager.
@@ -348,9 +349,43 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	// Call it
 	result := finalFunc.Call(mapperArgs...)
 
-	// If this was successful, then we clear out our creation state.
-	if result.Err() == nil {
+	resultErr := result.Err()
+	if resultErr != nil {
+		m.logger.Info("error during destruction", "err", resultErr)
+	} else {
+		// If this was successful, then we clear out our creation state.
 		m.createState = nil
+	}
+
+	// Populate the declared/destroyed resources. The declared resources are the resources
+	// which remain after destroying, and the destroyed resources are the ones that have
+	// been destroyed (which implement WithDestroy). If a resource does not implement a
+	// destroy function, then it is a declaredResource. If it does, it's a destroyedResource
+	if m.dcr != nil || m.dtr != nil {
+		for name, resource := range m.resources {
+			if resource.destroyFunc != nil {
+				destroyedResource, err := resource.DestroyedResource()
+				if err != nil {
+					m.logger.Debug("Failed to convert resource to a DestroyedResource proto message",
+						"resource name", name,
+						"error", err,
+					)
+					return err
+				}
+
+				m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
+			} else {
+				declaredResource, err := resource.DeclaredResource()
+				if err != nil {
+					m.logger.Debug("Failed to convert resource to a DeclaredResource proto message",
+						"resource name", name,
+						"error", err,
+					)
+					return err
+				}
+				m.dcr.DeclaredResources = append(m.dcr.DeclaredResources, declaredResource)
+			}
+		}
 	}
 
 	return result.Err()
@@ -598,5 +633,15 @@ func WithValueProvider(f interface{}) ManagerOption {
 func WithDeclaredResourcesResp(dcr *component.DeclaredResourcesResp) ManagerOption {
 	return func(m *Manager) {
 		m.dcr = dcr
+	}
+}
+
+// WithDestroyedResourcesResp specifies a destroyed resource response that
+// ResourceManager will automatically populate after creating resources. It will
+// add one DestroyedResource per resource being destroyed. For most plugins,
+// this will be their only interaction with the DeclaredResourcesResponse.
+func WithDestroyedResourcesResp(dtr *component.DestroyedResourcesResp) ManagerOption {
+	return func(m *Manager) {
+		m.dtr = dtr
 	}
 }

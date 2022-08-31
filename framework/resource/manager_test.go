@@ -363,6 +363,161 @@ func TestManagerDestroyAll_loadState(t *testing.T) {
 	require.Equal(destroyState, int32(42))
 }
 
+func TestManagerDestroyAll_destroyedResources(t *testing.T) {
+	require := require.New(t)
+
+	type State struct {
+		InternalId string `json:"internalId"`
+	}
+
+	// Declare our expected results
+	expectedState := State{InternalId: "a_id"}
+	expectedStateJson, _ := json.Marshal(expectedState)
+	expectedDr := pb.DeclaredResource{
+		Name:                "A",
+		Type:                "T",
+		Platform:            "test",
+		CategoryDisplayHint: pb.ResourceCategoryDisplayHint_OTHER,
+		StateJson:           string(expectedStateJson),
+	}
+
+	var dcr component.DeclaredResourcesResp
+	var dtr component.DestroyedResourcesResp
+	m := NewManager(
+		WithDeclaredResourcesResp(&dcr),
+		WithDestroyedResourcesResp(&dtr),
+		WithResource(NewResource(
+			WithName(expectedDr.Name),
+			WithType(expectedDr.Type),
+			WithCreate(func(state *State) error {
+				state.InternalId = expectedState.InternalId
+				return nil
+			}),
+			WithDestroy(func() error {
+				return nil
+			}),
+			WithState(&State{}),
+			WithPlatform(expectedDr.Platform),
+		)),
+	)
+
+	var state State
+	require.NoError(m.CreateAll(&state))
+
+	// Ensure we populated the declared resource
+	require.NotEmpty(dcr.DeclaredResources)
+	declaredResource := dcr.DeclaredResources[0]
+
+	// Destroy
+	require.NoError(m.DestroyAll(&state))
+
+	// Ensure we populated the destroyed resource
+	require.NotEmpty(dtr.DestroyedResources)
+	destroyedResource := dtr.DestroyedResources[0]
+
+	require.NotEmpty(destroyedResource.Name)
+
+	// the name and type of the destroyed resource should match
+	// that of what we created
+	require.Equal(destroyedResource.Name, declaredResource.Name)
+	require.Equal(destroyedResource.Type, declaredResource.Type)
+
+	// null is expected here because the resource is destroyed
+	require.Equal(destroyedResource.StateJson, "null")
+}
+
+func TestManagerDestroyAll_destroyedAndDeclaredResources(t *testing.T) {
+	require := require.New(t)
+
+	type State struct {
+		InternalId string `json:"internalId"`
+	}
+
+	// Declare our expected results
+	expectedState := State{InternalId: "a_id"}
+	expectedStateJson, _ := json.Marshal(expectedState)
+	expectedDr1 := pb.DeclaredResource{
+		Name:                "A",
+		Type:                "T",
+		Platform:            "test",
+		CategoryDisplayHint: pb.ResourceCategoryDisplayHint_OTHER,
+		StateJson:           string(expectedStateJson),
+	}
+
+	expectedState2 := State{InternalId: "b_id"}
+	expectedStateJson2, _ := json.Marshal(expectedState2)
+	expectedDr2 := pb.DeclaredResource{
+		Name:                "B",
+		Type:                "T2",
+		Platform:            "test2",
+		CategoryDisplayHint: pb.ResourceCategoryDisplayHint_OTHER,
+		StateJson:           string(expectedStateJson2),
+	}
+
+	var dcr component.DeclaredResourcesResp
+	var dtr component.DestroyedResourcesResp
+	m := NewManager(
+		WithDeclaredResourcesResp(&dcr),
+		WithDestroyedResourcesResp(&dtr),
+		WithResource(NewResource(
+			WithName(expectedDr1.Name),
+			WithType(expectedDr1.Type),
+			WithCreate(func(state *State) error {
+				state.InternalId = expectedState.InternalId
+				return nil
+			}),
+			WithDestroy(func() error {
+				return nil
+			}),
+			WithState(&State{}),
+			WithPlatform(expectedDr1.Platform),
+		)),
+		// WithDestroy not set for resource B
+		WithResource(NewResource(
+			WithName(expectedDr2.Name),
+			WithType(expectedDr2.Type),
+			WithCreate(func(state *State) error {
+				state.InternalId = expectedState2.InternalId
+				return nil
+			}),
+			WithState(&State{}),
+			WithPlatform(expectedDr2.Platform),
+		)),
+	)
+
+	var state State
+	require.NoError(m.CreateAll(&state))
+
+	// We reset declared resources to nil, because when DestroyAll runs during a destroy op,
+	// the declared resources will be nil
+	dcr.DeclaredResources = nil
+
+	// Destroy
+	require.NoError(m.DestroyAll(&state))
+
+	// Ensure we populated the destroyed resource
+	require.NotEmpty(dtr.DestroyedResources)
+	require.Equal(1, len(dtr.DestroyedResources))
+	destroyedResource := dtr.DestroyedResources[0]
+
+	// Ensure we populated the declared resource
+	require.NotEmpty(dcr.DeclaredResources)
+	require.Equal(1, len(dcr.DeclaredResources))
+	declaredResource := dcr.DeclaredResources[0]
+
+	// The only declared resource that is returned should be resource B
+	require.NotEmpty(declaredResource.Name)
+	require.Equal(expectedDr2.Name, declaredResource.Name)
+	require.Equal(expectedDr2.Type, declaredResource.Type)
+	require.Equal("null", declaredResource.StateJson)
+
+	// The only destroyed resource that is returned should be resource A
+	require.NotEmpty(destroyedResource.Name)
+	require.Equal(expectedDr1.Name, destroyedResource.Name)
+	require.Equal(expectedDr1.Type, destroyedResource.Type)
+	require.Equal("null", destroyedResource.StateJson)
+}
+
 // TestStatus_Manager tests the Manager's ability to call resource status
 // methods and present them for creating a report
 func TestStatus_Manager(t *testing.T) {
