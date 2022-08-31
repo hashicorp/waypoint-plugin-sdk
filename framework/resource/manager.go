@@ -349,6 +349,14 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	// Call it
 	result := finalFunc.Call(mapperArgs...)
 
+	resultErr := result.Err()
+	if resultErr != nil {
+		m.logger.Info("error during destruction", "err", resultErr)
+	} else {
+		// If this was successful, then we clear out our creation state.
+		m.createState = nil
+	}
+
 	// Populate the declared/destroyed resources. The declared resources are the resources
 	// which remain after destroying, and the destroyed resources are the ones that have
 	// been destroyed (which implement WithDestroy). If a resource does not implement a
@@ -358,28 +366,26 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 			if resource.destroyFunc != nil {
 				destroyedResource, err := resource.DestroyedResource()
 				if err != nil {
-					m.logger.Debug("Failed to destroy declared resource",
+					m.logger.Debug("Failed to convert resource to a DestroyedResource proto message",
 						"resource name", name,
-						"platform", resource.platform,
 						"error", err,
 					)
-					return nil
+					return err
 				}
 
 				m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
 			} else {
 				declaredResource, err := resource.DeclaredResource()
 				if err != nil {
+					m.logger.Debug("Failed to convert resource to a DeclaredResource proto message",
+						"resource name", name,
+						"error", err,
+					)
 					return err
 				}
 				m.dcr.DeclaredResources = append(m.dcr.DeclaredResources, declaredResource)
 			}
 		}
-	}
-
-	// If this was successful, then we clear out our creation state.
-	if result.Err() == nil {
-		m.createState = nil
 	}
 
 	return result.Err()
