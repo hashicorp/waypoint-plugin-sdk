@@ -363,7 +363,7 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 	// destroy function, then it is a declaredResource. If it does, it's a destroyedResource
 	if m.dcr != nil || m.dtr != nil {
 		for name, resource := range m.resources {
-			if resource.destroyFunc != nil {
+			if m.dtr != nil && resource.destroyFunc != nil {
 				destroyedResource, err := resource.DestroyedResource()
 				if err != nil {
 					m.logger.Debug("Failed to convert resource to a DestroyedResource proto message",
@@ -374,7 +374,7 @@ func (m *Manager) DestroyAll(args ...interface{}) error {
 				}
 
 				m.dtr.DestroyedResources = append(m.dtr.DestroyedResources, destroyedResource)
-			} else {
+			} else if m.dcr != nil && resource.createFunc != nil {
 				declaredResource, err := resource.DeclaredResource()
 				if err != nil {
 					m.logger.Debug("Failed to convert resource to a DeclaredResource proto message",
