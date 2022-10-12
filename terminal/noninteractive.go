@@ -132,7 +132,7 @@ func (ui *nonInteractiveUI) Table(tbl *Table, opts ...Option) {
 	table := tablewriter.NewWriter(cfg.Writer)
 	table.SetHeader(tbl.Headers)
 	table.SetBorder(false)
-	table.SetAutoWrapText(false)
+	table.SetAutoWrapText(true)
 
 	if cfg.Style == "Simple" {
 		// Format the table without borders, simple output
