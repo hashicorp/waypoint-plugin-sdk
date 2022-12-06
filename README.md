@@ -132,3 +132,7 @@ Thank you for your interest in contributing! Please refer to [CONTRIBUTING.md](h
 ### Installing Dependencies
 
 To automate installing the required Golang packages needed to build Waypoint locally, run `make tools`.
+
+### Regenerating protobufs
+
+Install dockern and run `make docker/gen`
