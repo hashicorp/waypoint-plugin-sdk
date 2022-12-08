@@ -5,7 +5,7 @@ orbs:
 
 references:
   images:
-    go: &GOLANG_IMAGE docker.mirror.hashicorp.services/circleci/golang:1.19
+    go: &GOLANG_IMAGE docker.mirror.hashicorp.services/cimg/golang:1.19
 
   paths:
     test-results: &TEST_RESULTS_DIR /tmp/test-results
