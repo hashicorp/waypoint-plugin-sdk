@@ -1,4 +1,4 @@
-PROTOC_VERSION="3.15.8"
+PROTOC_VERSION="3.17.3"
 
 .PHONY: gen
 gen: # generate go code
@@ -38,3 +38,13 @@ tools: # install dependencies and tools required to build
 	@echo
 	@echo "Done!"
 
+
+.PHONY: docker/tools
+docker/tools: # Creates a docker tools file for generating waypoint server protobuf files
+	@echo "Building docker tools image"
+	docker build -f tools.Dockerfile -t waypoint-sdk-tools:dev .
+
+.PHONY: docker/gen
+docker/gen: docker/tools
+	@test -s "thirdparty/proto/api-common-protos/.git" || { echo "git submodules not initialized, run 'git submodule update --init --recursive' and try again"; exit 1; }
+	docker run -v `pwd`:/waypoint -it docker.io/library/waypoint-sdk-tools:dev make gen
