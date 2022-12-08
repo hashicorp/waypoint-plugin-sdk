@@ -352,12 +352,11 @@ func (x *FuncSpec) GetResult() []*FuncSpec_Value {
 //
 // All components that take configuration are expected to have two RPC calls:
 //
-//   * ConfigStruct - Returns the configuration structure.
-//   * Configure - Sends the configuration data back to the plugin and the
-//       plugin is also expected to perform any validation at this stage.
-//   * Documentation - Returns a Documentation struct that details what configuration
-//       is accepted, with documentation.
-//
+//   - ConfigStruct - Returns the configuration structure.
+//   - Configure - Sends the configuration data back to the plugin and the
+//     plugin is also expected to perform any validation at this stage.
+//   - Documentation - Returns a Documentation struct that details what configuration
+//     is accepted, with documentation.
 type Config struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
