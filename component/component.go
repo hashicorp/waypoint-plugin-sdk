@@ -333,10 +333,9 @@ type Template interface {
 //
 // Waypoint uses this information to alter its behavior slightly. For example:
 //
-//  - a user can only release a generation that isn't already released.
-//  - deployment URLs are identical for matching generations
-//  - certain functionality in the future such as canaries will use this
-//
+//   - a user can only release a generation that isn't already released.
+//   - deployment URLs are identical for matching generations
+//   - certain functionality in the future such as canaries will use this
 type Generation interface {
 	// GenerationFunc should return the method handle for a function that
 	// returns a `[]byte` result (and optionally an error). The `[]byte` is

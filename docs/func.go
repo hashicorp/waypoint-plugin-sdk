@@ -13,9 +13,8 @@ import (
 //
 // This currently extracts:
 //
-//   * Template fields from the result type if the result type is
+//   - Template fields from the result type if the result type is
 //     a concrete type (not an interface value).
-//
 func FromFunc(v interface{}) Option {
 	return func(d *Documentation) error {
 		v := reflect.ValueOf(v)

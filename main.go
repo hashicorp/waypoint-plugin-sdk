@@ -129,9 +129,9 @@ func WithComponents(cs ...interface{}) Option {
 // Mappers must take zero or more arguments and return exactly one or two
 // values where the second return type must be an error. Example:
 //
-//   func() *Value
-//   func() (*Value, error)
-//   -- the above with any arguments
+//	func() *Value
+//	func() (*Value, error)
+//	-- the above with any arguments
 //
 // This will append the mappers to the list of available mappers. A set of
 // default mappers is always included to convert from SDK proto types to

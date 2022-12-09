@@ -1,6 +1,6 @@
 module github.com/hashicorp/waypoint-plugin-sdk
 
-go 1.17
+go 1.19
 
 require (
 	github.com/bgentry/speakeasy v0.1.0

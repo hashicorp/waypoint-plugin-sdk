@@ -5,14 +5,14 @@ orbs:
 
 references:
   images:
-    go: &GOLANG_IMAGE docker.mirror.hashicorp.services/circleci/golang:1.17
+    go: &GOLANG_IMAGE docker.mirror.hashicorp.services/cimg/go:1.19.4
 
   paths:
     test-results: &TEST_RESULTS_DIR /tmp/test-results
 
   environment: &ENVIRONMENT
     TEST_RESULTS_DIR: *TEST_RESULTS_DIR
-    GOTESTSUM_RELEASE: 0.4.2
+    GOTESTSUM_RELEASE: 1.8.2
     EMAIL: noreply@hashicorp.com
     GIT_AUTHOR_NAME: circleci-waypoint
     GIT_COMMITTER_NAME: circleci-waypoint
@@ -34,7 +34,7 @@ jobs:
           name: Install golangci-lint
           command: |
             download=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
-            wget -O- -q $download | sh -x -s -- -d -b /go/bin/ v1.27.0
+            wget -O- -q $download | sh -x -s -- -d -b /home/circleci/go/bin/ v1.50.1
       - run: go mod download
       - run:
           name: lint
@@ -80,7 +80,7 @@ jobs:
           version: 3.17.3
       - checkout
       - attach_workspace:
-          at: /go/bin
+          at: /home/circleci/go/bin
       - setup_remote_docker:
           docker_layer_cache: true
       - run:
@@ -121,7 +121,7 @@ jobs:
             - "76:94:15:c8:a0:41:f0:8b:9b:f1:f7:36:4c:d5:7f:57"
       - checkout
       - attach_workspace:
-          at: /go/bin
+          at: /home/circleci/go/bin
       - setup_remote_docker:
           docker_layer_cache: true
       - run: &install_gotestsum
