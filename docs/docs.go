@@ -53,7 +53,7 @@ type FieldDocs struct {
 	// Synopsis is a short, one line description of the attribute
 	Synopsis string
 
-	// Summary is a longer, more indepth description of the attribute.
+	// Summary is a longer, more in-depth description of the attribute.
 	Summary string
 
 	// Optional indicates of the attribute is optional or not.
@@ -67,8 +67,11 @@ type FieldDocs struct {
 	EnvVar string
 
 	// Category indicates that this is not a field itself but a HCL block
-	// that has fields underneith it.
+	// that has fields underneath it.
 	Category bool
+
+	// Example indicates example usage, in HCL syntax
+	Example string
 
 	// SubFields is defined when this field is a category. It is the fields
 	// in that category.
@@ -236,6 +239,9 @@ type (
 	EnvVar string
 
 	Category bool
+
+	// Example gives the example usage, as it would be specified in HCL.
+	Example string
 )
 
 type docOption interface {
@@ -246,6 +252,7 @@ func (o SummaryString) docOption() bool { return true }
 func (o Default) docOption() bool       { return true }
 func (o EnvVar) docOption() bool        { return true }
 func (o Category) docOption() bool      { return true }
+func (o Example) docOption() bool       { return true }
 
 // Summary creates a SummaryString by doing some light space editing
 // and joining of the given array of strings. This is a convenience function
@@ -307,6 +314,8 @@ func applyOpts(field *FieldDocs, opts []docOption) {
 			field.Default = string(v)
 		case EnvVar:
 			field.EnvVar = string(v)
+		case Example:
+			field.Example = string(v)
 		case *SubFieldDoc:
 			if len(field.discoveredFields) > 0 {
 				v.merge(field.discoveredFields)
