@@ -959,9 +959,18 @@ message ConfigSource {
       // errors is that the runtime may be able to fallback to a default.
       google.rpc.Status error = 2;
 
-      // value must be a string value for the config since we currently
-      // only support environment variables.
+      // value is a basic string value that can be used as an env var,
+      // file contents, or in a dynamic default hcl variable.
       string value = 3;
+
+      // A configsourcer can also return structured json data. This
+      // is useful for dynamic variable defaults. A configsourcer
+      // can return a complex type (like a map(string)), and the
+      // user in the waypoint.hcl can treat it as a map variable.
+      //
+      // json values are only currently supported in the context of
+      // hcl variables - not app config or runner config.
+      bytes json = 4;
     }
   }
 }
