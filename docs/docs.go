@@ -205,6 +205,19 @@ func fromConfig(v interface{}, target map[string]*FieldDocs) error {
 				return err
 			}
 
+			// If all the subfields are optional, then the parent is optional as well.
+			var hasRequired bool
+
+			for _, sf := range target {
+				if !sf.Optional {
+					hasRequired = true
+				}
+			}
+
+			if !hasRequired {
+				field.Optional = true
+			}
+
 			field.discoveredFields = target
 		}
 
