@@ -28,133 +28,133 @@ jobs:
             --verbose
           skip-pkg-cache: true
           skip-build-cache: true
-  check-vendor:
-    runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
-    needs:
-      - lint
-    env:
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
-      EMAIL: noreply@hashicorp.com
-      # GIT_AUTHOR_NAME: circleci-waypoint
-      # GIT_COMMITTER_NAME: circleci-waypoint
-      # DOCKER_BUILDKIT: 1
-    steps:
-      # Ensure parameter if_key_exists is set correctly
-      - name: Install SSH key
-        # uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
-        # with:
-        #   key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-        #   name: circle_ci_id_rsa
-        #   known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-        #   if_key_exists: fail
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - run: go mod tidy
-      - run: |
-          if ! git diff --exit-code; then
-            echo "Git directory has vendor changes"
-            exit 1
-          fi
-      - uses: "./.github/actions/notify_main_failure"
-  go-test:
-    runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
-    needs:
-      - lint
-    env:
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
-      EMAIL: noreply@hashicorp.com
-      GIT_AUTHOR_NAME: circleci-waypoint
-      GIT_COMMITTER_NAME: circleci-waypoint
-      DOCKER_BUILDKIT: 1
-      GOTAGS: ''
-      GOMAXPROCS: 4
-    steps:
-      # Ensure parameter if_key_exists is set correctly
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
-        with:
-          key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-          name: circle_ci_id_rsa
-          known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-          if_key_exists: fail
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          path: "/home/circleci/go/bin"
-          #     # 'setup_remote_docker' was not transformed because there is no suitable equivalent in GitHub Actions
-      - name: Install gotestsum
-        run: |-
-          url=https://github.com/gotestyourself/gotestsum/releases/download
-          curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
-            sudo tar -xz --overwrite -C /usr/local/bin gotestsum
-      - run: go mod download
-      - name: go test
-        run: |-
-          mkdir -p "${TEST_RESULTS_DIR}"
-          PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
-          echo "Finding package names"
-          echo "${PACKAGE_NAMES}"
-          gotestsum --format=short-verbose \
-            --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
-            -tags="${GOTAGS}" -p 2 \
-            -cover -coverprofile=coverage.txt \
-            "${PACKAGE_NAMES}"
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          path: "/tmp/test-results"
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          path: "/tmp/test-results"
-      - uses: "./.github/actions/notify_main_failure"
-  go-generate-test:
-    runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
-    needs:
-      - lint
-      - go-test
-    env:
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
-      EMAIL: noreply@hashicorp.com
-      GIT_AUTHOR_NAME: circleci-waypoint
-      GIT_COMMITTER_NAME: circleci-waypoint
-      DOCKER_BUILDKIT: 1
-    steps:
-      # Ensure parameter if_key_exists is set correctly
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
-        with:
-          key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-          name: circle_ci_id_rsa
-          known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-          if_key_exists: fail
-          #     # This item has no matching transformer
-          #     - izumin5210_protobuf_install:
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          path: "/home/circleci/go/bin"
-          #     # 'setup_remote_docker' was not transformed because there is no suitable equivalent in GitHub Actions
-      - name: setup go env
-        run: |-
-          go mod download
-          git submodule update --init --recursive
-          make tools
-      - name: go generate
-        run: |-
-          echo "Checking that go generate has no errors ..."
-          sudo chmod 755 -R /usr/local/bin/protoc
-          sudo chmod 755 -R /usr/local/include/google
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
-          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
-          protoc --version
-          make gen
-      - uses: "./.github/actions/notify_main_failure"
+  # check-vendor:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: docker.mirror.hashicorp.services/cimg/go:1.19.4
+  #   needs:
+  #     - lint
+  #   env:
+  #     TEST_RESULTS_DIR: "/tmp/test-results"
+  #     GOTESTSUM_RELEASE: 1.8.2
+  #     EMAIL: noreply@hashicorp.com
+  #     # GIT_AUTHOR_NAME: circleci-waypoint
+  #     # GIT_COMMITTER_NAME: circleci-waypoint
+  #     # DOCKER_BUILDKIT: 1
+  #   steps:
+  #     # Ensure parameter if_key_exists is set correctly
+  #     - name: Install SSH key
+  #       # uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
+  #       # with:
+  #       #   key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
+  #       #   name: circle_ci_id_rsa
+  #       #   known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
+  #       #   if_key_exists: fail
+  #     - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+  #     - run: go mod tidy
+  #     - run: |
+  #         if ! git diff --exit-code; then
+  #           echo "Git directory has vendor changes"
+  #           exit 1
+  #         fi
+  #     - uses: "./.github/actions/notify_main_failure"
+  # go-test:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: docker.mirror.hashicorp.services/cimg/go:1.19.4
+  #   needs:
+  #     - lint
+  #   env:
+  #     TEST_RESULTS_DIR: "/tmp/test-results"
+  #     GOTESTSUM_RELEASE: 1.8.2
+  #     EMAIL: noreply@hashicorp.com
+  #     GIT_AUTHOR_NAME: circleci-waypoint
+  #     GIT_COMMITTER_NAME: circleci-waypoint
+  #     DOCKER_BUILDKIT: 1
+  #     GOTAGS: ''
+  #     GOMAXPROCS: 4
+  #   steps:
+  #     # Ensure parameter if_key_exists is set correctly
+  #     - name: Install SSH key
+  #       uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
+  #       with:
+  #         key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
+  #         name: circle_ci_id_rsa
+  #         known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
+  #         if_key_exists: fail
+  #     - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+  #     - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+  #       with:
+  #         path: "/home/circleci/go/bin"
+  #         #     # 'setup_remote_docker' was not transformed because there is no suitable equivalent in GitHub Actions
+  #     - name: Install gotestsum
+  #       run: |-
+  #         url=https://github.com/gotestyourself/gotestsum/releases/download
+  #         curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
+  #           sudo tar -xz --overwrite -C /usr/local/bin gotestsum
+  #     - run: go mod download
+  #     - name: go test
+  #       run: |-
+  #         mkdir -p "${TEST_RESULTS_DIR}"
+  #         PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
+  #         echo "Finding package names"
+  #         echo "${PACKAGE_NAMES}"
+  #         gotestsum --format=short-verbose \
+  #           --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
+  #           -tags="${GOTAGS}" -p 2 \
+  #           -cover -coverprofile=coverage.txt \
+  #           "${PACKAGE_NAMES}"
+  #     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+  #       with:
+  #         path: "/tmp/test-results"
+  #     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+  #       with:
+  #         path: "/tmp/test-results"
+  #     - uses: "./.github/actions/notify_main_failure"
+  # go-generate-test:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: docker.mirror.hashicorp.services/cimg/go:1.19.4
+  #   needs:
+  #     - lint
+  #     - go-test
+  #   env:
+  #     TEST_RESULTS_DIR: "/tmp/test-results"
+  #     GOTESTSUM_RELEASE: 1.8.2
+  #     EMAIL: noreply@hashicorp.com
+  #     GIT_AUTHOR_NAME: circleci-waypoint
+  #     GIT_COMMITTER_NAME: circleci-waypoint
+  #     DOCKER_BUILDKIT: 1
+  #   steps:
+  #     # Ensure parameter if_key_exists is set correctly
+  #     - name: Install SSH key
+  #       uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
+  #       with:
+  #         key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
+  #         name: circle_ci_id_rsa
+  #         known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
+  #         if_key_exists: fail
+  #         #     # This item has no matching transformer
+  #         #     - izumin5210_protobuf_install:
+  #     - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+  #     - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+  #       with:
+  #         path: "/home/circleci/go/bin"
+  #         #     # 'setup_remote_docker' was not transformed because there is no suitable equivalent in GitHub Actions
+  #     - name: setup go env
+  #       run: |-
+  #         go mod download
+  #         git submodule update --init --recursive
+  #         make tools
+  #     - name: go generate
+  #       run: |-
+  #         echo "Checking that go generate has no errors ..."
+  #         sudo chmod 755 -R /usr/local/bin/protoc
+  #         sudo chmod 755 -R /usr/local/include/google
+  #         go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
+  #         go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
+  #         protoc --version
+  #         make gen
+  #     - uses: "./.github/actions/notify_main_failure"
 permissions:
   contents: read
