@@ -6,7 +6,7 @@ env:
   SLACK_WEBHOOK: xxxxxxx
 jobs:
   golangci:
-    name: golangci-lint-net-rpc
+    name: golangci-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3.3.0
@@ -15,7 +15,6 @@ jobs:
         uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5  # pin@v3.4.0
         with:
           version: v1.51.2
-          working-directory: ./net/rpc
           args: |
             --disable-all \
             --timeout 10m \
