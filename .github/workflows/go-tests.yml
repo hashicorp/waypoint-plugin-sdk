@@ -34,10 +34,10 @@ jobs:
       GOTESTSUM_RELEASE: 1.8.2
       EMAIL: noreply@hashicorp.com
     steps:
-      - run: go mod tidy
       # - uses: "./.github/actions/notify_main_failure"
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - name: check-vendor
+        run: go mod tidy
       # - run: |
       #     if ! git diff --exit-code; then
       #       echo "Git directory has vendor changes"
