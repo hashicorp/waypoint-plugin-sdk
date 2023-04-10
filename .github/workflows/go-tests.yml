@@ -5,36 +5,30 @@ on:
 env:
   SLACK_WEBHOOK: xxxxxxx
 jobs:
-  lint:
+  golangci:
+    name: golangci-lint-net-rpc
     runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
-    env:
-      GOTAGS: ''
     steps:
-      # # Ensure parameter if_key_exists is set correctly
-      # - name: Install SSH key
-      #   uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
-      #   with:
-      #     key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-      #     name: circle_ci_id_rsa
-      #     known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-      #     if_key_exists: fail
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - name: Install golangci-lint
-        run: |-
-          download=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
-          wget -O- -q $download | sh -x -s -- -d -b /home/circleci/go/bin/ v1.50.1
-      - run: go mod download
-      - name: lint
-        run: |-
-          golangci-lint run --build-tags="$GOTAGS" -v --concurrency 2 \
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3.3.0
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3.5.0
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5  # pin@v3.4.0
+        with:
+          version: v1.51.2
+          working-directory: ./net/rpc
+          args: |
             --disable-all \
             --timeout 10m \
             --enable gofmt \
             --enable gosimple \
             --enable govet
-      - uses: "./.github/actions/notify_main_failure"
+            --enable ineffassign \
+            --enable staticcheck \
+            --enable unparam \
+            --enable unconvert \
+            --verbose
+          skip-pkg-cache: true
+          skip-build-cache: true
   check-vendor:
     runs-on: ubuntu-latest
     container:
