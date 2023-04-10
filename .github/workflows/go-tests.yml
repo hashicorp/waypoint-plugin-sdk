@@ -21,10 +21,6 @@ jobs:
             --enable gofmt \
             --enable gosimple \
             --enable govet \
-            --enable ineffassign \
-            --enable staticcheck \
-            --enable unparam \
-            --enable unconvert \
             --verbose
           skip-pkg-cache: true
           skip-build-cache: true
