@@ -39,7 +39,7 @@ jobs:
       - name: check-vendor
         run: |
           go mod tidy
-          if git diff --exit-code; then
+          if ! git diff --exit-code; then
             echo "Git directory has vendor changes"
             exit 1
           fi
