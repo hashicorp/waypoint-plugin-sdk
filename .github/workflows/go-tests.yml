@@ -20,7 +20,7 @@ jobs:
             --timeout 10m \
             --enable gofmt \
             --enable gosimple \
-            --enable govet
+            --enable govet \
             --enable ineffassign \
             --enable staticcheck \
             --enable unparam \
