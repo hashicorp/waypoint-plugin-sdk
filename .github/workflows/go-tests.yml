@@ -105,7 +105,7 @@ jobs:
         run: |-
           mkdir -p "${TEST_RESULTS_DIR}"
           PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
-          echo "Running $(echo $PACKAGE_NAMES | wc -w) packages"
+          echo "Finding package names"
           echo "${PACKAGE_NAMES}"
           gotestsum --format=short-verbose \
             --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
