@@ -30,8 +30,6 @@ jobs:
     needs:
       - golangci
     env:
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
       EMAIL: noreply@hashicorp.com
     steps:
       # - uses: "./.github/actions/notify_main_failure"
@@ -48,7 +46,6 @@ jobs:
     needs:
       - golangci
     env:
-      GOTESTSUM_RELEASE: 1.8.2
       GOTAGS: ''
       GOMAXPROCS: 4
       TEST_RESULTS_DIR: "/tmp/test-results"
