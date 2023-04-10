@@ -1,168 +1,98 @@
 name: hashicorp/waypoint-plugin-sdk/go-tests
 on:
-  push:
-    branches:
-      - main
-env:
-  SLACK_WEBHOOK: xxxxxxx
+  pull_request:
 jobs:
-  lint:
+  golangci:
+    name: golangci-lint
     runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
-    env:
-      GOTAGS: ''
     steps:
-      # Ensure parameter if_key_exists is set correctly
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3.3.0
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3.5.0
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5  # pin@v3.4.0
         with:
-          key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-          name: circle_ci_id_rsa
-          known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-          if_key_exists: fail
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - name: Install golangci-lint
-        run: |-
-          download=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
-          wget -O- -q $download | sh -x -s -- -d -b /home/circleci/go/bin/ v1.50.1
-      - run: go mod download
-      - name: lint
-        run: |-
-          golangci-lint run --build-tags="$GOTAGS" -v --concurrency 2 \
+          version: v1.51.2
+          args: |
             --disable-all \
             --timeout 10m \
             --enable gofmt \
             --enable gosimple \
-            --enable govet
-      - uses: "./.github/actions/notify_main_failure"
+            --enable govet \
+            --verbose
+          skip-pkg-cache: true
+          skip-build-cache: true
   check-vendor:
+    name: check-vendor
     runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
     needs:
-      - lint
-    env:
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
-      EMAIL: noreply@hashicorp.com
-      GIT_AUTHOR_NAME: circleci-waypoint
-      GIT_COMMITTER_NAME: circleci-waypoint
-      DOCKER_BUILDKIT: 1
+      - golangci
     steps:
-      # Ensure parameter if_key_exists is set correctly
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
-        with:
-          key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-          name: circle_ci_id_rsa
-          known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-          if_key_exists: fail
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - run: go mod tidy
-      - run: |
+      - name: check-vendor
+        run: |
+          go mod tidy
           if ! git diff --exit-code; then
             echo "Git directory has vendor changes"
             exit 1
           fi
-      - uses: "./.github/actions/notify_main_failure"
   go-test:
     runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
     needs:
-      - lint
+      - golangci
     env:
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
-      EMAIL: noreply@hashicorp.com
-      GIT_AUTHOR_NAME: circleci-waypoint
-      GIT_COMMITTER_NAME: circleci-waypoint
-      DOCKER_BUILDKIT: 1
       GOTAGS: ''
       GOMAXPROCS: 4
+      TEST_RESULTS_DIR: "/tmp/test-results"
+      GOTESTSUM_RELEASE: 1.8.2
     steps:
-      # Ensure parameter if_key_exists is set correctly
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
-        with:
-          key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-          name: circle_ci_id_rsa
-          known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-          if_key_exists: fail
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          path: "/home/circleci/go/bin"
-          #     # 'setup_remote_docker' was not transformed because there is no suitable equivalent in GitHub Actions
       - name: Install gotestsum
         run: |-
           url=https://github.com/gotestyourself/gotestsum/releases/download
           curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
             sudo tar -xz --overwrite -C /usr/local/bin gotestsum
-      - run: go mod download
+      - name: Mod download
+        run: go mod download
       - name: go test
         run: |-
-          mkdir -p $TEST_RESULTS_DIR
-          PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
-          echo "Running $(echo $PACKAGE_NAMES | wc -w) packages"
-          echo $PACKAGE_NAMES
+          mkdir -p "${TEST_RESULTS_DIR}"
           gotestsum --format=short-verbose \
-            --junitfile $TEST_RESULTS_DIR/gotestsum-report.xml -- \
-            -tags="$GOTAGS" -p 2 \
+            --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
+            -tags="${GOTAGS}" -p 2 \
             -cover -coverprofile=coverage.txt \
-            $PACKAGE_NAMES
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          path: "/tmp/test-results"
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          path: "/tmp/test-results"
-      - uses: "./.github/actions/notify_main_failure"
+            ./...
   go-generate-test:
     runs-on: ubuntu-latest
-    container:
-      image: docker.mirror.hashicorp.services/cimg/go:1.19.4
     needs:
-      - lint
+      - golangci
       - go-test
-    env:
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
-      EMAIL: noreply@hashicorp.com
-      GIT_AUTHOR_NAME: circleci-waypoint
-      GIT_COMMITTER_NAME: circleci-waypoint
-      DOCKER_BUILDKIT: 1
     steps:
-      # Ensure parameter if_key_exists is set correctly
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@685d0f20da72e4b53cc81d373a2ed0a867770e46 # v2.5.1
-        with:
-          key: "${{ secrets.CIRCLE_CI_SSH_KEY }}"
-          name: circle_ci_id_rsa
-          known_hosts: "${{ secrets.CIRCLE_CI_KNOWN_HOSTS }}"
-          if_key_exists: fail
-          #     # This item has no matching transformer
-          #     - izumin5210_protobuf_install:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - name: Determine Go version
+        id: get-go-version
+        # We use .go-version as our source of truth for current Go
+        # version, because "goenv" can react to it automatically.
+        run: |
+          echo "Building with Go $(cat .go-version)"
+          echo "go-version=$(cat .go-version)" >> "$GITHUB_OUTPUT"
+      - name: Set up Go
+        uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
         with:
-          path: "/home/circleci/go/bin"
-          #     # 'setup_remote_docker' was not transformed because there is no suitable equivalent in GitHub Actions
-      - name: setup go env
-        run: |-
+          go-version: "${{ steps.get-go-version.outputs.go-version }}"
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: '3.17.3'
+      - name: Install Dependencies
+        run: |
           go mod download
           git submodule update --init --recursive
-          make tools
+      - name: Install protoc
+        run: |
+          make --always-make tools
       - name: go generate
         run: |-
-          echo "Checking that go generate has no errors ..."
-          sudo chmod 755 -R /usr/local/bin/protoc
-          sudo chmod 755 -R /usr/local/include/google
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
-          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
-          protoc --version
           make gen
-      - uses: "./.github/actions/notify_main_failure"
 permissions:
   contents: read
