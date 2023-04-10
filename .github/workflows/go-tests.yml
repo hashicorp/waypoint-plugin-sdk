@@ -28,7 +28,7 @@ jobs:
     name: check-vendor
     runs-on: ubuntu-latest
     needs:
-      - golangci-lint
+      - golangci
     env:
       TEST_RESULTS_DIR: "/tmp/test-results"
       GOTESTSUM_RELEASE: 1.8.2
