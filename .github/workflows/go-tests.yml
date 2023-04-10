@@ -51,6 +51,8 @@ jobs:
       GOTESTSUM_RELEASE: 1.8.2
       GOTAGS: ''
       GOMAXPROCS: 4
+      TEST_RESULTS_DIR: "/tmp/test-results"
+      GOTESTSUM_RELEASE: 1.8.2
     steps:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -61,17 +63,17 @@ jobs:
             sudo tar -xz --overwrite -C /usr/local/bin gotestsum
       - name: Mod download
         run: go mod download
-  #     - name: go test
-  #       run: |-
-  #         mkdir -p "${TEST_RESULTS_DIR}"
-  #         PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
-  #         echo "Finding package names"
-  #         echo "${PACKAGE_NAMES}"
-  #         gotestsum --format=short-verbose \
-  #           --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
-  #           -tags="${GOTAGS}" -p 2 \
-  #           -cover -coverprofile=coverage.txt \
-  #           "${PACKAGE_NAMES}"
+      - name: go test
+        run: |-
+          mkdir -p "${TEST_RESULTS_DIR}"
+          # PACKAGE_NAMES=$(go list ./...)
+          # echo "Finding package names"
+          # echo "${PACKAGE_NAMES}"
+          gotestsum --format=short-verbose \
+            --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
+            -tags="${GOTAGS}" -p 2 \
+            -cover -coverprofile=coverage.txt \
+            ./...
   #     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
   #       with:
   #         path: "/tmp/test-results"
