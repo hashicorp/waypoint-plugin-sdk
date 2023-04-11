@@ -100,7 +100,7 @@ jobs:
           git submodule update --init --recursive
       - name: Install protoc
         run: |
-          make tools
+          make --always-make tools
       - name: go generate
         run: |-
           echo "Checking that go generate has no errors ..."
