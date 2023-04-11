@@ -31,7 +31,7 @@ tools: # install dependencies and tools required to build
 	@# Test for protoc installed
 	@if [ $(shell which protoc | wc -l) == 0 ]; then \
 		echo "Required tool protoc not installed." \
-		echo "You can install the correct version from https://github.com/protocolbuffers/protobuf/releases/tag/v$(PROTOC_VERSION) or consider using nix."; \
+		echo "You can install the correct version from https://github.com/protocolbuffers/protobuf/releases/tag/v${PROTOC_VERSION} or consider using nix."; \
 		exit 1; \
 	 fi
 
