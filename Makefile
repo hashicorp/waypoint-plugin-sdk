@@ -24,7 +24,7 @@ test: # run tests
 
 .PHONY: tools
 tools: # install dependencies and tools required to build
-	go generate -tags tools tools/tools.go
+	go generate -v -tags tools tools/tools.go
 
 	@# Test for protoc installed
 	@if [ $(shell which protoc | wc -l) -eq 0 ]; then \
