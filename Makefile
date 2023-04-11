@@ -26,8 +26,10 @@ test: # run tests
 tools: # install dependencies and tools required to build
 	go generate -v -x -tags tools tools/tools.go
 
-  echo "which protoc"
-	$(which protoc)
+	$(eval PROTOC_INSTALLED := $(shell which protoc))
+
+	@# something
+  @echo "Protoc: $(PROTOC_INSTALLED)"
 
 	@# Test for protoc installed
 	@if [ $(shell which protoc | wc -l) -eq 0 ]; then \
