@@ -87,6 +87,8 @@ jobs:
         run: |-
           go mod download
           git submodule update --init --recursive
+      - name: Install Dependencies
+        run: |-
           make tools
       - name: go generate
         run: |-
