@@ -24,9 +24,7 @@ test: # run tests
 
 .PHONY: tools
 tools: # install dependencies and tools required to build
-	@echo "Fetching tools..."
 	go generate -tags tools tools/tools.go
-	@test -s "thirdparty/proto/api-common-protos/.git" || { echo "git submodules not initialized, run 'git submodule update --init --recursive' and try again"; exit 1; }
 
 	@# Test for protoc installed
 	@if [ $(shell which protoc | wc -l) -eq 0 ]; then \
