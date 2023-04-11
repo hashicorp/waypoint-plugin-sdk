@@ -1,0 +1,210 @@
+---
+version: 2.1
+orbs:
+  protobuf: izumin5210/protobuf@0.1.0
+
+references:
+  images:
+    go: &GOLANG_IMAGE docker.mirror.hashicorp.services/cimg/go:1.19.4
+
+  paths:
+    test-results: &TEST_RESULTS_DIR /tmp/test-results
+
+  environment: &ENVIRONMENT
+    TEST_RESULTS_DIR: *TEST_RESULTS_DIR
+    GOTESTSUM_RELEASE: 1.8.2
+    EMAIL: noreply@hashicorp.com
+    GIT_AUTHOR_NAME: circleci-waypoint
+    GIT_COMMITTER_NAME: circleci-waypoint
+    DOCKER_BUILDKIT: 1
+
+jobs:
+  # Runs Go linters
+  lint:
+    docker:
+      - image: *GOLANG_IMAGE
+    environment:
+      GOTAGS: ""
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "a0:c8:65:ee:ab:2b:1e:cd:cc:b4:64:79:97:38:49:fd"
+      - checkout
+      - run:
+          name: Install golangci-lint
+          command: |
+            download=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
+            wget -O- -q $download | sh -x -s -- -d -b /home/circleci/go/bin/ v1.50.1
+      - run: go mod download
+      - run:
+          name: lint
+          command: &lintcmd |
+            golangci-lint run --build-tags="$GOTAGS" -v --concurrency 2 \
+              --disable-all \
+              --timeout 10m \
+              --enable gofmt \
+              --enable gosimple \
+              --enable govet
+      - notify_main_failure
+
+  # checks vendor directory is correct
+  check-vendor:
+    docker:
+      - image: *GOLANG_IMAGE
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "76:94:15:c8:a0:41:f0:8b:9b:f1:f7:36:4c:d5:7f:57"
+      - checkout
+      - run:
+          command: go mod tidy
+      - run: |
+          if ! git diff --exit-code; then
+            echo "Git directory has vendor changes"
+            exit 1
+          fi
+      - notify_main_failure
+
+  go-generate-test:
+    docker:
+      - image: *GOLANG_IMAGE
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "c6:96:98:82:dc:04:6c:39:dd:ac:83:05:e3:15:1c:98"
+      - protobuf/install:
+          version: 3.17.3
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/go/bin
+      - setup_remote_docker:
+          docker_layer_cache: true
+      - run:
+          name: setup go env
+          command: |
+            go mod download
+            git submodule update --init --recursive
+            make tools
+      - run:
+          name: go generate
+          command: |
+            echo "Checking that go generate has no errors ..."
+            sudo chmod 755 -R /usr/local/bin/protoc
+            sudo chmod 755 -R /usr/local/include/google
+            go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
+            go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
+            protoc --version
+            make gen
+      - notify_main_failure
+
+
+  go-test:
+    docker:
+      - image: *GOLANG_IMAGE
+    parallelism: 4
+    environment:
+      <<: *ENVIRONMENT
+      GOTAGS: ""
+      # GOMAXPROCS defaults to number of cores on underlying hardware, set
+      # explicitly to avoid OOM issues https://support.circleci.com/hc/en-us/articles/360034684273-common-GoLang-memory-issues
+      GOMAXPROCS: 4
+      # The medium resource class (default) boxes are 2 vCPUs, 4GB RAM
+      # https://circleci.com/docs/2.0/configuration-reference/#docker-executor
+      # but we can run a little over that limit.
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "76:94:15:c8:a0:41:f0:8b:9b:f1:f7:36:4c:d5:7f:57"
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/go/bin
+      - setup_remote_docker:
+          docker_layer_cache: true
+      - run: &install_gotestsum
+          name: Install gotestsum
+          command: |
+            url=https://github.com/gotestyourself/gotestsum/releases/download
+            curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
+              sudo tar -xz --overwrite -C /usr/local/bin gotestsum
+      - run: go mod download
+      - run:
+          name: go test
+          command: |
+            mkdir -p $TEST_RESULTS_DIR
+            PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
+            echo "Running $(echo $PACKAGE_NAMES | wc -w) packages"
+            echo $PACKAGE_NAMES
+            gotestsum --format=short-verbose \
+              --junitfile $TEST_RESULTS_DIR/gotestsum-report.xml -- \
+              -tags="$GOTAGS" -p 2 \
+              -cover -coverprofile=coverage.txt \
+              $PACKAGE_NAMES
+      - store_test_results:
+          path: *TEST_RESULTS_DIR
+      - store_artifacts:
+          path: *TEST_RESULTS_DIR
+      - notify_main_failure
+
+workflows:
+  version: 2
+  go-tests:
+    jobs:
+      - lint
+      - check-vendor:
+          requires:
+            - lint
+      - go-test:
+          requires:
+            - lint
+      - go-generate-test:
+          requires:
+            - lint
+            - go-test
+
+commands:
+  notify_main_failure:
+    steps:
+      - run:
+          name: Notify failures on main branch
+          when: on_fail
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              curl -X POST -H 'Content-type: application/json' \
+              --data \
+              "{ \
+                \"text\": \":warning: Failed job on branch _${CIRCLE_BRANCH}_\", \
+                \"attachments\": [ \
+                  { \
+                    \"fallback\": \":warning: Failed job on branch _${CIRCLE_BRANCH}_\", \
+                    \"fields\": [ \
+                        { \
+                            \"title\": \"User\", \
+                            \"value\": \"${CIRCLE_USERNAME}\", \
+                            \"short\": \"true\" \
+                        }, \
+                        { \
+                            \"title\": \"Merge commit\", \
+                            \"value\": \"<https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|$(echo ${CIRCLE_SHA1} | cut -c1-10)>\", \
+                            \"short\": \"true\" \
+                        }, \
+                        { \
+                            \"title\": \"Failed job\", \
+                            \"value\": \"<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>\", \
+                            \"short\": \"true\" \
+                        }, \
+                        { \
+                            \"title\": \"Full Workflow\", \
+                            \"value\": \"<https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}>\", \
+                            \"short\": \"true\" \
+                        } \
+                    ], \
+                    \"ts\": \"$(date +%s)\", \
+                    \"color\": \"danger\" \
+                  } \
+                ] \
+              }" ${SLACK_WEBHOOK}
+            fi
