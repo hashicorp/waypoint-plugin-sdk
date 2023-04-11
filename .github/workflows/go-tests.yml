@@ -98,6 +98,9 @@ jobs:
         uses: arduino/setup-protoc@v1
       - name: Install protoc
         run: |
+          go env GOBIN
+          go env GOPATH
+          echo $PATH
           make --always-make tools
       - name: Install Dependencies
         run: |
