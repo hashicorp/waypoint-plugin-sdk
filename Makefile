@@ -26,6 +26,9 @@ test: # run tests
 tools: # install dependencies and tools required to build
 	go generate -tags tools tools/tools.go
 
+.PHONY: stuff
+stuff: # install dependencies and tools required to build
+
 # 	$(eval PROTOC_INSTALLED := $(shell which protoc))
 
 # 	@# something
