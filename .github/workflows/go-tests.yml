@@ -83,6 +83,7 @@ jobs:
     steps:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3.5.0
       - name: setup go env
         run: |-
           go mod download
@@ -99,6 +100,6 @@ jobs:
           # go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
           # protoc --version
           make gen
-      - uses: "./.github/actions/notify_main_failure"
+      # - uses: "./.github/actions/notify_main_failure"
 permissions:
   contents: read
