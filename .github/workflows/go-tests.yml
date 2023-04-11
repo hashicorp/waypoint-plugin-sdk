@@ -1,6 +1,6 @@
 name: hashicorp/waypoint-plugin-sdk/go-tests
 on:
-  pull_request:
+  push
 
 env:
   SLACK_WEBHOOK: xxxxxxx
@@ -94,6 +94,8 @@ jobs:
         uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
         with:
           go-version: "${{ steps.get-go-version.outputs.go-version }}"
+      - name: Install protobuf
+        uses: arduino/setup-protoc@v1
       - name: Install protoc
         run: |
           make --always-make tools
