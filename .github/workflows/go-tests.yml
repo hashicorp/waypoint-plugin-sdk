@@ -95,9 +95,11 @@ jobs:
         with:
           go-version: "${{ steps.get-go-version.outputs.go-version }}"
       - name: Install Dependencies
-        run: |-
+        run: |
           go mod download
           git submodule update --init --recursive
+      - name: Install protoc
+        run: |
           make tools
       - name: go generate
         run: |-
