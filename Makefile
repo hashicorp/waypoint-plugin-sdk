@@ -29,7 +29,7 @@ tools: # install dependencies and tools required to build
 	@test -s "thirdparty/proto/api-common-protos/.git" || { echo "git submodules not initialized, run 'git submodule update --init --recursive' and try again"; exit 1; }
 
 	@# Test for protoc installed
-	@if [ $(shell which protoc | wc -l) == 0 ]; then \
+	@if [ $(shell which protoc | wc -l) -eq 0 ]; then \
 		echo "Required tool protoc not installed." \
 		echo "You can install the correct version from https://github.com/protocolbuffers/protobuf/releases/tag/v${PROTOC_VERSION} or consider using nix."; \
 		exit 1; \
