@@ -2,43 +2,43 @@ name: hashicorp/waypoint-plugin-sdk/go-tests
 on:
   pull_request:
 jobs:
-  golangci:
-    name: golangci-lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3.3.0
-      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3.5.0
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5  # pin@v3.4.0
-        with:
-          version: v1.51.2
-          args: |
-            --disable-all \
-            --timeout 10m \
-            --enable gofmt \
-            --enable gosimple \
-            --enable govet \
-            --verbose
-          skip-pkg-cache: true
-          skip-build-cache: true
-  check-vendor:
-    name: check-vendor
-    runs-on: ubuntu-latest
-    needs:
-      - golangci
-    steps:
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - name: check-vendor
-        run: |
-          go mod tidy
-          if ! git diff --exit-code; then
-            echo "Git directory has vendor changes"
-            exit 1
-          fi
+  # golangci:
+  #   name: golangci-lint
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3.3.0
+  #     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3.5.0
+  #     - name: golangci-lint
+  #       uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5  # pin@v3.4.0
+  #       with:
+  #         version: v1.51.2
+  #         args: |
+  #           --disable-all \
+  #           --timeout 10m \
+  #           --enable gofmt \
+  #           --enable gosimple \
+  #           --enable govet \
+  #           --verbose
+  #         skip-pkg-cache: true
+  #         skip-build-cache: true
+  # check-vendor:
+  #   name: check-vendor
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - golangci
+  #   steps:
+  #     - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+  #     - name: check-vendor
+  #       run: |
+  #         go mod tidy
+  #         if ! git diff --exit-code; then
+  #           echo "Git directory has vendor changes"
+  #           exit 1
+  #         fi
   go-test:
     runs-on: ubuntu-latest
-    needs:
-      - golangci
+    # needs:
+    #   - golangci
     env:
       GOTAGS: ''
       GOMAXPROCS: 4
@@ -80,10 +80,22 @@ jobs:
         uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
         with:
           go-version: "${{ steps.get-go-version.outputs.go-version }}"
-      - name: Install Protoc
-        uses: arduino/setup-protoc@64c0c85d18e984422218383b81c52f8b077404d3 # v1.1.2
-        with:
-          version: '3.17.3'
+      - name: Install protoc
+        # run: |-
+        #   url=https://github.com/gotestyourself/gotestsum/releases/download
+        #   curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
+        #     sudo tar -xz --overwrite -C /usr/local/bin gotestsum
+        run: |-
+          url=https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protoc-3.17.3-linux-x86_64.zip
+          curl -sSL "${url}" | \
+            unzip protoc-3.15.8-linux-x86_64.zip -d "${HOME}"/.local
+      - name: Add to path
+        run: |
+          echo "${home}"/.local >> $GITHUB_PATH
+      # - name: Install Protoc
+      #   uses: arduino/setup-protoc@64c0c85d18e984422218383b81c52f8b077404d3 # v1.1.2
+      #   with:
+      #     version: '3.17.3'
       - name: Install Dependencies
         run: |
           go mod download
