@@ -2,71 +2,71 @@ name: hashicorp/waypoint-plugin-sdk/go-tests
 on:
   pull_request:
 jobs:
-  # golangci:
-  #   name: golangci-lint
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3.3.0
-  #     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3.5.0
-  #     - name: golangci-lint
-  #       uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5  # pin@v3.4.0
-  #       with:
-  #         version: v1.51.2
-  #         args: |
-  #           --disable-all \
-  #           --timeout 10m \
-  #           --enable gofmt \
-  #           --enable gosimple \
-  #           --enable govet \
-  #           --verbose
-  #         skip-pkg-cache: true
-  #         skip-build-cache: true
-  # check-vendor:
-  #   name: check-vendor
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - golangci
-  #   steps:
-  #     - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-  #     - name: check-vendor
-  #       run: |
-  #         go mod tidy
-  #         if ! git diff --exit-code; then
-  #           echo "Git directory has vendor changes"
-  #           exit 1
-  #         fi
-  # go-test:
-  #   runs-on: ubuntu-latest
-  #   # needs:
-  #   #   - golangci
-  #   env:
-  #     GOTAGS: ''
-  #     GOMAXPROCS: 4
-  #     TEST_RESULTS_DIR: "/tmp/test-results"
-  #     GOTESTSUM_RELEASE: 1.8.2
-  #   steps:
-  #     - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-  #     - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-  #     - name: Install gotestsum
-  #       run: |-
-  #         url=https://github.com/gotestyourself/gotestsum/releases/download
-  #         curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
-  #           sudo tar -xz --overwrite -C /usr/local/bin gotestsum
-  #     - name: Mod download
-  #       run: go mod download
-  #     - name: go test
-  #       run: |-
-  #         mkdir -p "${TEST_RESULTS_DIR}"
-  #         gotestsum --format=short-verbose \
-  #           --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
-  #           -tags="${GOTAGS}" -p 2 \
-  #           -cover -coverprofile=coverage.txt \
-  #           ./...
+  golangci:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3.3.0
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3.5.0
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5  # pin@v3.4.0
+        with:
+          version: v1.51.2
+          args: |
+            --disable-all \
+            --timeout 10m \
+            --enable gofmt \
+            --enable gosimple \
+            --enable govet \
+            --verbose
+          skip-pkg-cache: true
+          skip-build-cache: true
+  check-vendor:
+    name: check-vendor
+    runs-on: ubuntu-latest
+    needs:
+      - golangci
+    steps:
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+      - name: check-vendor
+        run: |
+          go mod tidy
+          if ! git diff --exit-code; then
+            echo "Git directory has vendor changes"
+            exit 1
+          fi
+  go-test:
+    runs-on: ubuntu-latest
+    needs:
+      - golangci
+    env:
+      GOTAGS: ''
+      GOMAXPROCS: 4
+      TEST_RESULTS_DIR: "/tmp/test-results"
+      GOTESTSUM_RELEASE: 1.8.2
+    steps:
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - name: Install gotestsum
+        run: |-
+          url=https://github.com/gotestyourself/gotestsum/releases/download
+          curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
+            sudo tar -xz --overwrite -C /usr/local/bin gotestsum
+      - name: Mod download
+        run: go mod download
+      - name: go test
+        run: |-
+          mkdir -p "${TEST_RESULTS_DIR}"
+          gotestsum --format=short-verbose \
+            --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
+            -tags="${GOTAGS}" -p 2 \
+            -cover -coverprofile=coverage.txt \
+            ./...
   go-generate-test:
     runs-on: ubuntu-latest
-    # needs:
-    #   - golangci
-    #   - go-test
+    needs:
+      - golangci
+      - go-test
     steps:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - name: Determine Go version
@@ -81,10 +81,6 @@ jobs:
         with:
           go-version: "${{ steps.get-go-version.outputs.go-version }}"
       - name: Install protoc
-        # run: |-
-        #   url=https://github.com/gotestyourself/gotestsum/releases/download
-        #   curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
-        #     sudo tar -xz --overwrite -C /usr/local/bin gotestsum
         run: |-
           url=https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protoc-3.17.3-linux-x86_64.zip
           curl -sSL "${url}" -o protoc3173.zip
@@ -92,10 +88,6 @@ jobs:
       - name: Add to path
         run: |
           echo "${HOME}"/.local/protoc/bin >> $GITHUB_PATH
-      # - name: Install Protoc
-      #   uses: arduino/setup-protoc@64c0c85d18e984422218383b81c52f8b077404d3 # v1.1.2
-      #   with:
-      #     version: '3.17.3'
       - name: Install Dependencies
         run: |
           go mod download
