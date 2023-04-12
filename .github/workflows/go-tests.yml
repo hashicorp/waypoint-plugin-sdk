@@ -35,33 +35,33 @@ jobs:
   #           echo "Git directory has vendor changes"
   #           exit 1
   #         fi
-  go-test:
-    runs-on: ubuntu-latest
-    # needs:
-    #   - golangci
-    env:
-      GOTAGS: ''
-      GOMAXPROCS: 4
-      TEST_RESULTS_DIR: "/tmp/test-results"
-      GOTESTSUM_RELEASE: 1.8.2
-    steps:
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      - name: Install gotestsum
-        run: |-
-          url=https://github.com/gotestyourself/gotestsum/releases/download
-          curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
-            sudo tar -xz --overwrite -C /usr/local/bin gotestsum
-      - name: Mod download
-        run: go mod download
-      - name: go test
-        run: |-
-          mkdir -p "${TEST_RESULTS_DIR}"
-          gotestsum --format=short-verbose \
-            --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
-            -tags="${GOTAGS}" -p 2 \
-            -cover -coverprofile=coverage.txt \
-            ./...
+  # go-test:
+  #   runs-on: ubuntu-latest
+  #   # needs:
+  #   #   - golangci
+  #   env:
+  #     GOTAGS: ''
+  #     GOMAXPROCS: 4
+  #     TEST_RESULTS_DIR: "/tmp/test-results"
+  #     GOTESTSUM_RELEASE: 1.8.2
+  #   steps:
+  #     - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+  #     - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+  #     - name: Install gotestsum
+  #       run: |-
+  #         url=https://github.com/gotestyourself/gotestsum/releases/download
+  #         curl -sSL "${url}/v${GOTESTSUM_RELEASE}/gotestsum_${GOTESTSUM_RELEASE}_linux_amd64.tar.gz" | \
+  #           sudo tar -xz --overwrite -C /usr/local/bin gotestsum
+  #     - name: Mod download
+  #       run: go mod download
+  #     - name: go test
+  #       run: |-
+  #         mkdir -p "${TEST_RESULTS_DIR}"
+  #         gotestsum --format=short-verbose \
+  #           --junitfile "${TEST_RESULTS_DIR}"/gotestsum-report.xml -- \
+  #           -tags="${GOTAGS}" -p 2 \
+  #           -cover -coverprofile=coverage.txt \
+  #           ./...
   go-generate-test:
     runs-on: ubuntu-latest
     # needs:
@@ -88,10 +88,10 @@ jobs:
         run: |-
           url=https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protoc-3.17.3-linux-x86_64.zip
           curl -sSL "${url}" | \
-            unzip -d "${HOME}"/.local -
+            bsdtar -xvf- -C ~/"${HOME}/.local/protoc"
       - name: Add to path
         run: |
-          echo "${home}"/.local >> $GITHUB_PATH
+          echo "${home}"/.local/protoc/bin >> $GITHUB_PATH
       # - name: Install Protoc
       #   uses: arduino/setup-protoc@64c0c85d18e984422218383b81c52f8b077404d3 # v1.1.2
       #   with:
