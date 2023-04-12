@@ -88,7 +88,7 @@ jobs:
         run: |-
           url=https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protoc-3.17.3-linux-x86_64.zip
           curl -sSL "${url}" | \
-            bsdtar -xvf- -C ~/"${HOME}/.local/protoc"
+            sudo tar -xz --overwrite -C "${HOME}"/.local protoc
       - name: Add to path
         run: |
           echo "${home}"/.local/protoc/bin >> $GITHUB_PATH
