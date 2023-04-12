@@ -88,7 +88,7 @@ jobs:
         run: |-
           url=https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protoc-3.17.3-linux-x86_64.zip
           curl -sSL "${url}" | \
-            unzip protoc-3.17.3-linux-x86_64.zip -d "${HOME}"/.local
+            unzip -d "${HOME}"/.local -
       - name: Add to path
         run: |
           echo "${home}"/.local >> $GITHUB_PATH
