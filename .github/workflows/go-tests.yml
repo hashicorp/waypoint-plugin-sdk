@@ -87,8 +87,8 @@ jobs:
         #     sudo tar -xz --overwrite -C /usr/local/bin gotestsum
         run: |-
           url=https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protoc-3.17.3-linux-x86_64.zip
-          curl -sSL "${url}" | \
-            sudo tar -xz --overwrite -C "${HOME}"/.local protoc
+          curl -sSL "${url}" -o protoc3173.zip
+          unzip protoc3173.zip -d "${HOME}"/.local/protoc
       - name: Add to path
         run: |
           echo "${home}"/.local/protoc/bin >> $GITHUB_PATH
