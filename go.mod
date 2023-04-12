@@ -30,7 +30,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
-	golang.org/x/sys v0.0.0-20200916030750-2334cc1a136f
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5
 	google.golang.org/grpc v1.33.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
@@ -59,6 +59,6 @@ require (
 	github.com/y0ssar1an/q v1.0.7 // indirect
 	github.com/zclconf/go-cty v1.2.0 // indirect
 	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3 // indirect
-	golang.org/x/text v0.3.2 // indirect
+	golang.org/x/text v0.3.8 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
