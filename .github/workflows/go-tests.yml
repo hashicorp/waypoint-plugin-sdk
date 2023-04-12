@@ -98,19 +98,17 @@ jobs:
         uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
         with:
           go-version: "${{ steps.get-go-version.outputs.go-version }}"
-      - name: Install protoc
+      - name: Install protoc tool
         run: |-
           url=https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protoc-3.17.3-linux-x86_64.zip
           curl -sSL "${url}" -o protoc3173.zip
           unzip protoc3173.zip -d "${HOME}"/.local/protoc
-      - name: Add to path
-        run: |
           echo "${HOME}"/.local/protoc/bin >> "${GITHUB_PATH}"
       - name: Install Dependencies
         run: |
           go mod download
           git submodule update --init --recursive
-      - name: Install protoc
+      - name: Install tool dependencies
         run: |
           make --always-make tools
       - name: go generate
