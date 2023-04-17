@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package resource contains helpers around managing groups of resources. A
 // "resource" is any element created by a plugin. For example, an AWS
 // deployment plugin may create load balancers, security groups, VPCs, etc. Each

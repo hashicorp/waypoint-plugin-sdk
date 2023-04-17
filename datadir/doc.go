@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package datadir manages the data directories. This includes persisted
 // data such as state as well as ephemeral data such as cache and runtime
 // files.

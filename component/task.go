@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package component
 
 // TaskLaunchInfo is used by TaskLauncher's StartTaskFunc operation.

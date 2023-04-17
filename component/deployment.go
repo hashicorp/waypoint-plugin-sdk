@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package component
 
 // DeploymentConfig is the configuration for the behavior of a deployment.

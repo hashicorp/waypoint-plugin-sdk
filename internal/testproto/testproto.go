@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package testproto contains some protobuf defintions that are used
 // in internal tests.
 package testproto

@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package component
 
 // ConfigSourcer can be implemented by plugins that support sourcing
