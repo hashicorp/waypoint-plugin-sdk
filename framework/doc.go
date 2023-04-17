@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package framework contains a high-level framework for writing Waypoint
 // plugins. The framework is split into sub-packages for specific functionality,
 // whereas this root package contains the highest-level functionality.

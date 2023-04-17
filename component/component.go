@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package component has the interfaces for all the components that
 // can be implemented. A component is the broad term used to describe
 // all builders, platforms, registries, etc.
